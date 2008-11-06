@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE package SYSTEM "http://pear.php.net/dtd/package-1.0">
+<package version="1.0">
+  <name>Payment_DTA</name>
+  <summary>Creates DTA files containing money transaction data (Germany).</summary>
+  <description>Payment_DTA provides functions to create DTA files used in Germany to exchange informations about money transactions with banks or online banking programs.</description>
+  <maintainers>
+    <maintainer>
+      <user>hstainer</user>
+      <name>Hermann Stainer</name>
+      <email>hs@web-gear.com</email>
+      <role>lead</role>
+    </maintainer>
+  </maintainers>
+  <release>
+    <version>1.2.0</version>
+    <date>2005-01-25</date>
+    <license>BSD style</license>
+    <state>stable</state>
+    <notes>[-] Fixed problems handling exchanges with seperator in money amounts other than &quot;.&quot; (e.g. &quot;,&quot; in German locale settings). Thanks to Mario Mueller!
+[*] The code part splitting up Euro and Cent was rewritten.. Thanks to Michael Hosse for inspiring this improvement!
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )</notes>
+    <filelist>
+      <file role="php" baseinstalldir="Payment" md5sum="fbfc45d3297d234caf09ded7eac9e28b" name="DTA.php"/>
+      <file role="doc" baseinstalldir="Payment" md5sum="aea4f2442489a74e989131133f726797" name="docs/class_Dta.xml"/>
+      <file role="doc" baseinstalldir="Payment" md5sum="1c908e26262f91042f9810aec936565f" name="docs/classtree_Dta.xml"/>
+      <file role="doc" baseinstalldir="Payment" md5sum="95e77efafdcfc4e3e0dcf72f978a9bb5" name="docs/DTA.html"/>
+      <file role="doc" baseinstalldir="Payment" md5sum="aab1fdbf1e51336490a3baf2d42d7146" name="docs/elementlist.xml"/>
+      <file role="doc" baseinstalldir="Payment" md5sum="bfa95b2058950210cc97bde05c35099e" name="docs/frame_packagelist.html"/>
+      <file role="doc" baseinstalldir="Payment" md5sum="98988cef442029ecb60ad438e7d6acf2" name="docs/packageelementlist_No_Package_specified.html"/>
+      <file role="doc" baseinstalldir="Payment" md5sum="4ad8e97ce044f9f3710b79ccb793e5ca" name="docs/packagelist.xml"/>
+      <file role="doc" baseinstalldir="Payment" md5sum="fbb75926f57676ea33d40eda31a880b4" name="docs/phpdoc_classtree.html"/>
+      <file role="doc" baseinstalldir="Payment" md5sum="2342041a5754db73b1ae368592493ff6" name="docs/phpdoc_elementlist.html"/>
+      <file role="doc" baseinstalldir="Payment" md5sum="9647cb2a176c829b954a9038c34c99de" name="docs/phpdoc_packagelist.html"/>
+      <file role="doc" baseinstalldir="Payment" md5sum="7afccc40c11a66fa1e3650a3bbd47232" name="docs/phpdoc_xmlfiles.html"/>
+      <file role="doc" baseinstalldir="Payment" md5sum="8a6bd2e0561e81895123ff5c2b058cd8" name="docs/examples/example_credit.php"/>
+      <file role="doc" baseinstalldir="Payment" md5sum="1ac0ae8d1c84e51a457afd28a7fe828d" name="docs/examples/example_debit.php"/>
+    </filelist>
+  </release>
+  <changelog>
+    <release>
+      <version>0.71</version>
+      <date>2003-08-23</date>
+      <state>beta</state>
+      <notes>First release.
+</notes>
+    </release>
+    <release>
+      <version>0.80</version>
+      <date>2003-10-05</date>
+      <state>beta</state>
+      <notes>[+] German umlauts are now converted, e.g. &quot;ä&quot; to &quot;ae&quot;. Although umlauts should be working in DTA files by official specification, in fact they doesn't worked.
+[-] Fixed a bug that caused false amounts of money if exactly one number after the point was given in the amount (e.g. 12.3). Thanks to Matthias Jaekle for the reference.
+[!] Payment_DTA is NOT designed for account data validation. It needs valid data to work, and this also means NO SPACES in bank codes or account numbers.
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )
+</notes>
+    </release>
+    <release>
+      <version>0.81</version>
+      <date>2003-10-19</date>
+      <state>beta</state>
+      <notes>[-] Fixed bug that caused corrupted files if umlauts were converted
+[+] German &quot;ß&quot; is converted to &quot;ss&quot; now
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )
+</notes>
+    </release>
+    <release>
+      <version>1.00</version>
+      <date>2004-05-24</date>
+      <state>stable</state>
+      <notes>[-] Fixed bug #1387 &quot;Notice on line 195&quot; (with error_reporting set to E_ALL, the class output a notice). Thanks to Markus Wolff!
+[!] Class functions were tested extended in credit mode.
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )
+</notes>
+    </release>
+    <release>
+      <version>1.1.0</version>
+      <date>2005-01-16</date>
+      <state>stable</state>
+      <notes>[-] Fixed bug #3165 (leading zero after comma in amount is ignored if more than two digits after comma). Thanks to Matthias C. Spieß!
+[-] Fixed bug with corrupted DTA files if using only one line for transaction purposes. Thanks to Michael Hosse!
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )
+</notes>
+    </release>
+  </changelog>
+</package>
