@@ -1,8 +1,9 @@
 <?php
+
 /**
- * Payment_DTA
+ * DTA
  *
- * PHP Version 4
+ * PHP version 4
  *
  * Copyright (c) 2003-2005 Hermann Stainer, Web-Gear
  * http://www.web-gear.com/
@@ -43,13 +44,13 @@
  *
  * Author: Hermann Stainer <hs@web-gear.com>
  *
- * @category Payment
- * @package  Payment_DTA
- * @author   Hermann Stainer <hs@web-gear.com>
- * @license  BSD http://www.opensource.org/licenses/bsd-license.php
- * @version  CVS: $Id$
- * @link     http://pear.php.net/packages/Payment_DTA
- * @access   public
+ * @category  Payment
+ * @package   Payment_DTA
+ * @author    Hermann Stainer <hs@web-gear.com>
+ * @copyright 2003-2005 Hermann Stainer, Web-Gear
+ * @license   http://www.debian.org/misc/bsd.license  BSD License (3 Clause)
+ * @version   CVS: $Id$
+ * @link      http://pear.php.net/package/Payment_DTA
  */
 
 
@@ -71,17 +72,18 @@ define("DTA_DEBIT", 1);
 
 
 /**
- * Dta class provides functions to create and handle with DTA files
- * used in Germany to exchange informations about money transactions with
- * banks or online banking programs.
- *
- * @category Payment
- * @package  Payment_DTA
- * @author   Hermann Stainer <hs@web-gear.com>
- * @license  BSD http://www.opensource.org/licenses/bsd-license.php
- * @link     http://pear.php.net/packages/Payment_DTA
- * @access   public
- */
+* Dta class provides functions to create and handle with DTA files
+* used in Germany to exchange informations about money transactions with
+* banks or online banking programs.
+*
+* @category Payment
+* @package  Payment_DTA
+* @author   Hermann Stainer <hs@web-gear.com>
+* @license  http://www.debian.org/misc/bsd.license  BSD License (3 Clause)
+* @version  Release: @package_version@
+* @link     http://pear.php.net/package/Payment_DTA
+* @since    DTA 0.1
+*/
 class DTA
 {
     /**
@@ -135,11 +137,10 @@ class DTA
 
         $this->account_file_sender = array();
 
-        $this->validString_chars = array(32, 36, 37, 38, 42, 43, 44, 45, 46, 47, 48,
-                                         49, 50, 51, 52, 53, 54, 55, 56, 57, 65, 66,
-                                         67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77,
-                                         78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88,
-                                         89, 90, 196, 214, 220, 223);
+        $this->validString_chars = array(32, 36, 37, 38, 42, 43, 44, 45, 46,
+            47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 65, 66, 67, 68, 69,
+            70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85,
+            86, 87, 88, 89, 90, 196, 214, 220, 223);
 
         $this->timestamp = time();
 
@@ -147,7 +148,8 @@ class DTA
     }
 
     /**
-    * Checks if the given string contains only chars valid for fields in DTA files.
+    * Checks if the given string contains only chars valid for fields
+    * in DTA files.
     *
     * @param string $string String that is checked.
     *
@@ -171,8 +173,9 @@ class DTA
     }
 
     /**
-    * Makes the given string valid for DTA files. German umlauts become uppercase,
-    * all other chars not allowed are replaced with space
+    * Makes the given string valid for DTA files.
+    * Some diacritics, especially German umlauts become uppercase,
+    * all other chars not allowed are replaced with space.
     *
     * @param string $string String that should made valid.
     *
@@ -185,30 +188,28 @@ class DTA
         $result = "";
 
         if (strlen($string) > 0) {
-            $search = array(
-                "'�'",
-                "'�'",
-                "'�'",
-                "'�'",
-                "'�'",
-                "'�'",
-                "'�'"
-            );
-
-            $replace = array(
-                "Ae",
-                "Oe",
-                "Ue",
-                "ae",
-                "oe",
-                "ue",
-                "ss"
-            );
+            $search  = array("'ä'", "'á'", "'à'", "'ã'", "'å'", "'ç'",
+                             "'é'", "'è'", "'ë'", "'í'", "'ì'", "'ï'",
+                             "'ñ'", "'ö'", "'ó'", "'ò'", "'ø'", "'ß'",
+                             "'ü'", "'ú'", "'ù'",
+                             "'Ä'", "'Á'", "'À'", "'Ã'", "'Å'", "'Ç'",
+                             "'É'", "'È'", "'Ë'", "'Í'", "'Ì'", "'Ï'",
+                             "'Ñ'", "'Ö'", "'Ó'", "'Ò'", "'Ø'",
+                             "'Ü'", "'Ú'", "'Ù'");
+            $replace = array("ae", "a"  , "a"  , "a"  , "a"  , "c"  ,
+                             "e" , "e"  , "e"  , "i"  , "i"  , "i"  ,
+                             "n" , "oe" , "o"  , "o"  , "o"  , "ss" ,
+                             "ue", "u"  , "u",
+                             "AE", "A"  , "A"  , "A"  , "A"  , "C"  ,
+                             "E" , "E"  , "E"  , "I"  , "I"  , "I"  ,
+                             "N" , "Oe" , "O"  , "O"  , "O"  ,
+                             "UE", "U"  , "U");
 
             $result = strtoupper(preg_replace($search, $replace, $string));
 
-            for ($index = 0; $index < strlen($result); $index++) {
-                if (!in_array(ord(substr($result, $index, 1)), $this->validString_chars)) {
+            for ($index = 0;$index < strlen($result);$index++) {
+                if (!in_array(ord(substr($result, $index, 1)),
+                    $this->validString_chars)) {
                     $result[$index] = " ";
                 }
             }
@@ -224,7 +225,8 @@ class DTA
     *  name            Sender's name. Maximally 27 chars are allowed.
     *  bank_code       Sender's bank code.
     *  account_number  Sender's account number.
-    *  additional_name If necessary, additional line for sender's name (maximally 27 chars).
+    *  additional_name If necessary, additional line for sender's name
+    *                  (maximally 27 chars).
     *
     * @param array $account Account data fot file sender.
     *
@@ -233,8 +235,11 @@ class DTA
     */
     function setAccountFileSender($account)
     {
-        if (strlen($account['name']) > 0 && is_numeric($account['bank_code'])
-            && is_numeric($account['account_number'])) {
+        if (strlen($account['name']) > 0
+            && strlen($account['bank_code']) <= 8
+            && ctype_digit($account['bank_code'])
+            && strlen($account['account_number']) <= 10
+            && ctype_digit($account['account_number'])) {
 
             if (empty($account['additional_name'])) {
                 $account['additional_name'] = "";
@@ -256,10 +261,12 @@ class DTA
     }
 
     /**
-    * Adds an exchange. First the account data for the receiver of the exchange is set.
-    * In the case the DTA file contains credits, this is the payment receiver. In the other
-    * case (the DTA file contains debits), this is the account, from which money is taken away.
-    * If the sender is not specified, values of the file sender are used by default.
+    * Adds an exchange. First the account data for the receiver of the exchange is
+    * set. In the case the DTA file contains credits, this is the payment receiver.
+    * In the other case (the DTA file contains debits), this is the account, from
+    * which money is taken away. If the sender is not specified, values of the
+    * file sender are used by default.
+    *
     * Account data for receiver and sender contain
     *  name            Name. Maximally 27 chars are allowed.
     *  bank_code       Bank code.
@@ -267,15 +274,20 @@ class DTA
     *  additional_name If necessary, additional line for name (maximally 27 chars).
     *
     * @param array  $account_receiver Receiver's account data.
-    * @param double $amount           Amount of money in this exchange. Currency: EURO
-    * @param array  $purposes         Array of up to 15 lines (maximally 27 chars
-    *                                 each) for description of the exchange.
+    * @param double $amount           Amount of money in this exchange.
+    *                                 Currency: EURO
+    * @param array  $purposes         Array of up to 15 lines
+    *                                 (maximally 27 chars each) for
+    *                                 description of the exchange.
     * @param array  $account_sender   Sender's account data.
     *
     * @access public
     * @return boolean
     */
-    function addExchange($account_receiver, $amount, $purposes, $account_sender = array())
+    function addExchange($account_receiver,
+        $amount,
+        $purposes,
+        $account_sender = array())
     {
         if (empty($account_receiver['additional_name'])) {
             $account_receiver['additional_name'] = "";
@@ -284,34 +296,40 @@ class DTA
             $account_sender['name'] = $this->account_file_sender['name'];
         }
         if (empty($account_sender['bank_code'])) {
-            $account_sender['bank_code'] = $this->account_file_sender['bank_code'];
+            $account_sender['bank_code'] =
+                $this->account_file_sender['bank_code'];
         }
         if (empty($account_sender['account_number'])) {
-            $account_sender['account_number'] = $this->account_file_sender['account_number'];
+            $account_sender['account_number'] =
+                $this->account_file_sender['account_number'];
         }
         if (empty($account_sender['additional_name'])) {
-            $account_sender['additional_name'] = $this->account_file_sender['additional_name'];
+            $account_sender['additional_name'] =
+                $this->account_file_sender['additional_name'];
         }
 
         if (strlen($account_sender['name']) > 0
-            && is_numeric($account_sender['bank_code'])
-            && is_numeric($account_sender['account_number'])
+            && strlen($account_sender['bank_code']) <= 8
+            && ctype_digit($account_sender['bank_code'])
+            && strlen($account_sender['account_number']) <= 10
+            && ctype_digit($account_sender['account_number'])
             && strlen($account_receiver['name']) > 0
-            && is_numeric($account_receiver['bank_code'])
-            && is_numeric($account_receiver['account_number'])
+            && strlen($account_receiver['bank_code']) <= 8
+            && ctype_digit($account_receiver['bank_code'])
+            && strlen($account_receiver['account_number']) <= 10
+            && ctype_digit($account_receiver['account_number'])
             && is_numeric($amount) && $amount > 0
             && ((is_array($purposes) && count($purposes) >= 1)
                 || (is_string($purposes) && strlen($purposes) > 0))) {
 
-            $amount = round($amount * 100);
+            $amount = intval(round($amount * 100));
 
             if (is_string($purposes)) {
                 $purposes = array($purposes, "");
             }
 
             $purposes_data = $purposes;
-
-            $purposes = array();
+            $purposes      = array();
 
             foreach ($purposes_data as $purpose) {
                 $purposes[] = substr($this->makeValidString($purpose), 0, 27);
@@ -339,7 +357,8 @@ class DTA
     }
 
     /**
-    * Returns the full content of the generated DTA file. All added exchanges are processed.
+    * Returns the full content of the generated DTA file.
+    * All added exchanges are processed.
     *
     * @access public
     * @return string
@@ -351,15 +370,14 @@ class DTA
         $sum_account_numbers = 0;
 
         $sum_bank_codes = 0;
-
-        $sum_amounts = 0;
+        $sum_amounts    = 0;
 
         /**
          * data record A
          */
 
-        // record length(128 Bytes)
-        $content .= str_pad("128", 4, "0", STR_PAD_LEFT);
+        // record length (128 Bytes)
+        $content .=  str_pad("128", 4, "0", STR_PAD_LEFT);
         // record type
         $content .= "A";
         // file mode (credit or debit)
@@ -367,27 +385,32 @@ class DTA
         // Customer File ("K") / Bank File ("B")
         $content .= "K";
         // sender's bank code
-        $content .= str_pad($this->account_file_sender['bank_code'], 8, "0", STR_PAD_LEFT);
+        $content .=  str_pad($this->account_file_sender['bank_code'],
+                         8, "0", STR_PAD_LEFT);
         // only used if Bank File, otherwise NULL
-        $content .= str_repeat("0", 8);
+        $content .=  str_repeat("0", 8);
         // sender's name
-        $content .= str_pad($this->account_file_sender['name'], 27, " ", STR_PAD_RIGHT);
+        $content .=  str_pad($this->account_file_sender['name'],
+                         27, " ", STR_PAD_RIGHT);
         // date of file creation
         $content .= strftime("%d%m%y", $this->timestamp);
         // free (bank internal)
-        $content .= str_repeat(" ", 4);
+        $content .=  str_repeat(" ", 4);
         // sender's account number
-        $content .= str_pad($this->account_file_sender['account_number'], 10, "0", STR_PAD_LEFT);
+        $content .=  str_pad($this->account_file_sender['account_number'],
+                         10, "0", STR_PAD_LEFT);
         // sender's reference number (optional)
-        $content .= str_repeat("0", 10);
+        $content .=  str_repeat("0", 10);
         // free (reserve)
-        $content .= str_repeat(" ", 15);
+        $content .=  str_repeat(" ", 15);
         // execution date ("DDMMYYYY", optional)
-        $content .= str_repeat(" ", 8);
+        $content .=  str_repeat(" ", 8);
         // free (reserve)
-        $content .= str_repeat(" ", 24);
+        $content .=  str_repeat(" ", 24);
         // currency (1 = Euro)
         $content .= "1";
+
+        assert(strlen($content) == 128);
 
         /**
          * data record(s) C
@@ -395,45 +418,49 @@ class DTA
 
         foreach ($this->exchanges as $exchange) {
             $sum_account_numbers += $exchange['receiver_account_number'];
-
-            $sum_bank_codes += $exchange['receiver_bank_code'];
-
-            $sum_amounts += $exchange['amount'];
+            $sum_bank_codes      += (int) $exchange['receiver_bank_code'];
+            $sum_amounts         += $exchange['amount'];
 
             $additional_purposes = $exchange['purposes'];
-
-            $first_purpose = array_shift($additional_purposes);
+            $first_purpose       = array_shift($additional_purposes);
 
             $additional_parts = array();
 
             if (strlen($exchange['receiver_additional_name']) > 0) {
                 $additional_parts[] = array("type" => "01",
-                    "content" => $exchange['receiver_additional_name']);
+                    "content" => $exchange['receiver_additional_name']
+                    );
             }
 
             foreach ($additional_purposes as $additional_purpose) {
                 $additional_parts[] = array("type" => "02",
-                    "content" => $additional_purpose);
+                    "content" => $additional_purpose
+                    );
             }
 
             if (strlen($exchange['sender_additional_name']) > 0) {
                 $additional_parts[] = array("type" => "03",
-                    "content" => $exchange['sender_additional_name']);
+                    "content" => $exchange['sender_additional_name']
+                    );
             }
 
             $additional_parts_number = count($additional_parts);
             // record length (187 Bytes + 29 Bytes for each additional part)
-            $content .= str_pad(187 + $additional_parts_number * 29, 4, "0", STR_PAD_LEFT);
+            $content .=  str_pad(187 + $additional_parts_number * 29,
+                             4, "0", STR_PAD_LEFT);
             // record type
             $content .= "C";
             // first involved bank
-            $content .= str_pad($exchange['sender_bank_code'], 8, "0", STR_PAD_LEFT);
+            $content .=  str_pad($exchange['sender_bank_code'],
+                             8, "0", STR_PAD_LEFT);
             // receiver's bank code
-            $content .= str_pad($exchange['receiver_bank_code'], 8, "0", STR_PAD_LEFT);
+            $content .=  str_pad($exchange['receiver_bank_code'],
+                             8, "0", STR_PAD_LEFT);
             // receiver's account number
-            $content .= str_pad($exchange['receiver_account_number'], 10, "0", STR_PAD_LEFT);
+            $content .=  str_pad($exchange['receiver_account_number'],
+                             10, "0", STR_PAD_LEFT);
             // internal customer number (11 chars) or NULL
-            $content .= "0" . str_repeat("0", 11) . "0";
+            $content .= "0" .  str_repeat("0", 11) . "0";
             // payment mode (text key)
             $content .= ($this->type == DTA_CREDIT) ? "51" : "05";
             // additional text key
@@ -441,21 +468,23 @@ class DTA
             // bank internal
             $content .= " ";
             // free (reserve)
-            $content .= str_repeat("0", 11);
+            $content .=  str_repeat("0", 11);
             // sender's bank code
-            $content .= str_pad($exchange['sender_bank_code'], 8, "0", STR_PAD_LEFT);
+            $content .=  str_pad($exchange['sender_bank_code'],
+                            8, "0", STR_PAD_LEFT);
             // sender's account number
-            $content .= str_pad($exchange['sender_account_number'], 10, "0", STR_PAD_LEFT);
+            $content .=  str_pad($exchange['sender_account_number'],
+                            10, "0", STR_PAD_LEFT);
             // amount
-            $content .= str_pad($exchange['amount'], 11, "0", STR_PAD_LEFT);
+            $content .=  str_pad($exchange['amount'], 11, "0", STR_PAD_LEFT);
             // free (reserve)
-            $content .= str_repeat(" ", 3);
+            $content .=  str_repeat(" ", 3);
             // receiver's name
-            $content .= str_pad($exchange['receiver_name'], 27, " ", STR_PAD_RIGHT);
+            $content .=  str_pad($exchange['receiver_name'], 27, " ", STR_PAD_RIGHT);
             // delimitation
-            $content .= str_repeat(" ", 8);
+            $content .=  str_repeat(" ", 8);
             // sender's name
-            $content .= str_pad($exchange['sender_name'], 27, " ", STR_PAD_RIGHT);
+            $content .=  str_pad($exchange['sender_name'], 27, " ", STR_PAD_RIGHT);
             // first line of purposes
             $content .= str_pad($first_purpose, 27, " ", STR_PAD_RIGHT);
             // currency (1 = Euro)
@@ -471,12 +500,14 @@ class DTA
                         $additional_part = array_shift($additional_parts);
                     } else {
                         $additional_part = array("type" => "  ",
-                            "content" => "");
+                            "content" => ""
+                            );
                     }
                     // type of addional part
                     $content .= $additional_part['type'];
                     // additional part content
-                    $content .= str_pad($additional_part['content'], 27, " ", STR_PAD_RIGHT);
+                    $content .= str_pad($additional_part['content'],
+                                    27, " ", STR_PAD_RIGHT);
                 }
                 // delimitation
                 $content .= str_repeat(" ", 11);
@@ -489,18 +520,22 @@ class DTA
                             $additional_part = array_shift($additional_parts);
                         } else {
                             $additional_part = array("type" => "  ",
-                                "content" => "");
+                                "content" => ""
+                                );
                         }
                         // type of addional part
                         $content .= $additional_part['type'];
                         // additional part content
-                        $content .= str_pad($additional_part['content'], 27, " ", STR_PAD_RIGHT);
+                        $content .= str_pad($additional_part['content'], 27,
+                                        " ", STR_PAD_RIGHT);
                     }
                     // delimitation
                     $content .= str_repeat(" ", 12);
                 }
             }
         }
+
+        assert(strlen($content) % 128 == 0);
 
         /**
          * data record E
@@ -516,14 +551,20 @@ class DTA
         $content .= str_pad(count($this->exchanges), 7, "0", STR_PAD_LEFT);
         // free (reserve)
         $content .= str_repeat("0", 13);
+        // use number_format() to ensure proper integer formatting
         // sum of account numbers
-        $content .= str_pad($sum_account_numbers, 17, "0", STR_PAD_LEFT);
+        $content .= str_pad(number_format($sum_account_numbers, 0, "", ""),
+            17, "0", STR_PAD_LEFT);
         // sum of bank codes
-        $content .= str_pad($sum_bank_codes, 17, "0", STR_PAD_LEFT);
+        $content .= str_pad(number_format($sum_bank_codes, 0, "", ""),
+            17, "0", STR_PAD_LEFT);
         // sum of amounts
-        $content .= str_pad($sum_amounts, 13, "0", STR_PAD_LEFT);
+        $content .= str_pad(number_format($sum_amounts, 0, "", ""),
+            13, "0", STR_PAD_LEFT);
         // delimitation
         $content .= str_repeat(" ", 51);
+
+        assert(strlen($content) % 128 == 0);
 
         return $content;
     }
@@ -550,6 +591,15 @@ class DTA
 
         return $result;
     }
-}
 
-?>
+    /**
+    * Return number of exchanges
+    *
+    * @access public
+    * @return integer
+    */
+    function count()
+    {
+        return count($this->exchanges);
+    }
+}
