@@ -99,9 +99,9 @@ class DTABase
     var $exchanges;
 
     /**
-    * Sum of amounts in exchanges.
+    * Sum of amounts in exchanges (in Cents).
     *
-    * @var float $sum_amounts
+    * @var integer $sum_amounts
     * @access private
     */
     var $sum_amounts;

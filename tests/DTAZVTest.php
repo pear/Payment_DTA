@@ -126,6 +126,32 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(256+768+256, strlen($this->fixture->getFileContent()));
     }
 
+    public function testDTAZVMaxAmountPass()
+    {
+        $this->assertTrue($this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'bank_code' => "RZTIAT22263",
+                'account_number' => "DE21700519950000007229"),
+            12500,
+            "Ein ganz lange Test-Verwendungszweck der über 35 Zeichen lang sein soll um umbrochen zu werden"
+        ));
+
+        $this->assertEquals(1, $this->fixture->count());
+    }
+
+    public function testDTAZVMaxAmountFail()
+    {
+        $this->assertFalse($this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'bank_code' => "MARKDEF",
+                'account_number' => "DE68210501700012345678"
+            ),
+            12500.01,
+            "Ein ganz lange Test-Verwendungszweck der über 35 Zeichen lang sein soll um umbrochen zu werden"
+        ));
+        $this->assertEquals(0, $this->fixture->count());
+    }
+
     public function testPurposesArray()
     {
         $this->assertTrue($this->fixture->addExchange(array(

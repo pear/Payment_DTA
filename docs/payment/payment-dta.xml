@@ -18,7 +18,23 @@
     Germany to exchange informations about money transactions with  banks or
     online banking programs.
 </title>
-   &notdocumented;
+   <para>
+    Specifications:
+    <itemizedlist>
+     <listitem>
+      <para>
+       http://www.ebics-zka.de/dokument/pdf/Anlage%203-Spezifikation%20der%20Datenformate%20-%20Version%202.3%20Endfassung%20vom%2005.11.2008.pdf,
+       part 1.1 DTAUS0, p. 4ff
+</para>
+     </listitem>
+     <listitem>
+      <para>http://www.bundesbank.de/download/zahlungsverkehr/zv_spezifikationen_v1_5.pdf</para>
+     </listitem>
+     <listitem>
+      <para>http://www.hbci-zka.de/dokumente/aenderungen/DTAUS_2002.pdf</para>
+     </listitem>
+    </itemizedlist>
+   </para>
   </refsect1>
   <refsect1>
    <title>

@@ -79,9 +79,9 @@
      </term>
      <listitem>
       <para>
-       Array of up to 15 lines                                  (maximally 27
+       Array of up to 14 lines                                  (maximally 27
        chars each) for                                  description of the
-       exchange.
+       exchange.                                  A string is accepted as well.
 </para>
      </listitem>
     </varlistentry>

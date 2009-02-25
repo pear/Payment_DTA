@@ -252,27 +252,31 @@ class DTAZV extends DTABase
          *   an additional plausibility check; currently the
          *   shortest real IBANs have 15 chars
          */
+        $cents = (int)(round($amount * 100));
         if (strlen($account_receiver['name']) > 0
          && strlen($account_receiver['bank_code']) == 11
          && strlen($account_receiver['account_number']) > 12
          && strlen($account_receiver['account_number']) <= 34
-         && is_numeric($amount) && $amount > 0 && $amount <= DTAZV_MAXAMOUNT
-         && ((is_array($purposes) && count($purposes) >= 1)
+         && is_numeric($amount) && $cents > 0
+         && $cents <= DTAZV_MAXAMOUNT*100
+         && $this->sum_amounts <= PHP_INT_MAX - $cents
+         && ((is_array($purposes) && count($purposes) >= 1 && count($purposes) <= 4)
              || (is_string($purposes) && strlen($purposes) > 0))) {
 
-            $amount = round($amount * 1000);   // 3 decimal places
+            $this->sum_amounts += $cents;
 
             if (is_string($purposes)) {
-                $purposes = str_split($this->makeValidString($purposes), 35);
+                $filtered_purposes = str_split($this->makeValidString($purposes), 35);
+                $filtered_purposes = array_slice($filtered_purposes, 0, 14);
             } else {
-                $purposes_data = $purposes;
-                $purposes      = array();
-                foreach ($purposes_data as $purpose) {
-                    $purposes[] = substr($this->makeValidString($purpose), 0, 35);
+                $filtered_purposes = array();
+                array_slice($purposes, 0, 4);
+                foreach ($purposes as $purposeline) {
+                    $filtered_purposes[] = substr($this->makeValidString($purposeline), 0, 35);
                 }
             }
             // ensure four lines
-            $purposes = array_pad($purposes, 4, "");
+            $filtered_purposes = array_slice(array_pad($filtered_purposes, 4, ""), 0, 4);
 
             $this->exchanges[] = array(
                 "sender_name"              => substr($this->makeValidString($account_sender['name']), 0, 35),
@@ -287,8 +291,8 @@ class DTAZV extends DTABase
                 "receiver_city"            => substr($this->makeValidString($account_receiver['city']), 0, 35),
                 "receiver_bank_code"       => $account_receiver['bank_code'],
                 "receiver_account_number"  => $account_receiver['account_number'],
-                "amount"                   => $amount,
-                "purposes"                 => $purposes
+                "amount"                   => $cents,
+                "purposes"                 => $filtered_purposes
             );
 
             $result = true;
@@ -360,7 +364,7 @@ class DTAZV extends DTABase
          */
 
         foreach ($this->exchanges as $exchange) {
-            $sum_amounts += $exchange['amount']/1000;
+            $sum_amounts += (int)$exchange['amount'];
 
             // T01 record length
             $content .= "0768";
@@ -408,9 +412,9 @@ class DTAZV extends DTABase
             // T13 currency
             $content .= "EUR";
             // T14a amount (integer)
-            $content .= str_pad($exchange['amount']/1000, 14, "0", STR_PAD_LEFT);
+            $content .= str_pad($exchange['amount']/100, 14, "0", STR_PAD_LEFT);
             // T14b amount (decimal places)
-            $content .= str_pad($exchange['amount']%1000, 3, "0", STR_PAD_LEFT);
+            $content .= str_pad(($exchange['amount']%100)*10, 3, "0", STR_PAD_LEFT);
             // T15 purpose
             $content .= str_pad($exchange['purposes'][0], 35, " ", STR_PAD_RIGHT);
             $content .= str_pad($exchange['purposes'][1], 35, " ", STR_PAD_RIGHT);
@@ -446,6 +450,7 @@ class DTAZV extends DTABase
         // Z02 record type
         $content .= "Z";
         // Z03 sum of amounts (integers)
+        assert($sum_amounts == $this->sum_amounts);
         $content .= str_pad($sum_amounts, 15, "0", STR_PAD_LEFT);
         // Z04 number of records type T
         $content .= str_pad(count($this->exchanges), 15, "0", STR_PAD_LEFT);
