@@ -7,7 +7,7 @@
  * with banks or online banking programs.
  *
  * Disclaimer: this only implements a subset of DTAZV as used for a
- * "EU-Standardüberweisung" and is only tested against locally used
+ * "EU-StandardÃ¼berweisung" and is only tested against locally used
  * accounting software.
  * If you use this class commercially and/or for large transfer amounts
  * then you might have to implement additional record types (V or W)
@@ -22,7 +22,7 @@
  *
  * This LICENSE is in the BSD license style.
  *
- * Copyright (c) 2008 Martin Schütte
+ * Copyright (c) 2008 Martin SchÃ¼tte
  * derived from class DTA
  * Copyright (c) 2003-2005 Hermann Stainer, Web-Gear
  * http://www.web-gear.com/
@@ -58,9 +58,9 @@
  *
  * @category  Payment
  * @package   Payment_DTA
- * @author    Martin Schütte <info@mschuette.name>
+ * @author    Martin SchÃ¼tte <info@mschuette.name>
  * @author    Hermann Stainer <hs@web-gear.com>
- * @copyright 2008 Martin Schütte
+ * @copyright 2008 Martin SchÃ¼tte
  * @copyright 2003-2005 Hermann Stainer, Web-Gear
  * @license   http://www.debian.org/misc/bsd.license  BSD License (3 Clause)
  * @version   CVS: $Id$
@@ -68,28 +68,30 @@
  */
 
 /**
-* Import the Base Class
-*/
+ * needs base class
+ */
 require_once 'DTABase.php';
 
 /**
 * The maximum allowed amount per transfer.
-* Set to the maximum for a "EU-Standardüberweisung".
+* Set to the maximum amount for a "EU-StandardÃ¼berweisung"
+* that does not have to be reported (cf.
+* http://www.bundesbank.de/meldewesen/mw_aussenwirtschaft.en.php).
 *
 * @const DTAZV_MAXAMOUNT
 */
-define("DTAZV_MAXAMOUNT", 50000);
+define("DTAZV_MAXAMOUNT", 12500);
 
 /**
- * DTAZV class provides functions to create and handle with DTAZV files
- * used in Germany to exchange informations about european money trans-
- * actions with banks or online banking programs.
+ * DTAZV class provides functions to create and handle with DTAZV
+ * files used in Germany to exchange informations about european
+ * money transactions with banks or online banking programs.
  *
  * @category  Payment
  * @package   Payment_DTA
- * @author    Martin Schütte <info@mschuette.name>
+ * @author    Martin SchÃ¼tte <info@mschuette.name>
  * @author    Hermann Stainer <hs@web-gear.com>
- * @copyright 2008 Martin Schütte
+ * @copyright 2008 Martin SchÃ¼tte
  * @license   http://www.debian.org/misc/bsd.license  BSD License (3 Clause)
  * @version   Release: @package_version@
  * @link      http://pear.php.net/package/Payment_DTA
@@ -250,31 +252,27 @@ class DTAZV extends DTABase
          *   an additional plausibility check; currently the
          *   shortest real IBANs have 15 chars
          */
-        $cents = (int)(round($amount * 100));
         if (strlen($account_receiver['name']) > 0
          && strlen($account_receiver['bank_code']) == 11
          && strlen($account_receiver['account_number']) > 12
          && strlen($account_receiver['account_number']) <= 34
-         && is_numeric($amount) && $cents > 0
-         && $cents <= DTAZV_MAXAMOUNT*100
-         && $this->sum_amounts <= PHP_INT_MAX - $cents
-         && ((is_array($purposes) && count($purposes) >= 1 && count($purposes) <= 4)
+         && is_numeric($amount) && $amount > 0 && $amount <= DTAZV_MAXAMOUNT
+         && ((is_array($purposes) && count($purposes) >= 1)
              || (is_string($purposes) && strlen($purposes) > 0))) {
 
-            $this->sum_amounts += $cents;
+            $amount = round($amount * 1000);   // 3 decimal places
 
             if (is_string($purposes)) {
-                $filtered_purposes = str_split($this->makeValidString($purposes), 35);
-                $filtered_purposes = array_slice($filtered_purposes, 0, 14);
+                $purposes = str_split($this->makeValidString($purposes), 35);
             } else {
-                $filtered_purposes = array();
-                array_slice($purposes, 0, 4);
-                foreach ($purposes as $purposeline) {
-                    $filtered_purposes[] = substr($this->makeValidString($purposeline), 0, 35);
+                $purposes_data = $purposes;
+                $purposes      = array();
+                foreach ($purposes_data as $purpose) {
+                    $purposes[] = substr($this->makeValidString($purpose), 0, 35);
                 }
             }
             // ensure four lines
-            $filtered_purposes = array_slice(array_pad($filtered_purposes, 4, ""), 0, 4);
+            $purposes = array_pad($purposes, 4, "");
 
             $this->exchanges[] = array(
                 "sender_name"              => substr($this->makeValidString($account_sender['name']), 0, 35),
@@ -289,8 +287,8 @@ class DTAZV extends DTABase
                 "receiver_city"            => substr($this->makeValidString($account_receiver['city']), 0, 35),
                 "receiver_bank_code"       => $account_receiver['bank_code'],
                 "receiver_account_number"  => $account_receiver['account_number'],
-                "amount"                   => $cents,
-                "purposes"                 => $filtered_purposes
+                "amount"                   => $amount,
+                "purposes"                 => $purposes
             );
 
             $result = true;
@@ -362,7 +360,7 @@ class DTAZV extends DTABase
          */
 
         foreach ($this->exchanges as $exchange) {
-            $sum_amounts += (int)$exchange['amount'];
+            $sum_amounts += $exchange['amount']/1000;
 
             // T01 record length
             $content .= "0768";
@@ -378,18 +376,18 @@ class DTAZV extends DTABase
                             10, "0", STR_PAD_LEFT);
             // T05 execution date (optional, if != Q6)
             $content .= str_repeat("0", 6);
-            // T06 BLZ, empty for Standardüberweisung
+            // T06 BLZ, empty for StandardÃ¼berweisung
             $content .= str_repeat("0", 8);
-            // T07a currency, empty for Standardüberweisung
+            // T07a currency, empty for StandardÃ¼berweisung
             $content .= str_repeat(" ", 3);
-            // T07b account, empty for Standardüberweisung
+            // T07b account, empty for StandardÃ¼berweisung
             $content .= str_repeat("0", 10);
             // T08 receiver's BIC
             $content .= str_pad($exchange['receiver_bank_code'],
                             11, "X", STR_PAD_RIGHT);
-            // T09a country code, empty for Standardüberweisung
+            // T09a country code, empty for StandardÃ¼berweisung
             $content .= str_repeat(" ", 3);
-            // T09b receiver's bank address, empty for Standardüberweisung
+            // T09b receiver's bank address, empty for StandardÃ¼berweisung
             $content .= str_repeat(" ", 4*35);
             // T10a receiver's country code --> use cc from IBAN
             $content .= substr($exchange['receiver_account_number'], 0, 2) . ' ';
@@ -402,7 +400,7 @@ class DTAZV extends DTABase
                             35, " ", STR_PAD_RIGHT);
             $content .= str_pad($exchange['receiver_city'],
                             35, " ", STR_PAD_RIGHT);
-            // T11 empty for Standardüberweisung
+            // T11 empty for StandardÃ¼berweisung
             $content .= str_repeat(" ", 2*35);
             // T12 receiver's IBAN
             $content .= '/' . str_pad($exchange['receiver_account_number'],
@@ -410,15 +408,15 @@ class DTAZV extends DTABase
             // T13 currency
             $content .= "EUR";
             // T14a amount (integer)
-            $content .= str_pad($exchange['amount']/100, 14, "0", STR_PAD_LEFT);
+            $content .= str_pad($exchange['amount']/1000, 14, "0", STR_PAD_LEFT);
             // T14b amount (decimal places)
-            $content .= str_pad(($exchange['amount']%100)*10, 3, "0", STR_PAD_LEFT);
+            $content .= str_pad($exchange['amount']%1000, 3, "0", STR_PAD_LEFT);
             // T15 purpose
             $content .= str_pad($exchange['purposes'][0], 35, " ", STR_PAD_RIGHT);
             $content .= str_pad($exchange['purposes'][1], 35, " ", STR_PAD_RIGHT);
             $content .= str_pad($exchange['purposes'][2], 35, " ", STR_PAD_RIGHT);
             $content .= str_pad($exchange['purposes'][3], 35, " ", STR_PAD_RIGHT);
-            // T16--T20 instruction code, empty for Standardüberweisung
+            // T16--T20 instruction code, empty for StandardÃ¼berweisung
             $content .= str_repeat("0", 4*2);
             $content .= str_repeat(" ", 25);
             // T21 fees
@@ -448,7 +446,6 @@ class DTAZV extends DTABase
         // Z02 record type
         $content .= "Z";
         // Z03 sum of amounts (integers)
-        assert($sum_amounts == $this->sum_amounts);
         $content .= str_pad($sum_amounts, 15, "0", STR_PAD_LEFT);
         // Z04 number of records type T
         $content .= str_pad(count($this->exchanges), 15, "0", STR_PAD_LEFT);

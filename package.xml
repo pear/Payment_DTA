@@ -16,28 +16,48 @@
   <email>hs@web-gear.com</email>
   <active>no</active>
  </lead>
- <date>2008-12-16</date>
- <time>02:02:35</time>
+ <date>2009-01-22</date>
+ <time>23:10:42</time>
  <version>
-  <release>1.3.0a1</release>
-  <api>1.3.0a1</api>
+  <release>1.3.0a2</release>
+  <api>1.3.0a2</api>
  </version>
  <stability>
   <release>alpha</release>
   <api>alpha</api>
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
- <notes>[+] add class DTAZV (and DTABase)
-[-] check number of purpose lines in DTA
-[-] improved handling of extention fields in DTA (should fix bug #4637)
+ <notes>[-] converted files to UTF-8
+[-] made makeValidString() MB aware
+[-] fixed error in test testValidStringTrue()
+[-] changed DTAZV_MAXAMOUNT to 12500
+[+] added more character conversions (thanks to Clemens Weiß, #15651)
 ( [+] Added   [-] Fixed   [*] Improved   [!] Note )</notes>
  <contents>
   <dir baseinstalldir="Payment" name="/">
-   <file baseinstalldir="Payment" md5sum="f239aacd52e78000a5f3a23faf08cf54" name="tests/DTATest.php" role="test" />
-   <file baseinstalldir="Payment" md5sum="b193ccf6a5c0dd81e240a5fc6257f3a2" name="tests/DTAZVTest.php" role="test" />
-   <file baseinstalldir="Payment" md5sum="fea18f4365a9ecb80752cb44800563e1" name="DTA.php" role="php" />
-   <file baseinstalldir="Payment" md5sum="b78c3dc1462add9ef38506b32a9d0bec" name="DTABase.php" role="php" />
-   <file baseinstalldir="Payment" md5sum="eb8328ed560a424b314f0ffd92218f64" name="DTAZV.php" role="php" />
+   <file baseinstalldir="Payment" md5sum="953f27d82cb27ddd1d89d8db37b28ac6" name="docs/payment.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="a9be7d4207d893a4459e36f6825ab7d6" name="docs/example/example_credit.php" role="doc" />
+   <file baseinstalldir="Payment" md5sum="4e2a5ec1c7f19a637e0ea4b1a2768aa9" name="docs/example/example_debit.php" role="doc" />
+   <file baseinstalldir="Payment" md5sum="440b6174b3fac59265287e12e45f8deb" name="docs/payment/payment-dta.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="75320f871a8e8c698d85f5685177b8e0" name="docs/payment/payment-dta/constants.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="88769a460bff1b17306a66accb8cbf71" name="docs/payment/payment-dta/dta/addexchange.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="21ab7b8238670fa8812b17dc93c002ff" name="docs/payment/payment-dta/dta/dta.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="35ad7fc1abebb499e0dbc4bab0f803d1" name="docs/payment/payment-dta/dta/getfilecontent.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="8e71b8923a8f6f7b82299e27c3c6bf97" name="docs/payment/payment-dta/dta/setaccountfilesender.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="08695ba7dfb88115b1f82e2076bce05b" name="docs/payment/payment-dta/dtabase/count.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="b725b82cbdf85da485357c2a0fb7f3a1" name="docs/payment/payment-dta/dtabase/dtabase.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="fe860e379a3491cd74e88fb016dbd904" name="docs/payment/payment-dta/dtabase/makevalidstring.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="a6276ca6d2e917abef84fc7c2421d2c4" name="docs/payment/payment-dta/dtabase/savefile.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="755cef1cbc0d67d29ed08d6bc0f845c1" name="docs/payment/payment-dta/dtabase/validstring.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="011e48ea380d3350235ac6ac5e6779b5" name="docs/payment/payment-dta/dtazv/addexchange.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="9d4af761b8cdaad88ac0782b16280f7d" name="docs/payment/payment-dta/dtazv/dtazv.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="6c2b1f46875a2e12588285f745df37c8" name="docs/payment/payment-dta/dtazv/getfilecontent.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="06903a6471a7127e64f72dd04f25b441" name="docs/payment/payment-dta/dtazv/setaccountfilesender.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="61c48e0da05bdf9e05f73eb4c39e3c87" name="tests/DTATest.php" role="test" />
+   <file baseinstalldir="Payment" md5sum="e9a83daf11bba53fcf45dc1cd6c15a63" name="tests/DTAZVTest.php" role="test" />
+   <file baseinstalldir="Payment" md5sum="6e65ed91cb5c1f51ba473d6adeae2713" name="DTA.php" role="php" />
+   <file baseinstalldir="Payment" md5sum="7bc24234e6d3a170d425e4e4cf7db093" name="DTABase.php" role="php" />
+   <file baseinstalldir="Payment" md5sum="07e2d3b02e89969917314f337d79d014" name="DTAZV.php" role="php" />
   </dir>
  </contents>
  <dependencies>
@@ -167,10 +187,29 @@
     <release>alpha</release>
     <api>alpha</api>
    </stability>
+   <date>2008-12-16</date>
    <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
    <notes>[+] Add class DTAZV for european transfers (and DTABase as superclass).
 [-] Check number of purpose lines in DTA.
 [-] Improved handling of extention fields in DTA (should fix bug #4637).
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )</notes>
+  </release>
+  <release>
+   <version>
+    <release>1.3.0a2</release>
+    <api>1.3.0a2</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2009-01-22</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
+   <notes>[-] converted files to UTF-8
+[-] made makeValidString() MB aware
+[-] fixed error in test testValidStringTrue()
+[-] changed DTAZV_MAXAMOUNT to 12500
+[+] added more character conversions (thanks to Clemens Weiß, #15651)
 ( [+] Added   [-] Fixed   [*] Improved   [!] Note )</notes>
   </release>
  </changelog>

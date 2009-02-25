@@ -12,7 +12,7 @@
  *
  * Copyright (c) 2003-2005 Hermann Stainer, Web-Gear
  * http://www.web-gear.com/
- * Copyright (c) 2008 Martin Sch�tte
+ * Copyright (c) 2008 Martin Schütte
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -46,9 +46,9 @@
  * @category  Payment
  * @package   Payment_DTA
  * @author    Hermann Stainer <hs@web-gear.com>
- * @author    Martin Sch�tte <info@mschuette.name>
+ * @author    Martin Schütte <info@mschuette.name>
  * @copyright 2003-2005 Hermann Stainer, Web-Gear
- * @copyright 2008 Martin Sch�tte
+ * @copyright 2008 Martin Schütte
  * @license   http://www.debian.org/misc/bsd.license  BSD License (3 Clause)
  * @version   CVS: $Id$
  * @link      http://pear.php.net/package/Payment_DTA
@@ -99,9 +99,9 @@ class DTABase
     var $exchanges;
 
     /**
-    * Sum of amounts in exchanges (in Cents).
+    * Sum of amounts in exchanges.
     *
-    * @var integer $sum_amounts
+    * @var float $sum_amounts
     * @access private
     */
     var $sum_amounts;
@@ -145,6 +145,7 @@ class DTABase
     */
     function validString($string)
     {
+        // note: only ASCII is valid, so we may use count_chars()
         $occuring_chars = count_chars($string, 1);
 
         $result = true;
@@ -171,38 +172,235 @@ class DTABase
     */
     function makeValidString($string)
     {
+        $special_chars = array(
+            'á' => 'a',
+            'à' => 'a',
+            'ä' => 'ae',
+            'â' => 'a',
+            'ã' => 'a',
+            'å' => 'a',
+            'æ' => 'ae',
+            'ā' => 'a',
+            'ă' => 'a',
+            'ą' => 'a',
+            'ȁ' => 'a',
+            'ȃ' => 'a',
+            'Á' => 'A',
+            'À' => 'A',
+            'Ä' => 'Ae',
+            'Â' => 'A',
+            'Ã' => 'A',
+            'Å' => 'A',
+            'Æ' => 'AE',
+            'Ā' => 'A',
+            'Ă' => 'A',
+            'Ą' => 'A',
+            'Ȁ' => 'A',
+            'Ȃ' => 'A',
+            'ç' => 'c',
+            'ć' => 'c',
+            'ĉ' => 'c',
+            'ċ' => 'c',
+            'č' => 'c',
+            'Ç' => 'C',
+            'Ć' => 'C',
+            'Ĉ' => 'C',
+            'Ċ' => 'C',
+            'Č' => 'C',
+            'ď' => 'd',
+            'đ' => 'd',
+            'Ď' => 'D',
+            'Đ' => 'D',
+            'é' => 'e',
+            'è' => 'e',
+            'ê' => 'e',
+            'ë' => 'e',
+            'ē' => 'e',
+            'ĕ' => 'e',
+            'ė' => 'e',
+            'ę' => 'e',
+            'ě' => 'e',
+            'ȅ' => 'e',
+            'ȇ' => 'e',
+            'É' => 'E',
+            'È' => 'E',
+            'Ê' => 'E',
+            'Ë' => 'E',
+            'Ē' => 'E',
+            'Ĕ' => 'E',
+            'Ė' => 'E',
+            'Ę' => 'E',
+            'Ě' => 'E',
+            'Ȅ' => 'E',
+            'Ȇ' => 'E',
+            'ĝ' => 'g',
+            'ğ' => 'g',
+            'ġ' => 'g',
+            'ģ' => 'g',
+            'Ĝ' => 'G',
+            'Ğ' => 'G',
+            'Ġ' => 'G',
+            'Ģ' => 'G',
+            'ĥ' => 'h',
+            'ħ' => 'h',
+            'Ĥ' => 'H',
+            'Ħ' => 'H',
+            'ì' => 'i',
+            'ì' => 'i',
+            'î' => 'i',
+            'ï' => 'i',
+            'ĩ' => 'i',
+            'ī' => 'i',
+            'ĭ' => 'i',
+            'į' => 'i',
+            'ı' => 'i',
+            'ĳ' => 'ij',
+            'ȉ' => 'i',
+            'ȋ' => 'i',
+            'Í' => 'I',
+            'Ì' => 'I',
+            'Î' => 'I',
+            'Ï' => 'I',
+            'Ĩ' => 'I',
+            'Ī' => 'I',
+            'Ĭ' => 'I',
+            'Į' => 'I',
+            'İ' => 'I',
+            'Ĳ' => 'IJ',
+            'Ȉ' => 'I',
+            'Ȋ' => 'I',
+            'ĵ' => 'j',
+            'Ĵ' => 'J',
+            'ķ' => 'k',
+            'Ķ' => 'K',
+            'ĺ' => 'l',
+            'ļ' => 'l',
+            'ľ' => 'l',
+            'ŀ' => 'l',
+            'ł' => 'l',
+            'Ĺ' => 'L',
+            'Ļ' => 'L',
+            'Ľ' => 'L',
+            'Ŀ' => 'L',
+            'Ł' => 'L',
+            'ñ' => 'n',
+            'ń' => 'n',
+            'ņ' => 'n',
+            'ň' => 'n',
+            'ŉ' => 'n',
+            'Ñ' => 'N',
+            'Ń' => 'N',
+            'Ņ' => 'N',
+            'Ň' => 'N',
+            'ó' => 'o',
+            'ò' => 'o',
+            'ö' => 'oe',
+            'ô' => 'o',
+            'õ' => 'o',
+            'ø' => 'o',
+            'ō' => 'o',
+            'ŏ' => 'o',
+            'ő' => 'o',
+            'œ' => 'oe',
+            'ȍ' => 'o',
+            'ȏ' => 'o',
+            'Ó' => 'O',
+            'Ò' => 'O',
+            'Ö' => 'Oe',
+            'Ô' => 'O',
+            'Õ' => 'O',
+            'Ø' => 'O',
+            'Ō' => 'O',
+            'Ŏ' => 'O',
+            'Ő' => 'O',
+            'Œ' => 'OE',
+            'Ȍ' => 'O',
+            'Ȏ' => 'O',
+            'ŕ' => 'r',
+            'ř' => 'r',
+            'ȑ' => 'r',
+            'ȓ' => 'r',
+            'Ŕ' => 'R',
+            'Ř' => 'R',
+            'Ȑ' => 'R',
+            'Ȓ' => 'R',
+            'ß' => 'ss',
+            'ś' => 's',
+            'ŝ' => 's',
+            'ş' => 's',
+            'š' => 's',
+            'ș' => 's',
+            'Ś' => 'S',
+            'Ŝ' => 'S',
+            'Ş' => 'S',
+            'Š' => 'S',
+            'Ș' => 'S',
+            'ţ' => 't',
+            'ť' => 't',
+            'ŧ' => 't',
+            'ț' => 't',
+            'Ţ' => 'T',
+            'Ť' => 'T',
+            'Ŧ' => 'T',
+            'Ț' => 'T',
+            'ú' => 'u',
+            'ù' => 'u',
+            'ü' => 'ue',
+            'û' => 'u',
+            'ũ' => 'u',
+            'ū' => 'u',
+            'ŭ' => 'u',
+            'ů' => 'u',
+            'ű' => 'u',
+            'ų' => 'u',
+            'ȕ' => 'u',
+            'ȗ' => 'u',
+            'Ú' => 'U',
+            'Ù' => 'U',
+            'Ü' => 'Ue',
+            'Û' => 'U',
+            'Ũ' => 'U',
+            'Ū' => 'U',
+            'Ŭ' => 'U',
+            'Ů' => 'U',
+            'Ű' => 'U',
+            'Ų' => 'U',
+            'Ȕ' => 'U',
+            'Ȗ' => 'U',
+            'ŵ' => 'w',
+            'Ŵ' => 'W',
+            'ý' => 'y',
+            'ÿ' => 'y',
+            'ŷ' => 'y',
+            'Ý' => 'Y',
+            'Ÿ' => 'Y',
+            'Ŷ' => 'Y',
+            'ź' => 'z',
+            'ż' => 'z',
+            'ž' => 'z',
+            'Ź' => 'Z',
+            'Ż' => 'Z',
+            'Ž' => 'Z',
+        );
 
         $result = "";
+        if (strlen($string) == 0) {
+            return "";
+        }
 
-        if (strlen($string) > 0) {
-            $search  = array("'�'", "'�'", "'�'", "'�'", "'�'", "'�'",
-                             "'�'", "'�'", "'�'", "'�'", "'�'", "'�'",
-                             "'�'", "'�'", "'�'", "'�'", "'�'", "'�'",
-                             "'�'", "'�'", "'�'",
-                             "'�'", "'�'", "'�'", "'�'", "'�'", "'�'",
-                             "'�'", "'�'", "'�'", "'�'", "'�'", "'�'",
-                             "'�'", "'�'", "'�'", "'�'", "'�'",
-                             "'�'", "'�'", "'�'");
-            $replace = array("ae", "a"  , "a"  , "a"  , "a"  , "c"  ,
-                             "e" , "e"  , "e"  , "i"  , "i"  , "i"  ,
-                             "n" , "oe" , "o"  , "o"  , "o"  , "ss" ,
-                             "ue", "u"  , "u",
-                             "AE", "A"  , "A"  , "A"  , "A"  , "C"  ,
-                             "E" , "E"  , "E"  , "I"  , "I"  , "I"  ,
-                             "N" , "Oe" , "O"  , "O"  , "O"  ,
-                             "UE", "U"  , "U");
-
-            $result = strtoupper(preg_replace($search, $replace, $string));
-
-            for ($index = 0;$index < strlen($result);$index++) {
-                if (!in_array(ord(substr($result, $index, 1)),
-                              $this->validString_chars)) {
-                    $result[$index] = " ";
+        for ($strlen = mb_strlen($string), $i = 0; $i < $strlen; $i++) {
+            $char = mb_substr($string, $i, 1);
+            if (in_array(ord($char), $this->validString_chars)) {
+                $result .= $char;
+            } else {
+                if (in_array($char, array_keys($special_chars))) {
+                    $result .= $special_chars[$char];
+                } else {
+                    $result .= ' ';
                 }
             }
         }
-
-        return $result;
+        return strtoupper($result);
     }
 
     /**

@@ -1,0 +1,35 @@
+<refentry id="package.payment.payment-dta.dtazv.getfilecontent">
+ <refnamediv>
+  <refname>
+   <function>DTAZV::getFileContent</function>
+  </refname>
+  <refpurpose>Returns the full content of the generated DTAZV file.</refpurpose>
+ </refnamediv>
+ <refsynopsisdiv>
+  <funcsynopsis>
+   <funcsynopsisinfo>require_once &apos;/DTAZV.php&apos;;</funcsynopsisinfo>
+   <funcprototype>
+    <funcdef>
+     string
+     <function>DTAZV::getFileContent</function>
+    </funcdef>
+    <paramdef />
+   </funcprototype>
+  </funcsynopsis>
+ </refsynopsisdiv>
+ <refsect1 id="package.payment.payment-dta.dtazv.getfilecontent.desc">
+  &title.desc;
+  <para>All added exchanges are processed.</para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtazv.getfilecontent.throws">
+  &title.throws;
+  <para>
+   <emphasis>throws</emphasis>
+   no exceptions thrown
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtazv.getfilecontent.note">
+  &title.note;
+  &note.notstatic;
+</refsect1>
+</refentry>

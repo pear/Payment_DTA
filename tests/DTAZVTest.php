@@ -90,14 +90,14 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
                 'account_number' => "DE68210501700012345678"
             ),
             (float) 1234.56,
-            "Ein ganz lange Test-Verwendungszweck der über 35 Zeichen lang sein soll um umbrochen zu werden"
+            "Ein ganz lange Test-Verwendungszweck der Ã¼ber 35 Zeichen lang sein soll um umbrochen zu werden"
         ));
         $this->assertTrue($this->fixture->addExchange(array(
                 'name' => "A Receivers Name",
                 'bank_code' => "RZTIAT22263",
                 'account_number' => "DE21700519950000007229"),
             (float) 321.9,
-            "Ein ganz lange Test-Verwendungszweck der über 35 Zeichen lang sein soll um umbrochen zu werden"
+            "Ein ganz lange Test-Verwendungszweck der Ã¼ber 35 Zeichen lang sein soll um umbrochen zu werden"
         ));
 
         $this->assertEquals(2, $this->fixture->count());
@@ -112,44 +112,18 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
                 'account_number' => "DE68210501700012345678"
             ),
             (float) 1234.56,
-            "Ein ganz lange Test-Verwendungszweck der über 35 Zeichen lang sein soll um umbrochen zu werden"
+            "Ein ganz lange Test-Verwendungszweck der Ã¼ber 35 Zeichen lang sein soll um umbrochen zu werden"
         ));
         $this->assertTrue($this->fixture->addExchange(array(
                 'name' => "A Receivers Name",
                 'bank_code' => "RZTIAT22263",
                 'account_number' => "DE21700519950000007229"),
             (float) 321.9,
-            "Ein ganz lange Test-Verwendungszweck der über 35 Zeichen lang sein soll um umbrochen zu werden"
+            "Ein ganz lange Test-Verwendungszweck der Ã¼ber 35 Zeichen lang sein soll um umbrochen zu werden"
         ));
 
         $this->assertEquals(1, $this->fixture->count());
         $this->assertEquals(256+768+256, strlen($this->fixture->getFileContent()));
-    }
-
-    public function testDTAZVMaxAmountPass()
-    {
-        $this->assertTrue($this->fixture->addExchange(array(
-                'name' => "A Receivers Name",
-                'bank_code' => "RZTIAT22263",
-                'account_number' => "DE21700519950000007229"),
-            50000,
-            "Ein ganz lange Test-Verwendungszweck der über 35 Zeichen lang sein soll um umbrochen zu werden"
-        ));
-
-        $this->assertEquals(1, $this->fixture->count());
-    }
-
-    public function testDTAZVMaxAmountFail()
-    {
-        $this->assertFalse($this->fixture->addExchange(array(
-                'name' => "A Receivers Name",
-                'bank_code' => "MARKDEF",
-                'account_number' => "DE68210501700012345678"
-            ),
-            50000.01,
-            "Ein ganz lange Test-Verwendungszweck der über 35 Zeichen lang sein soll um umbrochen zu werden"
-        ));
-        $this->assertEquals(0, $this->fixture->count());
     }
 
     public function testPurposesArray()
@@ -161,7 +135,7 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
             ),
             (float) 1234.56,
             array("Ein ganz lange Test-Verwendungszweck",
-                "der über 35 Zeichen lang sein soll",
+                "der Ã¼ber 35 Zeichen lang sein soll",
                 "um umbrochen zu werden")
         ));
 
@@ -172,13 +146,13 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
     public function testUmlautInRecvName()
     {
         $this->assertTrue($this->fixture->addExchange(array(
-                'name' => "Ä Receivers Näme",
+                'name' => "Ã„ Receivers NÃ¤me",
                 'bank_code' => "MARKDEFF",
                 'account_number' => "DE68210501700012345678"
             ),
             (float) 1234.56,
             array("Ein ganz lange Test-Verwendungszweck",
-                "der über 35 Zeichen lang sein soll",
+                "der Ã¼ber 35 Zeichen lang sein soll",
                 "um umbrochen zu werden")
         ));
 
@@ -189,19 +163,25 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
 
     public function testValidStringTrue()
     {
-        $result = $this->fixture->validString(" \$%&*+,-./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜß");
+        $result = $this->fixture->validString(" \$%&*+,-./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ");
         $this->assertTrue($result);
     }
 
-    public function testValidStringFalse()
+    public function testValidStringFalse1()
     {
-        $result = $this->fixture->validString("ä");
+        $result = $this->fixture->validString("Ã¤");
+        $this->assertFalse($result);
+    }
+
+    public function testValidStringFalse2()
+    {
+        $result = $this->fixture->validString("Ã„Ã–Ãœ");
         $this->assertFalse($result);
     }
 
     public function testMakeValidString()
     {
-        $result = $this->fixture->makeValidString("ä Ä~áöøü§ß");
+        $result = $this->fixture->makeValidString("Ã¤ Ã„~Ã¡Ã¶Ã¸Ã¼Â§ÃŸ");
         $this->assertEquals("AE AE AOEOUE SS", $result);
     }
 
@@ -213,14 +193,14 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
                 'account_number' => "DE68210501700012345678"
             ),
             (float) 1234.56,
-            "Ein ganz lange Test-Verwendungszweck der über 35 Zeichen lang sein soll um umbrochen zu werden"
+            "Ein ganz lange Test-Verwendungszweck der Ã¼ber 35 Zeichen lang sein soll um umbrochen zu werden"
         ));
         $this->assertTrue($this->fixture->addExchange(array(
                 'name' => "A Receivers Name",
                 'bank_code' => "RZTIAT22263",
                 'account_number' => "DE21700519950000007229"),
             (float) 321.9,
-            "Ein ganz lange Test-Verwendungszweck der über 35 Zeichen lang sein soll um umbrochen zu werden"
+            "Ein ganz lange Test-Verwendungszweck der Ã¼ber 35 Zeichen lang sein soll um umbrochen zu werden"
         ));
 
         $this->assertEquals(256+768+768+256, strlen($this->fixture->getFileContent()));
@@ -241,7 +221,7 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
                 'bank_code' => "RZTIAT22263",
                 'account_number' => "DE21700519950000007229"),
             (float) 321.9,
-            "Ein ganz lange Test-Verwendungszweck der über 35 Zeichen lang sein soll um umbrochen zu werden"
+            "Ein ganz lange Test-Verwendungszweck der Ã¼ber 35 Zeichen lang sein soll um umbrochen zu werden"
         ));
 
         $this->assertEquals(256+768+768+256, strlen($this->fixture->getFileContent()));

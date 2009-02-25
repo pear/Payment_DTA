@@ -1,0 +1,289 @@
+<sect1 id="package.payment.payment-dta">
+ <title>Payment_DTA</title>
+ <refentry id="package.payment.payment-dta.dta-summary">
+  <refnamediv>
+   <refname>
+    Class Summary
+    <classname>DTA</classname>
+   </refname>
+   <refpurpose>
+    Dta class provides functions to create and handle with DTA files  used in
+    Germany to exchange informations about money transactions with  banks or
+    online banking programs.
+</refpurpose>
+  </refnamediv>
+  <refsect1>
+   <title>
+    Dta class provides functions to create and handle with DTA files  used in
+    Germany to exchange informations about money transactions with  banks or
+    online banking programs.
+</title>
+   &notdocumented;
+  </refsect1>
+  <refsect1>
+   <title>
+    Class Trees for
+    <classname>DTA</classname>
+   </title>
+   <para>
+    <itemizedlist>
+     <listitem>
+      <para>
+       <link linkend="package.payment.payment-dta.dtabase-summary">
+        <classname>DTABase</classname>
+       </link>
+       <itemizedlist>
+        <listitem>
+         <para>DTA</para>
+        </listitem>
+       </itemizedlist>
+      </para>
+     </listitem>
+    </itemizedlist>
+   </para>
+   <para>
+    <classname>DTA</classname>
+    Inherited Methods
+   </para>
+   <para>
+    <table>
+     <title>
+      Inherited from
+      <link linkend="package.payment.payment-dta.dtabase-summary">
+       <classname>DTABase</classname>
+      </link>
+     </title>
+     <tgroup cols="2">
+      <thead>
+       <row>
+        <entry>Method Name</entry>
+        <entry>Summary</entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+        <entry>
+         Constructor
+         <link linkend="package.payment.payment-dta.dtabase.dtabase">
+          <function>DTABase::DTABase</function>
+         </link>
+        </entry>
+        <entry>Constructor.</entry>
+       </row>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.dtabase.count">
+          <function>DTABase::count</function>
+         </link>
+        </entry>
+        <entry>Return number of exchanges</entry>
+       </row>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.dtabase.makevalidstring">
+          <function>DTABase::makeValidString</function>
+         </link>
+        </entry>
+        <entry>Makes the given string valid for DTA files.</entry>
+       </row>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.dtabase.savefile">
+          <function>DTABase::saveFile</function>
+         </link>
+        </entry>
+        <entry>Writes the DTA file.</entry>
+       </row>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.dtabase.validstring">
+          <function>DTABase::validString</function>
+         </link>
+        </entry>
+        <entry>Checks if the given string contains only chars valid for fields  in DTA files.</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </table>
+   </para>
+  </refsect1>
+ </refentry>
+ &package.payment.payment-dta.dta.dta;
+&package.payment.payment-dta.dta.addexchange;
+&package.payment.payment-dta.dta.getfilecontent;
+&package.payment.payment-dta.dta.setaccountfilesender;
+ <refentry id="package.payment.payment-dta.dtabase-summary">
+  <refnamediv>
+   <refname>
+    Class Summary
+    <classname>DTABase</classname>
+   </refname>
+   <refpurpose>DTABase class provides common functions to classes DTA and DTAZV.</refpurpose>
+  </refnamediv>
+  <refsect1>
+   <title>DTABase class provides common functions to classes DTA and DTAZV.</title>
+   &notdocumented;
+  </refsect1>
+  <refsect1>
+   <title>
+    Class Trees for
+    <classname>DTABase</classname>
+   </title>
+   <para>
+    <itemizedlist>
+     <listitem>
+      <para>DTABase</para>
+     </listitem>
+    </itemizedlist>
+   </para>
+   <para>
+    <table>
+     <title>
+      Classes that extend
+      <classname>DTABase</classname>
+     </title>
+     <tgroup cols="2">
+      <thead>
+       <row>
+        <entry>Class</entry>
+        <entry>Summary</entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.dta-summary">DTA</link>
+        </entry>
+        <entry>Dta class provides functions to create and handle with DTA files  used in Germany to exchange informations about money transactions with  banks or online banking programs.</entry>
+       </row>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.dtazv-summary">DTAZV</link>
+        </entry>
+        <entry>DTAZV class provides functions to create and handle with DTAZV  files used in Germany to exchange informations about european  money transactions with banks or online banking programs.</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </table>
+   </para>
+  </refsect1>
+ </refentry>
+ &package.payment.payment-dta.dtabase.dtabase;
+&package.payment.payment-dta.dtabase.count;
+&package.payment.payment-dta.dtabase.makevalidstring;
+&package.payment.payment-dta.dtabase.savefile;
+&package.payment.payment-dta.dtabase.validstring;
+ <refentry id="package.payment.payment-dta.dtazv-summary">
+  <refnamediv>
+   <refname>
+    Class Summary
+    <classname>DTAZV</classname>
+   </refname>
+   <refpurpose>
+    DTAZV class provides functions to create and handle with DTAZV  files used
+    in Germany to exchange informations about european  money transactions with
+    banks or online banking programs.
+</refpurpose>
+  </refnamediv>
+  <refsect1>
+   <title>
+    DTAZV class provides functions to create and handle with DTAZV  files used
+    in Germany to exchange informations about european  money transactions with
+    banks or online banking programs.
+</title>
+   &notdocumented;
+  </refsect1>
+  <refsect1>
+   <title>
+    Class Trees for
+    <classname>DTAZV</classname>
+   </title>
+   <para>
+    <itemizedlist>
+     <listitem>
+      <para>
+       <link linkend="package.payment.payment-dta.dtabase-summary">
+        <classname>DTABase</classname>
+       </link>
+       <itemizedlist>
+        <listitem>
+         <para>DTAZV</para>
+        </listitem>
+       </itemizedlist>
+      </para>
+     </listitem>
+    </itemizedlist>
+   </para>
+   <para>
+    <classname>DTAZV</classname>
+    Inherited Methods
+   </para>
+   <para>
+    <table>
+     <title>
+      Inherited from
+      <link linkend="package.payment.payment-dta.dtabase-summary">
+       <classname>DTABase</classname>
+      </link>
+     </title>
+     <tgroup cols="2">
+      <thead>
+       <row>
+        <entry>Method Name</entry>
+        <entry>Summary</entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+        <entry>
+         Constructor
+         <link linkend="package.payment.payment-dta.dtabase.dtabase">
+          <function>DTABase::DTABase</function>
+         </link>
+        </entry>
+        <entry>Constructor.</entry>
+       </row>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.dtabase.count">
+          <function>DTABase::count</function>
+         </link>
+        </entry>
+        <entry>Return number of exchanges</entry>
+       </row>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.dtabase.makevalidstring">
+          <function>DTABase::makeValidString</function>
+         </link>
+        </entry>
+        <entry>Makes the given string valid for DTA files.</entry>
+       </row>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.dtabase.savefile">
+          <function>DTABase::saveFile</function>
+         </link>
+        </entry>
+        <entry>Writes the DTA file.</entry>
+       </row>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.dtabase.validstring">
+          <function>DTABase::validString</function>
+         </link>
+        </entry>
+        <entry>Checks if the given string contains only chars valid for fields  in DTA files.</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </table>
+   </para>
+  </refsect1>
+ </refentry>
+ &package.payment.payment-dta.dtazv.dtazv;
+&package.payment.payment-dta.dtazv.addexchange;
+&package.payment.payment-dta.dtazv.getfilecontent;
+&package.payment.payment-dta.dtazv.setaccountfilesender;
+&package.payment.payment-dta.constants;
+</sect1>

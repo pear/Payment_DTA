@@ -1,0 +1,54 @@
+<refentry id="package.payment.payment-dta.dta.setaccountfilesender">
+ <refnamediv>
+  <refname>
+   <function>DTA::setAccountFileSender</function>
+  </refname>
+  <refpurpose>Set the sender of the DTA file. Must be set for valid DTA file.</refpurpose>
+ </refnamediv>
+ <refsynopsisdiv>
+  <funcsynopsis>
+   <funcsynopsisinfo>require_once &apos;/DTA.php&apos;;</funcsynopsisinfo>
+   <funcprototype>
+    <funcdef>
+     boolean
+     <function>DTA::setAccountFileSender</function>
+    </funcdef>
+    <paramdef>
+     array
+     <parameter>$account</parameter>
+    </paramdef>
+   </funcprototype>
+  </funcsynopsis>
+ </refsynopsisdiv>
+ <refsect1 id="package.payment.payment-dta.dta.setaccountfilesender.desc">
+  &title.desc;
+  <para>The given account data is also used as default sender&apos;s account.  Account data contains   name            Sender&apos;s name. Maximally 27 chars are allowed.   bank_code       Sender&apos;s bank code.   account_number  Sender&apos;s account number.   additional_name If necessary, additional line for sender&apos;s name                   (maximally 27 chars).</para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dta.setaccountfilesender.param">
+  &title.param;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term>
+      &type.array;
+      <parameter>$account</parameter>
+     </term>
+     <listitem>
+      <para>Account data fot file sender.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dta.setaccountfilesender.throws">
+  &title.throws;
+  <para>
+   <emphasis>throws</emphasis>
+   no exceptions thrown
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dta.setaccountfilesender.note">
+  &title.note;
+  &note.notstatic;
+</refsect1>
+</refentry>

@@ -1,0 +1,62 @@
+<refentry id="package.payment.payment-dta.constants">
+ <refnamediv>
+  <refname>Package Payment_DTA Constants</refname>
+  <refpurpose>Constants defined in and used by Payment_DTA</refpurpose>
+ </refnamediv>
+ <refsect1 id="package.payment.payment-dta.constants.details">
+  <title>All Constants</title>
+  <refsect2 id="package.payment.payment-dta.constants.details.dta---php">
+   <title>Constants defined in DTA.php</title>
+   <para>
+    <table>
+     <title>Constants defined in DTA.php</title>
+     <tgroup cols="3">
+      <thead>
+       <row>
+        <entry>Name</entry>
+        <entry>Value</entry>
+        <entry>Line Number</entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+        <entry>DTA_CREDIT</entry>
+        <entry>0</entry>
+        <entry>68</entry>
+       </row>
+       <row>
+        <entry>DTA_DEBIT</entry>
+        <entry>1</entry>
+        <entry>76</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </table>
+   </para>
+  </refsect2>
+  <refsect2 id="package.payment.payment-dta.constants.details.dtazv---php">
+   <title>Constants defined in DTAZV.php</title>
+   <para>
+    <table>
+     <title>Constants defined in DTAZV.php</title>
+     <tgroup cols="3">
+      <thead>
+       <row>
+        <entry>Name</entry>
+        <entry>Value</entry>
+        <entry>Line Number</entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+        <entry>DTAZV_MAXAMOUNT</entry>
+        <entry>12500</entry>
+        <entry>83</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </table>
+   </para>
+  </refsect2>
+ </refsect1>
+</refentry>

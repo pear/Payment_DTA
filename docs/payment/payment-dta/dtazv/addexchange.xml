@@ -1,0 +1,106 @@
+<refentry id="package.payment.payment-dta.dtazv.addexchange">
+ <refnamediv>
+  <refname>
+   <function>DTAZV::addExchange</function>
+  </refname>
+  <refpurpose>Adds an exchange.</refpurpose>
+ </refnamediv>
+ <refsynopsisdiv>
+  <funcsynopsis>
+   <funcsynopsisinfo>require_once &apos;/DTAZV.php&apos;;</funcsynopsisinfo>
+   <funcprototype>
+    <funcdef>
+     boolean
+     <function>DTAZV::addExchange</function>
+    </funcdef>
+    <paramdef>
+     array
+     <parameter>$account_receiver</parameter>
+    </paramdef>
+    <paramdef>
+     double
+     <parameter>$amount</parameter>
+    </paramdef>
+    <paramdef>
+     array
+     <parameter>$purposes</parameter>
+    </paramdef>
+    <paramdef>
+     array
+     <parameter>
+      <optional>$account_sender = array()</optional>
+     </parameter>
+    </paramdef>
+   </funcprototype>
+  </funcsynopsis>
+ </refsynopsisdiv>
+ <refsect1 id="package.payment.payment-dta.dtazv.addexchange.desc">
+  &title.desc;
+  <para>First the account data for the receiver of the exchange is set.  In the case the DTA file contains credits, this is the payment receiver.  In the other case (the DTA file contains debits), this is the account,  from which money is taken away.</para>
+  <para>If the sender is not specified, values of the file sender are used by default.  Account data for sender contain   name            Sender&apos;s name. Maximally 35 chars are allowed.   additional_name Sender&apos;s additional name (max. 35 chars)   street          Sender&apos;s street/PO Box (max. 35 chars)   city            Sender&apos;s city (max. 35 chars)   bank_code       Sender&apos;s bank code (8-digit BLZ)   account_number  Sender&apos;s account number (10-digit)</para>
+  <para>Account data for receiver contain   name            Receiver&apos;s name. Maximally 35 chars are allowed.   additional_name Receiver&apos;s additional name (max. 35 chars)   street          Receiver&apos;s street/PO Box (max. 35 chars)   city            Receiver&apos;s city (max. 35 chars)   bank_code       Receiver&apos;s bank code (8 or 11 char BIC)   account_number  Receiver&apos;s account number (up to 34 char IBAN)</para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtazv.addexchange.param">
+  &title.param;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term>
+      &type.array;
+      <parameter>$account_receiver</parameter>
+     </term>
+     <listitem>
+      <para>Receiver&apos;s account data.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <variablelist>
+    <varlistentry>
+     <term>
+      <type>double</type>
+      <parameter>$amount</parameter>
+     </term>
+     <listitem>
+      <para>Amount of money (Euro) in this exchange.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <variablelist>
+    <varlistentry>
+     <term>
+      &type.array;
+      <parameter>$purposes</parameter>
+     </term>
+     <listitem>
+      <para>
+       Array of up to 4 lines (max. 35 chars each)
+       for description of the exchange.
+</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <variablelist>
+    <varlistentry>
+     <term>
+      &type.array;
+      <parameter>$account_sender</parameter>
+     </term>
+     <listitem>
+      <para>Sender&apos;s account data.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtazv.addexchange.throws">
+  &title.throws;
+  <para>
+   <emphasis>throws</emphasis>
+   no exceptions thrown
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtazv.addexchange.note">
+  &title.note;
+  &note.notstatic;
+</refsect1>
+</refentry>

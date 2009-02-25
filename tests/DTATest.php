@@ -95,14 +95,14 @@ class DTATest extends PHPUnit_Framework_TestCase
                     'account_number' => "3503007767"
                 ),
                 (float) 1234.56,
-                "Test-Verwendungszweck"
+                "Ein ganz lange Test-Verwendungszweck der Ã¼ber 35 Zeichen lang sein soll um umbrochen zu werden"
             );
             $this->fixture->addExchange(array(
                     'name' => "A Receivers Name",
                     'bank_code' => "16050000",
                     'account_number' => "3503007767"),
                 (float) 321.9,
-                "Test-Verwendungszweck"
+                "Ein ganz lange Test-Verwendungszweck der Ã¼ber 35 Zeichen lang sein soll um umbrochen zu werden"
             );
 
             $this->assertEquals(2, $this->fixture->count());
@@ -142,67 +142,52 @@ class DTATest extends PHPUnit_Framework_TestCase
                 'bank_code' => "16050000",
                 'account_number' => "3503007767"
             ),
-            (float) (PHP_INT_MAX/100+1),
+            (float) (PHP_INT_MAX+1),
             "Ein Test-Verwendungszweck"
         );
         $this->assertEquals(0, $this->fixture->count());
     }
 
-    public function testAmountSumNoOverflow()
-    {
-        if (PHP_INT_MAX != 2147483647) {
-            $this->markTestSkipped('unexpected PHP_INT_MAX -- maybe a 64bit system?');
-        } else {
-            for($i = 0; $i < 10; $i++) {
-                $this->fixture->addExchange(array(
-                        'name' => "A Receivers Name",
-                        'bank_code' => "16050000",
-                        'account_number' => "3503007767"
-                    ),
-                    2147483.64,
-                    "Ein Test-Verwendungszweck"
-                );
-            }
-            $this->assertEquals(10, $this->fixture->count());
-        }
-    }
-
     public function testAmountSumOverflow()
     {
-        if (PHP_INT_MAX != 2147483647) {
-            $this->markTestSkipped('unexpected PHP_INT_MAX -- maybe a 64bit system?');
-        } else {
-            /* add enough transfers so that the sum of
-             * amounts will cause an integer overflow */
-            for($i = 0; $i < 10; $i++) {
-                $this->fixture->addExchange(array(
-                        'name' => "A Receivers Name",
-                        'bank_code' => "16050000",
-                        'account_number' => "3503007767"
-                    ),
-                    2147484, // = ceil(PHP_INT_MAX/100/10) and > PHP_INT_MAX/100/10
-                    "Ein Test-Verwendungszweck"
-                );
-            }
-            $this->assertEquals(9, $this->fixture->count());
+        /* add enough transfers so that the sum of
+         * amounts will cause an integer overflow */
+        $c = 10;
+        for($i = 0; $i < $c; $i++) {
+            $this->fixture->addExchange(array(
+                    'name' => "A Receivers Name",
+                    'bank_code' => "16050000",
+                    'account_number' => "3503007767"
+                ),
+                /* +1 to prevent negative rounding errors or an exact fit: */
+                (float) (PHP_INT_MAX/100/$c)+1,
+                "Ein Test-Verwendungszweck"
+            );
         }
+        $this->assertEquals($c-1, $this->fixture->count());
     }
 
     public function testValidStringTrue()
     {
-        $result = $this->fixture->validString(" \$%&*+,-./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜß");
+        $result = $this->fixture->validString(" \$%&*+,-./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ");
         $this->assertTrue($result);
     }
 
-    public function testValidStringFalse()
+    public function testValidStringFalse1()
     {
-        $result = $this->fixture->validString("ä");
+        $result = $this->fixture->validString("Ã¤");
+        $this->assertFalse($result);
+    }
+
+    public function testValidStringFalse2()
+    {
+        $result = $this->fixture->validString("Ã„Ã–Ãœ");
         $this->assertFalse($result);
     }
 
     public function testMakeValidString()
     {
-        $result = $this->fixture->makeValidString("ä Ä~öü§ß");
+        $result = $this->fixture->makeValidString("Ã¤ Ã„~Ã¶Ã¼Â§ÃŸ");
         $this->assertEquals("AE AE OEUE SS", $result);
     }
 
@@ -211,7 +196,7 @@ class DTATest extends PHPUnit_Framework_TestCase
         if (!method_exists($this->fixture, 'count')) {
             $this->markTestSkipped('v1.2.0 had fewer char replacements');
         } else {
-            $result = $this->fixture->makeValidString("ä Äáöøüß");
+            $result = $this->fixture->makeValidString("Ã¤ Ã„Ã¡Ã¶Ã¸Ã¼ÃŸ");
             $this->assertEquals("AE AEAOEOUESS", $result);
         }
     }
@@ -232,7 +217,7 @@ class DTATest extends PHPUnit_Framework_TestCase
     public function testUmlautInRecvName()
     {
         $this->assertTrue($this->fixture->addExchange(array(
-                'name' => "Ä Receivers Näme",
+                'name' => "Ã„ Receivers NÃ¤me",
                 'bank_code' => "16050000",
                 'account_number' => "3503007767"
             ),
@@ -275,6 +260,30 @@ class DTATest extends PHPUnit_Framework_TestCase
             "Kurzer Test-Verwendungszweck"
         ));
         $this->assertEquals(512, strlen($this->fixture->getFileContent()));
+    }
+
+    public function testAdditionalSenderAndRecvName()
+    {
+        # used to get coverage for additional extension records
+        $DTA_test_account = array(
+            'name' => "Senders Name",
+            'additional_name' => "some very long additional sender name",
+            'bank_code' => "16050000",
+            'account_number' => "3503007767",
+        );
+        $this->assertTrue($this->fixture->setAccountFileSender($DTA_test_account));
+
+        $this->assertTrue($this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'bank_code' => "16050000",
+                'account_number' => "3503007767",
+                'additional_name' => "some very long additional receiver name"
+            ),
+            (float) 1234.56,
+            "Kurzer Test-Verwendungszweck"
+        ));
+
+        $this->assertEquals(640, strlen($this->fixture->getFileContent()));
     }
 
     public function testFileLengthRejectLongAccountNumber()
@@ -341,25 +350,8 @@ class DTATest extends PHPUnit_Framework_TestCase
         $this->assertEquals(0, $this->fixture->count());
     }
 
-    /* following tests should check for correct file size, i.e. correct
-     * number of C record parts, for different numbers of extensions */
-    public function testFileLengthOneTransferNoExt()
+    public function testFileLengthNormal()
     {
-        // shortest format with one C record, no extensions
-        $this->assertTrue($this->fixture->addExchange(array(
-                'name' => "A Receivers Name",
-                'bank_code' => "16050000",
-                'account_number' => "3503007767"
-            ),
-            (float) 1234.56,
-            "Kurzer Test-Verwendungszweck"
-        ));
-        $this->assertEquals(128*(1+2+1), strlen($this->fixture->getFileContent()));
-    }
-
-    public function testFileLengthTwoTransfersNoExt()
-    {
-        // two C records of two parts each
         $this->assertTrue($this->fixture->addExchange(array(
                 'name' => "A Receivers Name",
                 'bank_code' => "16050000",
@@ -375,280 +367,8 @@ class DTATest extends PHPUnit_Framework_TestCase
             (float) 321.9,
             "Kurzer Test-Verwendungszweck"
         ));
-        $this->assertEquals(128*(1+(2*2)+1), strlen($this->fixture->getFileContent()));
-    }
 
-    public function testFileLengthOneTransferOneExt()
-    {
-        // shortest format with one C record, one extension
-        $this->assertTrue($this->fixture->addExchange(array(
-                'name' => "A Receivers Name",
-                'additional_name' => "Additional Senders Name",
-                'bank_code' => "16050000",
-                'account_number' => "3503007767"
-            ),
-            (float) 1234.56,
-            "Kurzer Test-Verwendungszweck"
-        ));
-        $this->assertEquals(128*(1+2+1), strlen($this->fixture->getFileContent()));
-    }
-
-    public function testFileLengthOneTransferTwoExt()
-    {
-        // shortest format with one C record, two extensions
-        $this->assertTrue($this->fixture->addExchange(array(
-                'name' => "A Receivers Name",
-                'additional_name' => "Additional Senders Name",
-                'bank_code' => "16050000",
-                'account_number' => "3503007767"
-            ),
-            (float) 1234.56,
-            array("Verwendungszweck Zeile 1",
-                  "Verwendungszweck Zeile 2")
-        ));
-        $this->assertEquals(128*(1+2+1), strlen($this->fixture->getFileContent()));
-    }
-
-    public function testFileLengthOneTransferTwoExt2a()
-    {
-        // check if still valid without purpose extension
-        $DTA_test_account = array(
-             'name' => "Senders Name",
-             'additional_name' => "Additional Senders Name",
-             'bank_code' => "16050000",
-             'account_number' => "350300767",
-         );
-        $this->assertTrue($this->fixture->setAccountFileSender($DTA_test_account));
-
-        $this->assertTrue($this->fixture->addExchange(array(
-                'name' => "A Receivers Name",
-                'additional_name' => "Additional Receivers Name",
-                'bank_code' => "16050000",
-                'account_number' => "3503007767"
-            ),
-            (float) 1234.56,
-            array("Verwendungszweck Zeile 1")
-        ));
-        $this->assertEquals(128*(1+2+1), strlen($this->fixture->getFileContent()));
-    }
-
-    public function testFileLengthOneTransferTwoExt2b()
-    {
-        // check if still valid when giving purpose as string
-        $DTA_test_account = array(
-             'name' => "Senders Name",
-             'additional_name' => "Additional Senders Name",
-             'bank_code' => "16050000",
-             'account_number' => "350300767",
-         );
-        $this->assertTrue($this->fixture->setAccountFileSender($DTA_test_account));
-
-        $this->assertTrue($this->fixture->addExchange(array(
-                'name' => "A Receivers Name",
-                'additional_name' => "Additional Receivers Name",
-                'bank_code' => "16050000",
-                'account_number' => "3503007767"
-            ),
-            (float) 1234.56,
-            "Verwendungszweck Zeile 1"
-        ));
-        $this->assertEquals(128*(1+2+1), strlen($this->fixture->getFileContent()));
-    }
-
-    public function testFileLengthOneTransferThreeExt()
-    {
-        $this->assertTrue($this->fixture->addExchange(array(
-                'name' => "A Receivers Name",
-                'additional_name' => "Additional Senders Name",
-                'bank_code' => "16050000",
-                'account_number' => "3503007767"
-            ),
-            (float) 1234.56,
-            array("Verwendungszweck Zeile 1",
-                  "Verwendungszweck Zeile 2",
-                  "Verwendungszweck Zeile 3")
-        ));
-        // C record needs three parts now
-        $this->assertEquals(128*(1+3+1), strlen($this->fixture->getFileContent()));
-    }
-
-    public function testFileLengthOneTransferSixExt()
-    {
-        $this->assertTrue($this->fixture->addExchange(array(
-                'name' => "A Receivers Name",
-                'additional_name' => "Additional Senders Name",
-                'bank_code' => "16050000",
-                'account_number' => "3503007767"
-            ),
-            (float) 1234.56,
-            array("Verwendungszweck Zeile 1",
-                  "Verwendungszweck Zeile 2",
-                  "Verwendungszweck Zeile 3",
-                  "Verwendungszweck Zeile 4",
-                  "Verwendungszweck Zeile 5",
-                  "Verwendungszweck Zeile 6")
-        ));
-        $this->assertEquals(128*(1+3+1), strlen($this->fixture->getFileContent()));
-    }
-
-    public function testFileLengthOneTransferSevenExt()
-    {
-        $this->assertTrue($this->fixture->addExchange(array(
-                'name' => "A Receivers Name",
-                'additional_name' => "Additional Senders Name",
-                'bank_code' => "16050000",
-                'account_number' => "3503007767"
-            ),
-            (float) 1234.56,
-            array("Verwendungszweck Zeile 1",
-                  "Verwendungszweck Zeile 2",
-                  "Verwendungszweck Zeile 3",
-                  "Verwendungszweck Zeile 4",
-                  "Verwendungszweck Zeile 5",
-                  "Verwendungszweck Zeile 6",
-                  "Verwendungszweck Zeile 7")
-        ));
-        // C record needs four parts now
-        $this->assertEquals(128*(1+4+1), strlen($this->fixture->getFileContent()));
-    }
-
-    public function testFileLengthOneTransferTenExt()
-    {
-        $this->assertTrue($this->fixture->addExchange(array(
-                'name' => "A Receivers Name",
-                'additional_name' => "Additional Senders Name",
-                'bank_code' => "16050000",
-                'account_number' => "3503007767"
-            ),
-            (float) 1234.56,
-            array("Verwendungszweck Zeile 1",
-                  "Verwendungszweck Zeile 2",
-                  "Verwendungszweck Zeile 3",
-                  "Verwendungszweck Zeile 4",
-                  "Verwendungszweck Zeile 5",
-                  "Verwendungszweck Zeile 6",
-                  "Verwendungszweck Zeile 7",
-                  "Verwendungszweck Zeile 8",
-                  "Verwendungszweck Zeile 9",
-                  "Verwendungszweck Zeile 10")
-        ));
-        $this->assertEquals(128*(1+4+1), strlen($this->fixture->getFileContent()));
-    }
-
-    public function testFileLengthOneTransferElevenExt()
-    {
-        $this->assertTrue($this->fixture->addExchange(array(
-                'name' => "A Receivers Name",
-                'additional_name' => "Additional Senders Name",
-                'bank_code' => "16050000",
-                'account_number' => "3503007767"
-            ),
-            (float) 1234.56,
-            array("Verwendungszweck Zeile 1",
-                  "Verwendungszweck Zeile 2",
-                  "Verwendungszweck Zeile 3",
-                  "Verwendungszweck Zeile 4",
-                  "Verwendungszweck Zeile 5",
-                  "Verwendungszweck Zeile 6",
-                  "Verwendungszweck Zeile 7",
-                  "Verwendungszweck Zeile 8",
-                  "Verwendungszweck Zeile 9",
-                  "Verwendungszweck Zeile 10",
-                  "Verwendungszweck Zeile 11")
-        ));
-        // C record needs five parts now
-        $this->assertEquals(128*(1+5+1), strlen($this->fixture->getFileContent()));
-    }
-
-    public function testFileLengthOneTransferFourteenExt()
-    {
-        $this->assertTrue($this->fixture->addExchange(array(
-                'name' => "A Receivers Name",
-                'additional_name' => "Additional Receivers Name",
-                'bank_code' => "16050000",
-                'account_number' => "3503007767"
-            ),
-            (float) 1234.56,
-            array("Verwendungszweck Zeile 1",
-                  "Verwendungszweck Zeile 2",
-                  "Verwendungszweck Zeile 3",
-                  "Verwendungszweck Zeile 4",
-                  "Verwendungszweck Zeile 5",
-                  "Verwendungszweck Zeile 6",
-                  "Verwendungszweck Zeile 7",
-                  "Verwendungszweck Zeile 8",
-                  "Verwendungszweck Zeile 9",
-                  "Verwendungszweck Zeile 10",
-                  "Verwendungszweck Zeile 11",
-                  "Verwendungszweck Zeile 12",
-                  "Verwendungszweck Zeile 13",
-                  "Verwendungszweck Zeile 14")
-        ));
-        $this->assertEquals(128*(1+5+1), strlen($this->fixture->getFileContent()));
-    }
-
-    public function testFileLengthOneTransferFifteenExt()
-    {
-        // add all 15 possible extensions
-        $DTA_test_account = array(
-             'name' => "Senders Name",
-             'additional_name' => "Additional Senders Name",
-             'bank_code' => "16050000",
-             'account_number' => "350300767",
-         );
-        $this->assertTrue($this->fixture->setAccountFileSender($DTA_test_account));
-
-        $this->assertTrue($this->fixture->addExchange(array(
-                'name' => "A Receivers Name",
-                'additional_name' => "Additional Receivers Name",
-                'bank_code' => "16050000",
-                'account_number' => "3503007767"
-            ),
-            (float) 1234.56,
-            array("Verwendungszweck Zeile 1",
-                  "Verwendungszweck Zeile 2",
-                  "Verwendungszweck Zeile 3",
-                  "Verwendungszweck Zeile 4",
-                  "Verwendungszweck Zeile 5",
-                  "Verwendungszweck Zeile 6",
-                  "Verwendungszweck Zeile 7",
-                  "Verwendungszweck Zeile 8",
-                  "Verwendungszweck Zeile 9",
-                  "Verwendungszweck Zeile 10",
-                  "Verwendungszweck Zeile 11",
-                  "Verwendungszweck Zeile 12",
-                  "Verwendungszweck Zeile 13",
-                  "Verwendungszweck Zeile 14")
-        ));
-        $this->assertEquals(128*(1+6+1), strlen($this->fixture->getFileContent()));
-    }
-
-    public function testPurposeLineLimit()
-    {
-        // too many purpose lines
-        $this->assertFalse($this->fixture->addExchange(array(
-                'name' => "A Receivers Name",
-                'bank_code' => "16050000",
-                'account_number' => "3503007767"
-            ),
-            (float) 1234.56,
-            array("Verwendungszweck Zeile 1",
-                  "Verwendungszweck Zeile 2",
-                  "Verwendungszweck Zeile 3",
-                  "Verwendungszweck Zeile 4",
-                  "Verwendungszweck Zeile 5",
-                  "Verwendungszweck Zeile 6",
-                  "Verwendungszweck Zeile 7",
-                  "Verwendungszweck Zeile 8",
-                  "Verwendungszweck Zeile 9",
-                  "Verwendungszweck Zeile 10",
-                  "Verwendungszweck Zeile 11",
-                  "Verwendungszweck Zeile 12",
-                  "Verwendungszweck Zeile 13",
-                  "Verwendungszweck Zeile 14",
-                  "Verwendungszweck Zeile 15")
-        ));
-        $this->assertEquals(0, $this->fixture->count());
+        $this->assertEquals(768, strlen($this->fixture->getFileContent()));
     }
 
     public function testSaveFileTrue()
