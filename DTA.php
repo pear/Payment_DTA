@@ -104,6 +104,22 @@ class DTA extends DTABase
     var $type;
 
     /**
+    * Sum of bank codes in exchanges; used for control fields.
+    *
+    * @var integer $sum_bankcodes
+    * @access private
+    */
+    var $sum_bankcodes;
+
+    /**
+    * Sum of account numbers in exchanges; used for control fields.
+    *
+    * @var integer $sum_accounts
+    * @access private
+    */
+    var $sum_accounts;
+
+    /**
     * Constructor. The type of the DTA file must be set. One file can
     * only contain credits (DTA_CREDIT) OR debits (DTA_DEBIT).
     * This is a definement of the DTA format.
@@ -117,6 +133,9 @@ class DTA extends DTABase
     {
         $this->DTABase();
         $this->type = $type;
+
+        $this->sum_bankcodes = 0;
+        $this->sum_accounts  = 0;
     }
 
     /**
@@ -228,7 +247,9 @@ class DTA extends DTABase
                    && count($purposes) <= 14)
                )) {
 
-            $this->sum_amounts += $cents;
+            $this->sum_amounts   += $cents;
+            $this->sum_bankcodes += $account_receiver['bank_code'];
+            $this->sum_accounts  += $account_receiver['account_number'];
 
             if (is_string($purposes)) {
                 $filtered_purposes = str_split($this->makeValidString($purposes), 27);
@@ -237,7 +258,7 @@ class DTA extends DTABase
                 $filtered_purposes = array();
                 foreach ($purposes as $purposeline) {
                     $filtered_purposes[] = substr($this->makeValidString($purposeline), 0, 27);
-            }
+                }
             }
 
             $this->exchanges[] = array(
@@ -473,6 +494,10 @@ class DTA extends DTABase
          * data record E
          */
 
+        assert($this->sum_amounts   === $sum_amounts);
+        assert($this->sum_bankcodes === $sum_bank_codes);
+        assert($this->sum_accounts  === $sum_account_numbers);
+
         // E1 record length (128 bytes)
         $content .= str_pad("128", 4, "0", STR_PAD_LEFT);
         // E2 record type
@@ -491,7 +516,6 @@ class DTA extends DTABase
         $content .= str_pad(number_format($sum_bank_codes, 0, "", ""),
             17, "0", STR_PAD_LEFT);
         // E8 sum of amounts
-        assert($sum_amounts == $this->sum_amounts);
         $content .= str_pad(number_format($sum_amounts, 0, "", ""),
             13, "0", STR_PAD_LEFT);
         // E9 delimitation
@@ -500,5 +524,24 @@ class DTA extends DTABase
         assert(strlen($content) % 128 == 0);
 
         return $content;
+    }
+
+    /**
+    * Returns an array with information about the transactions.
+    * Can be used to print an accompanying document (Begleitzettel) for disks.
+    *
+    * @access public
+    * @return array Returns an array with keys: "sender_name",
+    *   "sender_bank_code", "sender_account", "sum_amounts",
+    *   "sum_bankcodes", "sum_accounts", "count", "date"
+    */
+    function getMetaData()
+    {
+        $meta = parent::getMetaData();
+
+        $meta["sum_bankcodes"] = floatval($this->sum_bankcodes);
+        $meta["sum_accounts"]  = floatval($this->sum_accounts);
+
+        return $meta;
     }
 }

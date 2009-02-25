@@ -4,6 +4,7 @@ require_once 'PHPUnit/Framework.php';
 
 class DTATest extends PHPUnit_Framework_TestCase
 {
+    protected $backupGlobals = FALSE;
     protected $fixture;
 
     protected function setUp()
@@ -172,18 +173,18 @@ class DTATest extends PHPUnit_Framework_TestCase
         if (PHP_INT_MAX != 2147483647) {
             $this->markTestSkipped('unexpected PHP_INT_MAX -- maybe a 64bit system?');
         } else {
-        /* add enough transfers so that the sum of
-         * amounts will cause an integer overflow */
+            /* add enough transfers so that the sum of
+             * amounts will cause an integer overflow */
             for($i = 0; $i < 10; $i++) {
-            $this->fixture->addExchange(array(
-                    'name' => "A Receivers Name",
-                    'bank_code' => "16050000",
-                    'account_number' => "3503007767"
-                ),
+                $this->fixture->addExchange(array(
+                        'name' => "A Receivers Name",
+                        'bank_code' => "16050000",
+                        'account_number' => "3503007767"
+                    ),
                     2147484, // = ceil(PHP_INT_MAX/100/10) and > PHP_INT_MAX/100/10
-                "Ein Test-Verwendungszweck"
-            );
-        }
+                    "Ein Test-Verwendungszweck"
+                );
+            }
             $this->assertEquals(9, $this->fixture->count());
         }
     }
@@ -283,30 +284,6 @@ class DTATest extends PHPUnit_Framework_TestCase
         $this->assertEquals(512, strlen($this->fixture->getFileContent()));
     }
 
-    public function testAdditionalSenderAndRecvName()
-    {
-        # used to get coverage for additional extension records
-        $DTA_test_account = array(
-            'name' => "Senders Name",
-            'additional_name' => "some very long additional sender name",
-            'bank_code' => "16050000",
-            'account_number' => "3503007767",
-        );
-        $this->assertTrue($this->fixture->setAccountFileSender($DTA_test_account));
-
-        $this->assertTrue($this->fixture->addExchange(array(
-                'name' => "A Receivers Name",
-                'bank_code' => "16050000",
-                'account_number' => "3503007767",
-                'additional_name' => "some very long additional receiver name"
-            ),
-            (float) 1234.56,
-            "Kurzer Test-Verwendungszweck"
-        ));
-
-        $this->assertEquals(640, strlen($this->fixture->getFileContent()));
-    }
-
     public function testFileLengthRejectLongAccountNumber()
     {
         $this->fixture->addExchange(array(
@@ -330,7 +307,7 @@ class DTATest extends PHPUnit_Framework_TestCase
 
     public function testFileLengthLeadingZerosAccountNumber()
     {
-    	// this covers Bug #14736
+        // this covers Bug #14736
         $this->fixture->addExchange(array(
                 'name' => "A Receivers Name",
                 'bank_code' => "16050000",
@@ -348,11 +325,11 @@ class DTATest extends PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals(256, strlen($this->fixture->getFileContent()));
-	}
+    }
 
     public function testCountLeadingZerosAccountNumber()
     {
-    	// this covers Bug #14736
+        // this covers Bug #14736
         $this->fixture->addExchange(array(
                 'name' => "A Receivers Name",
                 'bank_code' => "16050000",
@@ -360,7 +337,7 @@ class DTATest extends PHPUnit_Framework_TestCase
             ),
             (float) 1234.56,
             "Kurzer Test-Verwendungszweck"
-		);
+        );
         $this->fixture->addExchange(array(
                 'name' => "A Receivers Name",
                 'bank_code' => "16050000",
@@ -724,4 +701,65 @@ class DTATest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->fixture->saveFile($tmpfname));
     }
 
+    public function testGetMetaData1()
+    {
+        $this->assertTrue($this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'bank_code' => "16050000",
+                'account_number' => "3503007767"
+            ),
+            (float) 1234.56,
+            "Kurzer Test-Verwendungszweck"
+        ));
+
+        $meta = $this->fixture->getMetaData();
+        $this->assertTrue($meta["sender_name"]      == "SENDERS NAME");
+        $this->assertTrue($meta["sender_bank_code"] == "16050000");
+        $this->assertTrue($meta["sender_account"]   == "3503007767");
+        $this->assertTrue($meta["sum_amounts"]      == "1234.56");
+        $this->assertTrue($meta["sum_bankcodes"]    == "16050000");
+        $this->assertTrue($meta["sum_accounts"]     == "3503007767");
+        $this->assertTrue($meta["count"]            == "1");
+        $this->assertTrue(strftime("%d%m%y", $meta["date"])
+                            == strftime("%d%m%y", time()));
+    }
+
+    public function testGetMetaData2()
+    {
+        $this->assertTrue($this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'bank_code' => "16050000",
+                'account_number' => "3503007767"
+            ),
+            (float) 1234.56,
+            "Kurzer Test-Verwendungszweck"
+        ));
+        $this->assertTrue($this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'bank_code' => "16050000",
+                'account_number' => "3503007767"
+            ),
+            (float) 1234.56,
+            "Kurzer Test-Verwendungszweck"
+        ));
+        $this->assertTrue($this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'bank_code' => "16050000",
+                'account_number' => "3503007767"
+            ),
+            (float) 1234.56,
+            "Kurzer Test-Verwendungszweck"
+        ));
+
+        $meta = $this->fixture->getMetaData();
+        $this->assertTrue($meta["sender_name"]      == "SENDERS NAME");
+        $this->assertTrue($meta["sender_bank_code"] == "16050000");
+        $this->assertTrue($meta["sender_account"]   == "3503007767");
+        $this->assertTrue($meta["sum_amounts"]      == 3*1234.56);
+        $this->assertTrue($meta["sum_bankcodes"]    == 3*16050000);
+        $this->assertTrue($meta["sum_accounts"]     == 3*3503007767);
+        $this->assertTrue($meta["count"]            == "3");
+        $this->assertTrue(strftime("%d%m%y", $meta["date"])
+                            == strftime("%d%m%y", time()));
+    }
 }

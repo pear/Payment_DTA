@@ -1,0 +1,35 @@
+<refentry id="package.payment.payment-dta.dta.count">
+ <refnamediv>
+  <refname>
+   <function>DTA::count</function>
+  </refname>
+  <refpurpose>Return number of exchanges</refpurpose>
+ </refnamediv>
+ <refsynopsisdiv>
+  <funcsynopsis>
+   <funcsynopsisinfo>require_once &apos;/DTA.php&apos;;</funcsynopsisinfo>
+   <funcprototype>
+    <funcdef>
+     integer
+     <function>DTA::count</function>
+    </funcdef>
+    <paramdef />
+   </funcprototype>
+  </funcsynopsis>
+ </refsynopsisdiv>
+ <refsect1 id="package.payment.payment-dta.dta.count.desc">
+  &title.desc;
+  &notdocumented;
+</refsect1>
+ <refsect1 id="package.payment.payment-dta.dta.count.throws">
+  &title.throws;
+  <para>
+   <emphasis>throws</emphasis>
+   no exceptions thrown
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dta.count.note">
+  &title.note;
+  &note.notstatic;
+</refsect1>
+</refentry>

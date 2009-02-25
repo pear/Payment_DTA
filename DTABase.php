@@ -99,7 +99,7 @@ class DTABase
     var $exchanges;
 
     /**
-    * Sum of amounts in exchanges (in Cents).
+    * Sum of amounts in exchanges (in Cents); for control total fields.
     *
     * @var integer $sum_amounts
     * @access private
@@ -127,7 +127,7 @@ class DTABase
         $this->validString_chars   = array(32, 36, 37, 38, 42, 43, 44, 45,
             46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 65, 66, 67, 68,
             69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84,
-            85, 86, 87, 88, 89, 90, 196, 214, 220, 223);
+            85, 86, 87, 88, 89, 90);
         $this->account_file_sender = array();
         $this->exchanges           = array();
         $this->timestamp           = time();
@@ -388,19 +388,34 @@ class DTABase
             return "";
         }
 
-        for ($strlen = mb_strlen($string), $i = 0; $i < $strlen; $i++) {
-            $char = mb_substr($string, $i, 1);
-            if (in_array(ord($char), $this->validString_chars)) {
+        // ensure UTF-8, for single-byte-encodings use either
+        //     the internal encoding or assume ISO-8859-1
+        $utf8string = mb_convert_encoding($string,
+            "UTF-8", array("UTF-8", mb_internal_encoding(), "ISO-8859-1"));
+        $strlen     = mb_strlen($utf8string, "UTF-8");
+
+        // replace known special chars
+        for ($i = 0; $i < $strlen; $i++) {
+            $char = mb_substr($utf8string, $i, 1, "UTF-8");
+            if (in_array($char, array_keys($special_chars))) {
+                $result .= $special_chars[$char];
+            } elseif (ord($char) >= 32 && ord($char) <= 126) {
+                // ASCII char
                 $result .= $char;
             } else {
-                if (in_array($char, array_keys($special_chars))) {
-                    $result .= $special_chars[$char];
-                } else {
-                    $result .= ' ';
-                }
+                // non-ASCII
+                $result .= ' ';
             }
         }
-        return strtoupper($result);
+        // upper case
+        $result = strtoupper($result);
+        // make valid (remove remaining invalid ASCII chars)
+        for ($index = 0; $index < strlen($result); $index++) {
+            if (!in_array(ord($result[$index]), $this->validString_chars)) {
+                $result[$index] = " ";
+            }
+        }
+        return $result;
     }
 
     /**
@@ -424,5 +439,26 @@ class DTABase
         }
 
         return $result;
+    }
+
+    /**
+    * Returns an array with information about the transactions.
+    * Can be used to print an accompanying document (Begleitzettel) for disks.
+    *
+    * @access public
+    * @return array Returns an array with keys: "sender_name",
+    *   "sender_bank_code", "sender_account", "sum_amounts",
+    *   "count", "date"
+    */
+    function getMetaData()
+    {
+        return array(
+            "sender_name"      => strval($this->account_file_sender['name']),
+            "sender_bank_code" => intval($this->account_file_sender['bank_code']),
+            "sender_account"   => floatval($this->account_file_sender['account_number']),
+            "sum_amounts"      => floatval($this->sum_amounts / 100.0),
+            "count"            => intval($this->count()),
+            "date"             => $this->timestamp,
+        );
     }
 }

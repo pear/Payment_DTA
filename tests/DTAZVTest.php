@@ -4,6 +4,7 @@ require_once 'PHPUnit/Framework.php';
 
 class DTAZVTest extends PHPUnit_Framework_TestCase
 {
+    protected $backupGlobals = FALSE;
     protected $fixture;
 
     protected function setUp()
@@ -193,7 +194,7 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($result);
     }
 
-    public function testValidStringFalse1()
+    public function testValidStringFalse()
     {
         $result = $this->fixture->validString("ä");
         $this->assertFalse($result);
@@ -289,4 +290,61 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->fixture->saveFile($tmpfname));
     }
 
+    public function testGetMetaData1()
+    {
+        $this->assertTrue($this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'bank_code' => "16050000",
+                'account_number' => "DE21700519950000007229"
+            ),
+            (float) 1234.56,
+            "Ein Test-Verwendungszweck"
+        ));
+
+        $meta = $this->fixture->getMetaData();
+        $this->assertTrue($meta["sender_name"]      == "SENDERS NAME");
+        $this->assertTrue($meta["sender_bank_code"] == "16050000");
+        $this->assertTrue($meta["sender_account"]   == "3503007767");
+        $this->assertTrue($meta["sum_amounts"]      == "1234.56");
+        $this->assertTrue($meta["count"]            == "1");
+        $this->assertTrue(strftime("%d%m%y", $meta["date"])
+                            == strftime("%d%m%y", time()));
+    }
+
+    public function testGetMetaData2()
+    {
+        $this->assertTrue($this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'bank_code' => "16050000",
+                'account_number' => "DE21700519950000007229"
+            ),
+            (float) 1234.56,
+            "Ein Test-Verwendungszweck"
+        ));
+        $this->assertTrue($this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'bank_code' => "16050000",
+                'account_number' => "DE21700519950000007229"
+            ),
+            (float) 1234.56,
+            "Ein Test-Verwendungszweck"
+        ));
+        $this->assertTrue($this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'bank_code' => "16050000",
+                'account_number' => "DE21700519950000007229"
+            ),
+            (float) 1234.56,
+            "Ein Test-Verwendungszweck"
+        ));
+
+        $meta = $this->fixture->getMetaData();
+        $this->assertTrue($meta["sender_name"]      == "SENDERS NAME");
+        $this->assertTrue($meta["sender_bank_code"] == "16050000");
+        $this->assertTrue($meta["sender_account"]   == "3503007767");
+        $this->assertTrue($meta["sum_amounts"]      == 3*1234.56);
+        $this->assertTrue($meta["count"]            == "3");
+        $this->assertTrue(strftime("%d%m%y", $meta["date"])
+                            == strftime("%d%m%y", time()));
+    }
 }
