@@ -112,7 +112,7 @@ class DTATest extends PHPUnit_Framework_TestCase
 
     public function testValidStringTrue()
     {
-        $result = $this->fixture->validString(" \$%&*+,-./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+        $result = $this->fixture->validString(" \$%&*+,-./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜß");
         $this->assertTrue($result);
     }
 
@@ -124,7 +124,7 @@ class DTATest extends PHPUnit_Framework_TestCase
 
     public function testMakeValidString()
     {
-        $result = $this->fixture->makeValidString("ä Ä öü ß");
+        $result = $this->fixture->makeValidString("ä Ä~öü§ß");
         $this->assertEquals("AE AE OEUE SS", $result);
     }
 
@@ -133,7 +133,6 @@ class DTATest extends PHPUnit_Framework_TestCase
         if (!method_exists($this->fixture, 'count')) {
             $this->markTestSkipped('v1.2.0 had fewer char replacements');
         } else {
-
             $result = $this->fixture->makeValidString("ä Äáöøüß");
             $this->assertEquals("AE AEAOEOUESS", $result);
         }

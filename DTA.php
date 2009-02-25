@@ -1,5 +1,4 @@
 <?php
-
 /**
  * DTA
  *
@@ -52,7 +51,6 @@
  * @version   CVS: $Id$
  * @link      http://pear.php.net/package/Payment_DTA
  */
-
 
 /**
 * Determines the type of the DTA file:
@@ -377,7 +375,7 @@ class DTA
          */
 
         // record length (128 Bytes)
-        $content .=  str_pad("128", 4, "0", STR_PAD_LEFT);
+        $content .= str_pad("128", 4, "0", STR_PAD_LEFT);
         // record type
         $content .= "A";
         // file mode (credit or debit)
@@ -385,28 +383,28 @@ class DTA
         // Customer File ("K") / Bank File ("B")
         $content .= "K";
         // sender's bank code
-        $content .=  str_pad($this->account_file_sender['bank_code'],
-                         8, "0", STR_PAD_LEFT);
+        $content .= str_pad($this->account_file_sender['bank_code'],
+                        8, "0", STR_PAD_LEFT);
         // only used if Bank File, otherwise NULL
-        $content .=  str_repeat("0", 8);
+        $content .= str_repeat("0", 8);
         // sender's name
-        $content .=  str_pad($this->account_file_sender['name'],
-                         27, " ", STR_PAD_RIGHT);
+        $content .= str_pad($this->account_file_sender['name'],
+                        27, " ", STR_PAD_RIGHT);
         // date of file creation
         $content .= strftime("%d%m%y", $this->timestamp);
         // free (bank internal)
-        $content .=  str_repeat(" ", 4);
+        $content .= str_repeat(" ", 4);
         // sender's account number
-        $content .=  str_pad($this->account_file_sender['account_number'],
-                         10, "0", STR_PAD_LEFT);
+        $content .= str_pad($this->account_file_sender['account_number'],
+                        10, "0", STR_PAD_LEFT);
         // sender's reference number (optional)
-        $content .=  str_repeat("0", 10);
+        $content .= str_repeat("0", 10);
         // free (reserve)
-        $content .=  str_repeat(" ", 15);
+        $content .= str_repeat(" ", 15);
         // execution date ("DDMMYYYY", optional)
-        $content .=  str_repeat(" ", 8);
+        $content .= str_repeat(" ", 8);
         // free (reserve)
-        $content .=  str_repeat(" ", 24);
+        $content .= str_repeat(" ", 24);
         // currency (1 = Euro)
         $content .= "1";
 
@@ -446,21 +444,21 @@ class DTA
 
             $additional_parts_number = count($additional_parts);
             // record length (187 Bytes + 29 Bytes for each additional part)
-            $content .=  str_pad(187 + $additional_parts_number * 29,
-                             4, "0", STR_PAD_LEFT);
+            $content .= str_pad(187 + $additional_parts_number * 29,
+                            4, "0", STR_PAD_LEFT);
             // record type
             $content .= "C";
             // first involved bank
-            $content .=  str_pad($exchange['sender_bank_code'],
-                             8, "0", STR_PAD_LEFT);
+            $content .= str_pad($exchange['sender_bank_code'],
+                            8, "0", STR_PAD_LEFT);
             // receiver's bank code
-            $content .=  str_pad($exchange['receiver_bank_code'],
-                             8, "0", STR_PAD_LEFT);
+            $content .= str_pad($exchange['receiver_bank_code'],
+                            8, "0", STR_PAD_LEFT);
             // receiver's account number
-            $content .=  str_pad($exchange['receiver_account_number'],
-                             10, "0", STR_PAD_LEFT);
+            $content .= str_pad($exchange['receiver_account_number'],
+                            10, "0", STR_PAD_LEFT);
             // internal customer number (11 chars) or NULL
-            $content .= "0" .  str_repeat("0", 11) . "0";
+            $content .= "0" . str_repeat("0", 11) . "0";
             // payment mode (text key)
             $content .= ($this->type == DTA_CREDIT) ? "51" : "05";
             // additional text key
@@ -468,23 +466,26 @@ class DTA
             // bank internal
             $content .= " ";
             // free (reserve)
-            $content .=  str_repeat("0", 11);
+            $content .= str_repeat("0", 11);
             // sender's bank code
-            $content .=  str_pad($exchange['sender_bank_code'],
+            $content .= str_pad($exchange['sender_bank_code'],
                             8, "0", STR_PAD_LEFT);
             // sender's account number
-            $content .=  str_pad($exchange['sender_account_number'],
+            $content .= str_pad($exchange['sender_account_number'],
                             10, "0", STR_PAD_LEFT);
             // amount
-            $content .=  str_pad($exchange['amount'], 11, "0", STR_PAD_LEFT);
+            $content .= str_pad($exchange['amount'],
+                            11, "0", STR_PAD_LEFT);
             // free (reserve)
-            $content .=  str_repeat(" ", 3);
+            $content .= str_repeat(" ", 3);
             // receiver's name
-            $content .=  str_pad($exchange['receiver_name'], 27, " ", STR_PAD_RIGHT);
+            $content .= str_pad($exchange['receiver_name'],
+                            27, " ", STR_PAD_RIGHT);
             // delimitation
-            $content .=  str_repeat(" ", 8);
+            $content .= str_repeat(" ", 8);
             // sender's name
-            $content .=  str_pad($exchange['sender_name'], 27, " ", STR_PAD_RIGHT);
+            $content .= str_pad($exchange['sender_name'],
+                            27, " ", STR_PAD_RIGHT);
             // first line of purposes
             $content .= str_pad($first_purpose, 27, " ", STR_PAD_RIGHT);
             // currency (1 = Euro)
@@ -526,8 +527,8 @@ class DTA
                         // type of addional part
                         $content .= $additional_part['type'];
                         // additional part content
-                        $content .= str_pad($additional_part['content'], 27,
-                                        " ", STR_PAD_RIGHT);
+                        $content .= str_pad($additional_part['content'],
+                                        27, " ", STR_PAD_RIGHT);
                     }
                     // delimitation
                     $content .= str_repeat(" ", 12);
