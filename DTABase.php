@@ -128,6 +128,7 @@ class DTABase
             46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 65, 66, 67, 68,
             69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84,
             85, 86, 87, 88, 89, 90);
+        $this->invalidString_regexp = '/[^A-Z0-9 \.,&\-\/\+\*\$%]/';
         $this->account_file_sender = array();
         $this->exchanges           = array();
         $this->timestamp           = time();
@@ -145,19 +146,7 @@ class DTABase
     */
     function validString($string)
     {
-        // note: only ASCII is valid, so we may use count_chars()
-        $occuring_chars = count_chars($string, 1);
-
-        $result = true;
-
-        foreach ($occuring_chars as $char_ord => $char_amount) {
-            if (!in_array($char_ord, $this->validString_chars)) {
-                $result = false;
-                break;
-            }
-        }
-
-        return $result;
+        return !preg_match($this->invalidString_regexp, $string);
     }
 
     /**
@@ -383,7 +372,6 @@ class DTABase
             'Ž' => 'Z',
         );
 
-        $result = "";
         if (strlen($string) == 0) {
             return "";
         }
@@ -392,29 +380,15 @@ class DTABase
         //     the internal encoding or assume ISO-8859-1
         $utf8string = mb_convert_encoding($string,
             "UTF-8", array("UTF-8", mb_internal_encoding(), "ISO-8859-1"));
-        $strlen     = mb_strlen($utf8string, "UTF-8");
 
         // replace known special chars
-        for ($i = 0; $i < $strlen; $i++) {
-            $char = mb_substr($utf8string, $i, 1, "UTF-8");
-            if (in_array($char, array_keys($special_chars))) {
-                $result .= $special_chars[$char];
-            } elseif (ord($char) >= 32 && ord($char) <= 126) {
-                // ASCII char
-                $result .= $char;
-            } else {
-                // non-ASCII
-                $result .= ' ';
-            }
-        }
+        $result = strtr($utf8string, $special_chars);
         // upper case
         $result = strtoupper($result);
-        // make valid (remove remaining invalid ASCII chars)
-        for ($index = 0; $index < strlen($result); $index++) {
-            if (!in_array(ord($result[$index]), $this->validString_chars)) {
-                $result[$index] = " ";
-            }
-        }
+        // make sure every special char is replaced by one space, not two or three
+        $result = mb_convert_encoding($result, "ASCII", "UTF-8");
+        $result = preg_replace($this->invalidString_regexp, ' ', $result);
+
         return $result;
     }
 
