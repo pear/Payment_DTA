@@ -1,6 +1,9 @@
 <?php
-require_once '../DTA.php';
 require_once 'PHPUnit/Framework.php';
+
+//make cvs testing work
+chdir(dirname(__FILE__) . '/../');
+require_once 'DTA.php';
 
 class DTATest extends PHPUnit_Framework_TestCase
 {
