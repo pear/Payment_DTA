@@ -16,30 +16,26 @@
   <email>hs@web-gear.com</email>
   <active>no</active>
  </lead>
- <date>2009-02-20</date>
- <time>16:27:31</time>
+ <date>2009-03-19</date>
+ <time>15:42:56</time>
  <version>
-  <release>1.3.0a4</release>
-  <api>1.3.0a4</api>
+  <release>1.3.0RC1</release>
+  <api>1.3.0RC1</api>
  </version>
  <stability>
-  <release>alpha</release>
-  <api>alpha</api>
+  <release>beta</release>
+  <api>beta</api>
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
- <notes>[-] fix makeValidString(), was completely broken in 1.3.0a3 (#15791)
-[-] fixed error in test testValidStringTrue()
-[!] remove ÄÖÜß from $validString_chars
-[!] mb functions need PHP version = 4.0.6
-[+] DTA: add attributes $sum_bankcodes and $sum_accounts
-[+] add method getMetaData() (on request from Georg Horn)
+ <notes>[*] simplify validString() and makeValidString() (suggested by Clemens Weiß, #15791)
+[*] advance status from alpha to beta
 ( [+] Added   [-] Fixed   [*] Improved   [!] Note )</notes>
  <contents>
   <dir baseinstalldir="Payment" name="/">
    <file baseinstalldir="Payment" md5sum="953f27d82cb27ddd1d89d8db37b28ac6" name="docs/payment.xml" role="doc" />
-   <file baseinstalldir="Payment" md5sum="cb21d4e81cfa805ec6b8a524db61733f" name="docs/example/example_begleitzettel.php" role="doc" />
-   <file baseinstalldir="Payment" md5sum="a9be7d4207d893a4459e36f6825ab7d6" name="docs/example/example_credit.php" role="doc" />
-   <file baseinstalldir="Payment" md5sum="4e2a5ec1c7f19a637e0ea4b1a2768aa9" name="docs/example/example_debit.php" role="doc" />
+   <file baseinstalldir="Payment" md5sum="cb21d4e81cfa805ec6b8a524db61733f" name="docs/examples/example_begleitzettel.php" role="doc" />
+   <file baseinstalldir="Payment" md5sum="a9be7d4207d893a4459e36f6825ab7d6" name="docs/examples/example_credit.php" role="doc" />
+   <file baseinstalldir="Payment" md5sum="4e2a5ec1c7f19a637e0ea4b1a2768aa9" name="docs/examples/example_debit.php" role="doc" />
    <file baseinstalldir="Payment" md5sum="65c226899763c01ed17b1acac9869068" name="docs/payment/payment-dta.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="75320f871a8e8c698d85f5685177b8e0" name="docs/payment/payment-dta/constants.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="76bc0c444f8d7d0a3361591a1727c19d" name="docs/payment/payment-dta/dta/addexchange.xml" role="doc" />
@@ -61,11 +57,12 @@
    <file baseinstalldir="Payment" md5sum="9d4af761b8cdaad88ac0782b16280f7d" name="docs/payment/payment-dta/dtazv/dtazv.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="6c2b1f46875a2e12588285f745df37c8" name="docs/payment/payment-dta/dtazv/getfilecontent.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="06903a6471a7127e64f72dd04f25b441" name="docs/payment/payment-dta/dtazv/setaccountfilesender.xml" role="doc" />
-   <file baseinstalldir="Payment" md5sum="d12e9a994300bc749e7488d6c4a759e0" name="tests/DTATest.php" role="test" />
-   <file baseinstalldir="Payment" md5sum="85709d2218f8cce084a1df37800a23fd" name="tests/DTAZVTest.php" role="test" />
-   <file baseinstalldir="Payment" md5sum="dc9bb294dee7aefe36b1fc1c4e7ad057" name="DTA.php" role="php" />
-   <file baseinstalldir="Payment" md5sum="365b617169b9ea3a55e2885a61ad19d3" name="DTABase.php" role="php" />
-   <file baseinstalldir="Payment" md5sum="039cba2d7c8ae75c082f1c95c6a5311a" name="DTAZV.php" role="php" />
+   <file baseinstalldir="Payment" md5sum="fae0f9695859a8b44e0ae3eefa70e75b" name="tests/AllTests.php" role="test" />
+   <file baseinstalldir="Payment" md5sum="8525a7b54ff61e653fb4a702714f9de5" name="tests/DTATest.php" role="test" />
+   <file baseinstalldir="Payment" md5sum="fc9352649fbbbca973dcb5811e1dae99" name="tests/DTAZVTest.php" role="test" />
+   <file baseinstalldir="Payment" md5sum="8a2b2c779f69a18adb299cf35be0224b" name="DTA.php" role="php" />
+   <file baseinstalldir="Payment" md5sum="847fdde07250c520ccf9e38b698281cc" name="DTABase.php" role="php" />
+   <file baseinstalldir="Payment" md5sum="f759febd31dea3bb278cce21d8dde9ec" name="DTAZV.php" role="php" />
   </dir>
  </contents>
  <dependencies>
@@ -254,6 +251,21 @@
 [!] mb functions need PHP version = 4.0.6
 [+] DTA: add attributes $sum_bankcodes and $sum_accounts
 [+] add method getMetaData() (on request from Georg Horn)
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )</notes>
+  </release>
+  <release>
+   <version>
+    <release>1.3.0RC1</release>
+    <api>1.3.0RC1</api>
+   </version>
+   <stability>
+    <release>beta</release>
+    <api>beta</api>
+   </stability>
+   <date>2009-03-19</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
+   <notes>[*] simplify validString() and makeValidString() (suggested by Clemens Weiß, #15791)
+[*] advance status from alpha to beta
 ( [+] Added   [-] Fixed   [*] Improved   [!] Note )</notes>
   </release>
  </changelog>

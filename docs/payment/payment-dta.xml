@@ -96,6 +96,14 @@
        </row>
        <row>
         <entry>
+         <link linkend="package.payment.payment-dta.dtabase.getmetadata">
+          <function>DTABase::getMetaData</function>
+         </link>
+        </entry>
+        <entry>Returns an array with information about the transactions.</entry>
+       </row>
+       <row>
+        <entry>
          <link linkend="package.payment.payment-dta.dtabase.makevalidstring">
           <function>DTABase::makeValidString</function>
          </link>
@@ -127,6 +135,7 @@
  &package.payment.payment-dta.dta.dta;
 &package.payment.payment-dta.dta.addexchange;
 &package.payment.payment-dta.dta.getfilecontent;
+&package.payment.payment-dta.dta.getmetadata;
 &package.payment.payment-dta.dta.setaccountfilesender;
  <refentry id="package.payment.payment-dta.dtabase-summary">
   <refnamediv>
@@ -186,6 +195,7 @@
  </refentry>
  &package.payment.payment-dta.dtabase.dtabase;
 &package.payment.payment-dta.dtabase.count;
+&package.payment.payment-dta.dtabase.getmetadata;
 &package.payment.payment-dta.dtabase.makevalidstring;
 &package.payment.payment-dta.dtabase.savefile;
 &package.payment.payment-dta.dtabase.validstring;
@@ -266,6 +276,14 @@
          </link>
         </entry>
         <entry>Return number of exchanges</entry>
+       </row>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.dtabase.getmetadata">
+          <function>DTABase::getMetaData</function>
+         </link>
+        </entry>
+        <entry>Returns an array with information about the transactions.</entry>
        </row>
        <row>
         <entry>
