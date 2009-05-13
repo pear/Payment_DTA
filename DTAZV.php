@@ -412,7 +412,7 @@ class DTAZV extends DTABase
             // T13 currency
             $content .= "EUR";
             // T14a amount (integer)
-            $content .= str_pad($exchange['amount']/100, 14, "0", STR_PAD_LEFT);
+            $content .= str_pad(intval($exchange['amount']/100), 14, "0", STR_PAD_LEFT);
             // T14b amount (decimal places)
             $content .= str_pad(($exchange['amount']%100)*10, 3, "0", STR_PAD_LEFT);
             // T15 purpose
@@ -451,7 +451,7 @@ class DTAZV extends DTABase
         $content .= "Z";
         // Z03 sum of amounts (integers)
         assert($sum_amounts == $this->sum_amounts);
-        $content .= str_pad($sum_amounts, 15, "0", STR_PAD_LEFT);
+        $content .= str_pad(intval($sum_amounts/100), 15, "0", STR_PAD_LEFT);
         // Z04 number of records type T
         $content .= str_pad(count($this->exchanges), 15, "0", STR_PAD_LEFT);
         // Z05 reserve
