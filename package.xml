@@ -16,18 +16,19 @@
   <email>hs@web-gear.com</email>
   <active>no</active>
  </lead>
- <date>2009-04-23</date>
- <time>23:46:57</time>
+ <date>2009-05-13</date>
+ <time>19:10:32</time>
  <version>
-  <release>1.3.0</release>
-  <api>1.3.0</api>
+  <release>1.3.1</release>
+  <api>1.3.1</api>
  </version>
  <stability>
   <release>stable</release>
   <api>stable</api>
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
- <notes>[!] advance status from beta to stable
+ <notes>[-] fixed DTAZV amount formatting in T14a (thanks to Daniel Wilhelm)
+[-] fixed DTAZV checksums in Z03 (thanks to Daniel Wilhelm)
 ( [+] Added   [-] Fixed   [*] Improved   [!] Note )</notes>
  <contents>
   <dir baseinstalldir="Payment" name="/">
@@ -57,11 +58,11 @@
    <file baseinstalldir="Payment" md5sum="6c2b1f46875a2e12588285f745df37c8" name="docs/payment/payment-dta/dtazv/getfilecontent.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="06903a6471a7127e64f72dd04f25b441" name="docs/payment/payment-dta/dtazv/setaccountfilesender.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="fae0f9695859a8b44e0ae3eefa70e75b" name="tests/AllTests.php" role="test" />
-   <file baseinstalldir="Payment" md5sum="8525a7b54ff61e653fb4a702714f9de5" name="tests/DTATest.php" role="test" />
-   <file baseinstalldir="Payment" md5sum="fc9352649fbbbca973dcb5811e1dae99" name="tests/DTAZVTest.php" role="test" />
+   <file baseinstalldir="Payment" md5sum="20ae0f25e7243eb97223fa44b3830f02" name="tests/DTATest.php" role="test" />
+   <file baseinstalldir="Payment" md5sum="b92d43fcfdd86db52792c841a0487082" name="tests/DTAZVTest.php" role="test" />
    <file baseinstalldir="Payment" md5sum="8a2b2c779f69a18adb299cf35be0224b" name="DTA.php" role="php" />
-   <file baseinstalldir="Payment" md5sum="6defed823a93dfe3f828634bb40957df" name="DTABase.php" role="php" />
-   <file baseinstalldir="Payment" md5sum="f759febd31dea3bb278cce21d8dde9ec" name="DTAZV.php" role="php" />
+   <file baseinstalldir="Payment" md5sum="87a4ad2114499fcf43f3b4a52f580ded" name="DTABase.php" role="php" />
+   <file baseinstalldir="Payment" md5sum="bf20b306a73d1311a894708f600a89c9" name="DTAZV.php" role="php" />
   </dir>
  </contents>
  <dependencies>
@@ -279,6 +280,21 @@
    <date>2009-04-23</date>
    <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
    <notes>[!] advance status from beta to stable
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )</notes>
+  </release>
+  <release>
+   <version>
+    <release>1.3.1</release>
+    <api>1.3.1</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2009-05-13</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
+   <notes>[-] fixed DTAZV amount formatting in T14a (thanks to Daniel Wilhelm)
+[-] fixed DTAZV checksums in Z03 (thanks to Daniel Wilhelm)
 ( [+] Added   [-] Fixed   [*] Improved   [!] Note )</notes>
   </release>
  </changelog>
