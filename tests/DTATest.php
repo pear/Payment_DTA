@@ -704,6 +704,41 @@ class DTATest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->fixture->saveFile($tmpfname));
     }
 
+    public function testContent()
+    {
+        $this->fixture->addExchange(array(
+                "name"           => "Franz Mueller",
+                "bank_code"      => 33334444,
+                "account_number" => 13579000,
+            ),
+            (float) 1234.56,
+            "Test-Verwendungszweck"
+        );
+        $this->fixture->addExchange(array(
+                "name"           => "Franz Mueller",
+                "bank_code"      => 33334444,
+                "account_number" => 13579000
+            ),
+            (float) 321.9,
+            "Test-Verwendungszweck"
+        );
+
+        $expected = // 64 chars per line:
+            '0128AGK1605000000000000SENDERS NAME               130509    3503'.
+            '0077670000000000                                               1'.
+            '0187C16050000333344440013579000000000000000051000 00000000000160'.
+            '50000350300776700000123456   FRANZ MUELLER                      '.
+            'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
+            '                                                                '.
+            '0187C16050000333344440013579000000000000000051000 00000000000160'.
+            '50000350300776700000032190   FRANZ MUELLER                      '.
+            'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
+            '                                                                '.
+            '0128E     000000200000000000000000000002715800000000000066668888'.
+            '0000000155646                                                   ';
+        $this->assertEquals($expected, $this->fixture->getFileContent());
+    }
+
     public function testGetMetaData1()
     {
         $this->assertTrue($this->fixture->addExchange(array(

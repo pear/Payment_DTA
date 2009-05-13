@@ -14,13 +14,13 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
     {
         // Create the Array fixture.
         $this->fixture = new DTAZV();
-        $DTAZV_asta_account = array(
+        $DTAZV_account = array(
             'name' => "Senders Name",
             'additional_name' => '',
             'bank_code' => "16050000",
             'account_number' => "3503007767",
         );
-        $this->fixture->setAccountFileSender($DTAZV_asta_account);
+        $this->fixture->setAccountFileSender($DTAZV_account);
     }
 
     public function testInstantiate()
@@ -236,6 +236,34 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(256+768+768+256, strlen($this->fixture->getFileContent()));
     }
 
+    public function testChecksum()
+    {
+        $this->assertTrue($this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'bank_code' => "MARKDEFF",
+                'account_number' => "DE68210501700012345678"
+            ),
+            (float) 1234.56,
+            "Test-Verwendungszweck"
+        ));
+        $this->assertTrue($this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'bank_code' => "RZTIAT22263",
+                'account_number' => "DE21700519950000007229"
+            ),
+            (float) 1234.56,
+            "Test-Verwendungszweck"
+        ));
+
+        /* v1.3.0 incorrectly used the intval(sum) as checksum in field Z03,
+         * yielding intval(1234.56+1234.56) = 2469
+         * The correct calculation is to use the sum of intvals,
+         * thus intval(1234.56)+intval(1234.56) = 2468
+         */
+        $content = $this->fixture->getFileContent();
+        $this->assertEquals(2468, (int)substr($content, 256+768+768+5, 15));
+    }
+
     public function testGermanBLZ()
     {
         $this->assertTrue($this->fixture->addExchange(array(
@@ -291,6 +319,59 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
 
         $tmpfname = "/root/nonexistantdirectory/dtatestfile";
         $this->assertFalse($this->fixture->saveFile($tmpfname));
+    }
+
+    public function testContent()
+    {
+        $this->assertTrue($this->fixture->addExchange(array(
+		'name' => "Receivers Name",
+		'bank_code' => "RZTIAT22263",
+		'account_number' => "DE21700519950000007229"),
+	    (float) 123.45,
+	    "Test-Verwendungszweck"
+        ));
+        $this->assertTrue($this->fixture->addExchange(array(
+		'name' => "Second Receivers Name",
+		'bank_code' => "RZTIAT22263",
+		'account_number' => "DE21700519950000007229"),
+	    (float) 234.56,
+	    "Test2"
+        ));
+
+        $expected = // 64 chars per line:
+            '0256Q160500003503007767SENDERS NAME                             '.
+            '                                                                '.
+            '                                   13050900130509N0000000000    '.
+            '                                                                '.
+            '0768T16050000EUR350300776700000000000000   0000000000RZTIAT22263'.
+            '                                                                '.
+            '                                                                '.
+            '               DE RECEIVERS NAME                                '.
+            '                                                                '.
+            '                                                                '.
+            '                                    /DE21700519950000007229     '.
+            '       EUR00000000000123450TEST-VERWENDUNGSZWECK                '.
+            '                                                                '.
+            '                                       00000000                 '.
+            '        0013                                                    '.
+            '          0                                                   00'.
+            '0768T16050000EUR350300776700000000000000   0000000000RZTIAT22263'.
+            '                                                                '.
+            '                                                                '.
+            '               DE SECOND RECEIVERS NAME                         '.
+            '                                                                '.
+            '                                                                '.
+            '                                    /DE21700519950000007229     '.
+            '       EUR00000000000234560TEST2                                '.
+            '                                                                '.
+            '                                       00000000                 '.
+            '        0013                                                    '.
+            '          0                                                   00'.
+            '0256Z000000000000357000000000000002                             '.
+            '                                                                '.
+            '                                                                '.
+            '                                                                ';
+        $this->assertEquals($expected, $this->fixture->getFileContent());
     }
 
     public function testGetMetaData1()
