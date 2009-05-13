@@ -117,10 +117,10 @@ class DTABase
     function DTABase()
     {
         $this->invalidString_regexp = '/[^A-Z0-9 \.,&\-\/\+\*\$%]/';
-        $this->account_file_sender = array();
-        $this->exchanges           = array();
-        $this->timestamp           = time();
-        $this->sum_amounts         = 0;
+        $this->account_file_sender  = array();
+        $this->exchanges            = array();
+        $this->timestamp            = time();
+        $this->sum_amounts          = 0;
     }
 
     /**
