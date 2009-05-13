@@ -314,7 +314,11 @@ class DTAZV extends DTABase
     {
         $content = "";
 
-        $sum_amounts = 0;
+        /* The checksum in DTAZV adds only the integer parts of all
+         * transfered amounts and is different from the sum of amounts.
+         */
+        $checksum_amounts = 0;
+        $sum_amounts      = 0;
 
         /**
          * data record Q
@@ -364,7 +368,8 @@ class DTAZV extends DTABase
          */
 
         foreach ($this->exchanges as $exchange) {
-            $sum_amounts += (int)$exchange['amount'];
+            $sum_amounts      += intval($exchange['amount']);
+            $checksum_amounts += intval($exchange['amount']/100);
 
             // T01 record length
             $content .= "0768";
@@ -412,7 +417,8 @@ class DTAZV extends DTABase
             // T13 currency
             $content .= "EUR";
             // T14a amount (integer)
-            $content .= str_pad(intval($exchange['amount']/100), 14, "0", STR_PAD_LEFT);
+            $content .= str_pad(intval($exchange['amount']/100),
+                            14, "0", STR_PAD_LEFT);
             // T14b amount (decimal places)
             $content .= str_pad(($exchange['amount']%100)*10, 3, "0", STR_PAD_LEFT);
             // T15 purpose
@@ -449,9 +455,9 @@ class DTAZV extends DTABase
         $content .= "0256";
         // Z02 record type
         $content .= "Z";
-        // Z03 sum of amounts (integers)
+        // Z03 sum of amounts (integer parts in T14a)
         assert($sum_amounts == $this->sum_amounts);
-        $content .= str_pad(intval($sum_amounts/100), 15, "0", STR_PAD_LEFT);
+        $content .= str_pad(intval($checksum_amounts), 15, "0", STR_PAD_LEFT);
         // Z04 number of records type T
         $content .= str_pad(count($this->exchanges), 15, "0", STR_PAD_LEFT);
         // Z05 reserve
