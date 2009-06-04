@@ -722,9 +722,10 @@ class DTATest extends PHPUnit_Framework_TestCase
             (float) 321.9,
             "Test-Verwendungszweck"
         );
+        $date = strftime("%d%m%y", time());
 
         $expected = // 64 chars per line:
-            '0128AGK1605000000000000SENDERS NAME               130509    3503'.
+            '0128AGK1605000000000000SENDERS NAME               '.$date.'    3503'.
             '0077670000000000                                               1'.
             '0187C16050000333344440013579000000000000000051000 00000000000160'.
             '50000350300776700000123456   FRANZ MUELLER                      '.

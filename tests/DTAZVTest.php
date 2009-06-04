@@ -337,11 +337,12 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
 	    (float) 234.56,
 	    "Test2"
         ));
+        $dates = strftime("%d%m%y00%d%m%y", time());
 
         $expected = // 64 chars per line:
             '0256Q160500003503007767SENDERS NAME                             '.
             '                                                                '.
-            '                                   13050900130509N0000000000    '.
+            '                                   '.$dates.'N0000000000    '.
             '                                                                '.
             '0768T16050000EUR350300776700000000000000   0000000000RZTIAT22263'.
             '                                                                '.
