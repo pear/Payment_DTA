@@ -126,13 +126,18 @@ class DTAZV extends DTABase
     */
     function setAccountFileSender($account)
     {
+        $account['account_number'] =
+            strval($account['account_number']);
+        $account['bank_code']      =
+            strval($account['bank_code']);
+
         if (strlen($account['name']) > 0
          && strlen($account['bank_code']) > 0
          && strlen($account['bank_code']) <= 8
-         && is_numeric($account['bank_code'])
+         && ctype_digit($account['bank_code'])
          && strlen($account['account_number']) > 0
          && strlen($account['account_number']) <= 10
-         && is_numeric($account['account_number'])) {
+         && ctype_digit($account['account_number'])) {
             if (empty($account['additional_name'])) {
                 $account['additional_name'] = "";
             }
@@ -244,6 +249,11 @@ class DTAZV extends DTABase
             }
         }
 
+        $account_sender['account_number'] =
+            strval($account_sender['account_number']);
+        $account_sender['bank_code']      =
+            strval($account_sender['bank_code']);
+
         /*
          * notes for IBAN: currently only checked for length;
          *   we can use PEAR::Validate_Finance_IBAN once it
@@ -257,6 +267,13 @@ class DTAZV extends DTABase
          && strlen($account_receiver['bank_code']) == 11
          && strlen($account_receiver['account_number']) > 12
          && strlen($account_receiver['account_number']) <= 34
+         && strlen($account_sender['name']) > 0
+         && strlen($account_sender['bank_code']) > 0
+         && strlen($account_sender['bank_code']) <= 8
+         && ctype_digit($account_sender['bank_code'])
+         && strlen($account_sender['account_number']) > 0
+         && strlen($account_sender['account_number']) <= 10
+         && ctype_digit($account_sender['account_number'])
          && is_numeric($amount) && $cents > 0
          && $cents <= DTAZV_MAXAMOUNT*100
          && $this->sum_amounts <= PHP_INT_MAX - $cents

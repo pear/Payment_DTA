@@ -40,6 +40,19 @@ class DTATest extends PHPUnit_Framework_TestCase
         $this->assertTrue($dtaus->setAccountFileSender($DTA_test_account));
     }
 
+    public function testInstantiateNoBankCode()
+    {
+        $dtaus = new DTA(DTA_CREDIT);
+        $DTA_test_account = array(
+             'name' => "Senders Name",
+             'additional_name' => '',
+             'bank_code' => "",
+             'account_number' => "3503007767",
+         );
+
+        $this->assertFalse($dtaus->setAccountFileSender($DTA_test_account));
+    }
+
     public function testInstantiateLongBankCode()
     {
         $dtaus = new DTA(DTA_CREDIT);
@@ -52,6 +65,20 @@ class DTATest extends PHPUnit_Framework_TestCase
 
         $this->assertFalse($dtaus->setAccountFileSender($DTA_test_account));
     }
+
+    public function testInstantiateNoAccountNumber()
+    {
+        $dtaus = new DTA(DTA_CREDIT);
+        $DTA_test_account = array(
+             'name' => "Senders Name",
+             'additional_name' => '',
+             'bank_code' => "16050000",
+             'account_number' => "",
+         );
+
+        $this->assertFalse($dtaus->setAccountFileSender($DTA_test_account));
+    }
+
 
     public function testInstantiateLongAccountNumber()
     {
@@ -77,6 +104,46 @@ class DTATest extends PHPUnit_Framework_TestCase
          );
 
         $this->assertFalse($dtaus->setAccountFileSender($DTA_test_account));
+    }
+
+    public function testInstantiateWithIntegerAccountNumberSmall()
+    {
+        // small := leq PHP_INT_MAX (on 32-bit with 10 digits)
+        $dtaus = new DTA(DTA_CREDIT);
+        $DTA_test_account = array(
+             'name' => "Senders Name",
+             'additional_name' => '',
+             'bank_code' => "1605000",
+             'account_number' => PHP_INT_MAX-1,
+         );
+
+        $this->assertTrue($dtaus->setAccountFileSender($DTA_test_account));
+    }
+
+    public function testInstantiateWithIntegerAccountNumberBig()
+    {
+        $dtaus = new DTA(DTA_CREDIT);
+        $DTA_test_account = array(
+             'name' => "Senders Name",
+             'additional_name' => '',
+             'bank_code' => "1605000",
+             'account_number' => 3503007767,
+         );
+
+        $this->assertTrue($dtaus->setAccountFileSender($DTA_test_account));
+    }
+
+    public function testInstantiateWithIntegerBankCode()
+    {
+        $dtaus = new DTA(DTA_CREDIT);
+        $DTA_test_account = array(
+             'name' => "Senders Name",
+             'additional_name' => '',
+             'bank_code' => 1605000,
+             'account_number' => "3503007767",
+         );
+
+        $this->assertTrue($dtaus->setAccountFileSender($DTA_test_account));
     }
 
     public function testCountEmpty()
@@ -239,6 +306,19 @@ class DTATest extends PHPUnit_Framework_TestCase
         $this->assertFalse($result);
     }
 
+    public function testIntegerAccountNumber()
+    {
+        $result = $this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'bank_code' => "16050000",
+                'account_number' => 3503007767
+            ),
+            (float) 1234.56,
+            "Kurzer Test-Verwendungszweck"
+        );
+        $this->assertTrue($result);
+    }
+
     public function testUmlautInRecvName()
     {
         $this->assertTrue($this->fixture->addExchange(array(
@@ -266,6 +346,27 @@ class DTATest extends PHPUnit_Framework_TestCase
                 'name' => "A Receivers Name",
                 'bank_code' => "16050000",
                 'account_number' => "3503007767",
+            ),
+            (float) 1234.56,
+            "Kurzer Test-Verwendungszweck"
+        ));
+        $this->assertEquals(512, strlen($this->fixture->getFileContent()));
+    }
+
+    public function testAdditionalSenderNameWithIntegers()
+    {
+        $DTA_test_account = array(
+            'name' => "Senders Name",
+            'additional_name' => "some very long additional sender name",
+            'bank_code' => 16050000,
+            'account_number' => 3503007767,
+        );
+        $this->assertTrue($this->fixture->setAccountFileSender($DTA_test_account));
+
+        $this->assertTrue($this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'bank_code' => 16050000,
+                'account_number' => 3503007767,
             ),
             (float) 1234.56,
             "Kurzer Test-Verwendungszweck"

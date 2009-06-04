@@ -148,16 +148,23 @@ class DTA extends DTABase
     *  additional_name If necessary, additional line for sender's name
     *                  (maximally 27 chars).
     *
-    * @param array $account Account data fot file sender.
+    * @param array $account Account data for file sender.
     *
     * @access public
     * @return boolean
     */
     function setAccountFileSender($account)
     {
+        $account['account_number'] =
+            strval($account['account_number']);
+        $account['bank_code']      =
+            strval($account['bank_code']);
+
         if (strlen($account['name']) > 0
+            && strlen($account['bank_code']) > 0
             && strlen($account['bank_code']) <= 8
             && ctype_digit($account['bank_code'])
+            && strlen($account['account_number']) > 0
             && strlen($account['account_number']) <= 10
             && ctype_digit($account['account_number'])) {
 
@@ -225,10 +232,21 @@ class DTA extends DTABase
                 $this->account_file_sender['additional_name'];
         }
 
+        $account_receiver['account_number'] =
+            strval($account_receiver['account_number']);
+        $account_receiver['bank_code']      =
+            strval($account_receiver['bank_code']);
+        $account_sender['account_number']   =
+            strval($account_sender['account_number']);
+        $account_sender['bank_code']        =
+            strval($account_sender['bank_code']);
+
         $cents = (int)(round($amount * 100));
         if (strlen($account_sender['name']) > 0
+            && strlen($account_sender['bank_code']) > 0
             && strlen($account_sender['bank_code']) <= 8
             && ctype_digit($account_sender['bank_code'])
+            && strlen($account_sender['account_number']) > 0
             && strlen($account_sender['account_number']) <= 10
             && ctype_digit($account_sender['account_number'])
             && strlen($account_receiver['name']) > 0

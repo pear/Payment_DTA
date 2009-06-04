@@ -36,9 +36,22 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
              'additional_name' => '',
              'bank_code' => "16050",
              'account_number' => "3503007767",
-         );
+        );
 
         $this->assertTrue($dtaus->setAccountFileSender($DTAZV_asta_account));
+    }
+
+    public function testInstantiateNoBankCode()
+    {
+        $dtaus = new DTAZV();
+        $DTAZV_asta_account = array(
+             'name' => "Senders Name",
+             'additional_name' => '',
+             'bank_code' => "",
+             'account_number' => "3503007767",
+         );
+
+        $this->assertFalse($dtaus->setAccountFileSender($DTAZV_asta_account));
     }
 
     public function testInstantiateLongBankCode()
@@ -54,7 +67,20 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($dtaus->setAccountFileSender($DTAZV_asta_account));
     }
 
-    public function testInstantiateLongAccount()
+    public function testInstantiateNoAccountNumber()
+    {
+        $dtaus = new DTAZV();
+        $DTAZV_asta_account = array(
+             'name' => "Senders Name",
+             'additional_name' => '',
+             'bank_code' => "16050000",
+             'account_number' => "",
+         );
+
+        $this->assertFalse($dtaus->setAccountFileSender($DTAZV_asta_account));
+    }
+
+    public function testInstantiateLongAccountNumber()
     {
         $dtaus = new DTAZV();
         $DTAZV_asta_account = array(
@@ -65,6 +91,46 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
          );
 
         $this->assertFalse($dtaus->setAccountFileSender($DTAZV_asta_account));
+    }
+
+    public function testInstantiateWithIntegerAccountNumberSmall()
+    {
+        // small := leq PHP_INT_MAX (on 32-bit with 10 digits)
+        $dtaus = new DTAZV();
+        $DTAZV_asta_account = array(
+             'name' => "Senders Name",
+             'additional_name' => 'and some more',
+             'bank_code' => "16050000",
+             'account_number' => PHP_INT_MAX,
+        );
+
+        $this->assertTrue($dtaus->setAccountFileSender($DTAZV_asta_account));
+    }
+
+    public function testInstantiateWithIntegerAccountNumberBig()
+    {
+        $dtaus = new DTAZV();
+        $DTAZV_asta_account = array(
+             'name' => "Senders Name",
+             'additional_name' => 'and some more',
+             'bank_code' => "16050000",
+             'account_number' => 3503007767,
+        );
+
+        $this->assertTrue($dtaus->setAccountFileSender($DTAZV_asta_account));
+    }
+
+    public function testInstantiateWithIntegerBankCode()
+    {
+        $dtaus = new DTAZV();
+        $DTAZV_asta_account = array(
+             'name' => "Senders Name",
+             'additional_name' => '',
+             'bank_code' => 16050000,
+             'account_number' => "3503007767",
+        );
+
+        $this->assertTrue($dtaus->setAccountFileSender($DTAZV_asta_account));
     }
 
     public function testInstantiateLetterInAccount()
@@ -190,6 +256,49 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(256+768+256, strlen($this->fixture->getFileContent()));
     }
 
+    public function testAdditionalSenderName()
+    {
+        $DTAZV_asta_account = array(
+             'name' => "Senders Name",
+             'additional_name' => '',
+             'bank_code' => "16050000",
+             'account_number' => "3503007767",
+        );
+        $this->assertTrue($this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'bank_code' => "MARKDEFF",
+                'account_number' => "DE68210501700012345678"
+            ),
+            (float) 1234.56,
+            "Test-Verwendungszweck",
+            $DTAZV_asta_account
+        ));
+
+        $this->assertEquals(1, $this->fixture->count());
+        $this->assertEquals(256+768+256, strlen($this->fixture->getFileContent()));
+    }
+
+    public function testAdditionalSenderNameWithIntegers()
+    {
+        $DTAZV_test_account = array(
+             'name' => "Senders Name",
+             'additional_name' => 'and some more',
+             'bank_code' => 16050000,
+             'account_number' => 3503007767,
+        );
+        $this->assertTrue($this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'bank_code' => "MARKDEFF",
+                'account_number' => "DE68210501700012345678"
+            ),
+            (float) 1234.56,
+            "Test-Verwendungszweck",
+            $DTAZV_test_account
+        ));
+
+        $this->assertEquals(1, $this->fixture->count());
+        $this->assertEquals(256+768+256, strlen($this->fixture->getFileContent()));
+    }
 
     public function testValidStringTrue()
     {
