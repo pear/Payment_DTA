@@ -73,16 +73,6 @@
 require_once 'DTABase.php';
 
 /**
-* The maximum allowed amount per transfer.
-* Set to the maximum amount for a "EU-Standardüberweisung"
-* that does not have to be reported (cf.
-* http://www.bundesbank.de/meldewesen/mw_aussenwirtschaft.en.php).
-*
-* @const DTAZV_MAXAMOUNT
-*/
-define("DTAZV_MAXAMOUNT", 12500);
-
-/**
  * DTAZV class provides functions to create and handle with DTAZV
  * files used in Germany to exchange informations about european
  * money transactions with banks or online banking programs.
@@ -99,6 +89,18 @@ define("DTAZV_MAXAMOUNT", 12500);
 class DTAZV extends DTABase
 {
     /**
+    * The maximum allowed amount per transfer (in cents).
+    *
+    * By default set to the maximum amount for a "EU-Standardüberweisung"
+    * that does not have to be reported.
+    *
+    * @see setMaxAmount()
+    * @var integer $max_amount
+    * @access private
+    */
+    var $max_amount;
+
+    /**
     * Constructor.
     *
     * @access public
@@ -106,6 +108,7 @@ class DTAZV extends DTABase
     function DTAZV()
     {
         $this->DTABase();
+        $this->max_amount = 12500*100;
     }
 
     /**
@@ -275,7 +278,7 @@ class DTAZV extends DTABase
          && strlen($account_sender['account_number']) <= 10
          && ctype_digit($account_sender['account_number'])
          && is_numeric($amount) && $cents > 0
-         && $cents <= DTAZV_MAXAMOUNT*100
+         && $cents <= $this->max_amount
          && $this->sum_amounts <= PHP_INT_MAX - $cents
          && ((is_array($purposes) && count($purposes) >= 1 && count($purposes) <= 4)
              || (is_string($purposes) && strlen($purposes) > 0))) {
@@ -484,5 +487,33 @@ class DTAZV extends DTABase
         assert((strlen($content) - 512) % 768 == 0);
 
         return $content;
+    }
+
+    /**
+    * Set the maximum allowed amount per transfer.
+    * Pass 0 to disable the check (will set to maximum integer value).
+    *
+    * <b>Warning</b>: Use at your own risk.
+    *
+    * Amounts > 12500 Euro usually have notification requirements.
+    *
+    * Amounts > 50000 Euro are not allowed in a "EU-Standardüberweisung",
+    *   thus yielding a malformed DTAZV.
+    *
+    * @param integer $newmax New maximum allowed amount in Euro or 0 to disable check.
+    *
+    * @access public
+    * @since 1.3.2
+    * @link http://www.bundesbank.de/meldewesen/mw_aussenwirtschaft.en.php
+    *      info on notification requirements
+    * @return void
+    */
+    function setMaxAmount($newmax)
+    {
+        if ((int)$newmax == 0 || $newmax > PHP_INT_MAX/100) {
+            $this->max_amount = PHP_INT_MAX;
+        } else {
+            $this->max_amount = (int)(round($newmax * 100));
+        }
     }
 }

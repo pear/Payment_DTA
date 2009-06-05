@@ -319,5 +319,6 @@
 &package.payment.payment-dta.dtazv.addexchange;
 &package.payment.payment-dta.dtazv.getfilecontent;
 &package.payment.payment-dta.dtazv.setaccountfilesender;
+&package.payment.payment-dta.dtazv.setmaxamount;
 &package.payment.payment-dta.constants;
 </sect1>

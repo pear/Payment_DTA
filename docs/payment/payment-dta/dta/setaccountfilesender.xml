@@ -34,7 +34,7 @@
       <parameter>$account</parameter>
      </term>
      <listitem>
-      <para>Account data fot file sender.</para>
+      <para>Account data for file sender.</para>
      </listitem>
     </varlistentry>
    </variablelist>
