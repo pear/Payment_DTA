@@ -6,13 +6,13 @@
  * Germany to exchange informations about money transactions with banks
  * or online banking programs.
  *
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * This LICENSE is in the BSD license style.
  *
  * Copyright (c) 2003-2005 Hermann Stainer, Web-Gear
  * http://www.web-gear.com/
- * Copyright (c) 2008 Martin Schütte
+ * Copyright (c) 2008-2010 Martin Schütte
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -48,9 +48,9 @@
  * @author    Hermann Stainer <hs@web-gear.com>
  * @author    Martin Schütte <info@mschuette.name>
  * @copyright 2003-2005 Hermann Stainer, Web-Gear
- * @copyright 2008 Martin Schütte
+ * @copyright 2008-2010 Martin Schütte
  * @license   http://www.debian.org/misc/bsd.license  BSD License (3 Clause)
- * @version   CVS: $Id$
+ * @version   SVN: $Id$
  * @link      http://pear.php.net/package/Payment_DTA
  */
 
@@ -64,39 +64,39 @@
 * @version  Release: @package_version@
 * @link     http://pear.php.net/package/Payment_DTA
 */
-class DTABase
+abstract class DTABase
 {
     /**
     * Account data for the file sender.
     *
     * @var integer $account_file_sender
-    * @access private
+    * @access protected
     */
-    var $account_file_sender;
+    protected $account_file_sender;
 
     /**
     * Current timestamp.
     *
     * @var integer $timestamp
-    * @access private
+    * @access protected
     */
-    var $timestamp;
+    protected $timestamp;
 
     /**
     * Array of exchanges that the DTA file should contain.
     *
     * @var integer $exchanges
-    * @access private
+    * @access protected
     */
-    var $exchanges;
+    protected $exchanges;
 
     /**
     * Sum of amounts in exchanges (in Cents); for control total fields.
     *
     * @var integer $sum_amounts
-    * @access private
+    * @access protected
     */
-    var $sum_amounts;
+    protected $sum_amounts;
 
     /**
     * Return number of exchanges
@@ -114,7 +114,7 @@ class DTABase
     *
     * @access protected
     */
-    function DTABase()
+    function __construct()
     {
         $this->invalidString_regexp = '/[^A-Z0-9 \.,&\-\/\+\*\$%]/';
         $this->account_file_sender  = array();
@@ -423,4 +423,54 @@ class DTABase
             "date"             => $this->timestamp,
         );
     }
+
+    /**
+    * Set the sender of the file.
+    * The given account data is also used as default sender's account.
+    *
+    * Account data contains
+    *  name            Sender's name.
+    *  additional_name Sender's additional name.
+    *  bank_code       Sender's bank code.
+    *  account_number  Sender's account number.
+    *
+    * @param array $account Account data for file sender.
+    *
+    * @access public
+    * @return boolean
+    */
+    abstract function setAccountFileSender($account);
+
+    /**
+    * Adds an exchange. First the account data for the receiver of the exchange is
+    * set. In the case the DTA file contains credits, this is the payment receiver.
+    * If the sender is not specified, values of the file sender are used by default.
+    *
+    * Account data for receiver and sender contain the following fields:
+    *  name            Name.
+    *  bank_code       Bank code.
+    *  account_number  Account number.
+    *  additional_name If necessary, additional line for name.
+    *
+    * @param array  $account_receiver Receiver's account data.
+    * @param double $amount           Amount of money in this exchange.
+    *                                 Currency: EURO
+    * @param array  $purposes         An Array of lines or a string for
+    *                                 description of the exchange.
+    * @param array  $account_sender   Sender's account data.
+    *
+    * @access public
+    * @return boolean
+    */
+    abstract function addExchange($account_receiver, $amount, $purposes, $account_sender = array());
+
+    /**
+    * Returns the full content of the generated file.
+    * All added exchanges are processed.
+    *
+    * @access public
+    * @return string
+    */
+    abstract function getFileContent();
+    
 }

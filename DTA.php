@@ -6,13 +6,13 @@
  * Germany to exchange informations about money transactions with banks
  * or online banking programs.
  *
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * This LICENSE is in the BSD license style.
  *
  * Copyright (c) 2003-2005 Hermann Stainer, Web-Gear
  * http://www.web-gear.com/
- * Copyright (c) 2008 Martin Schütte
+ * Copyright (c) 2008-2010 Martin Schütte
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -48,9 +48,9 @@
  * @author    Hermann Stainer <hs@web-gear.com>
  * @author    Martin Schütte <info@mschuette.name>
  * @copyright 2003-2005 Hermann Stainer, Web-Gear
- * @copyright 2008 Martin Schütte
+ * @copyright 2008-2010 Martin Schütte
  * @license   http://www.debian.org/misc/bsd.license  BSD License (3 Clause)
- * @version   CVS: $Id$
+ * @version   SVN: $Id$
  * @link      http://pear.php.net/package/Payment_DTA
  */
 
@@ -101,7 +101,7 @@ class DTA extends DTABase
     *
     * @var integer $type
     */
-    var $type;
+    protected $type;
 
     /**
     * Sum of bank codes in exchanges; used for control fields.
@@ -109,7 +109,7 @@ class DTA extends DTABase
     * @var integer $sum_bankcodes
     * @access private
     */
-    var $sum_bankcodes;
+    protected $sum_bankcodes;
 
     /**
     * Sum of account numbers in exchanges; used for control fields.
@@ -117,7 +117,7 @@ class DTA extends DTABase
     * @var integer $sum_accounts
     * @access private
     */
-    var $sum_accounts;
+    protected $sum_accounts;
 
     /**
     * Constructor. The type of the DTA file must be set. One file can
@@ -129,9 +129,10 @@ class DTA extends DTABase
     *
     * @access public
     */
-    function DTA($type)
+    function __construct($type)
     {
-        $this->DTABase();
+        parent::__construct();
+
         $this->type = $type;
 
         $this->sum_bankcodes = 0;

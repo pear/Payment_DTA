@@ -18,11 +18,11 @@
  * english version:
  * http://www.bundesbank.de/download/meldewesen/aussenwirtschaft/vordrucke/pdf/dtazv_2007_financial_inst_bbk.pdf
  *
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * This LICENSE is in the BSD license style.
  *
- * Copyright (c) 2008 Martin Schütte
+ * Copyright (c) 2008-2010 Martin Schütte
  * derived from class DTA
  * Copyright (c) 2003-2005 Hermann Stainer, Web-Gear
  * http://www.web-gear.com/
@@ -60,10 +60,10 @@
  * @package   Payment_DTA
  * @author    Martin Schütte <info@mschuette.name>
  * @author    Hermann Stainer <hs@web-gear.com>
- * @copyright 2008 Martin Schütte
+ * @copyright 2008-2010 Martin Schütte
  * @copyright 2003-2005 Hermann Stainer, Web-Gear
  * @license   http://www.debian.org/misc/bsd.license  BSD License (3 Clause)
- * @version   CVS: $Id$
+ * @version   SVN: $Id$
  * @link      http://pear.php.net/package/Payment_DTA
  */
 
@@ -96,18 +96,18 @@ class DTAZV extends DTABase
     *
     * @see setMaxAmount()
     * @var integer $max_amount
-    * @access private
+    * @access protected
     */
-    var $max_amount;
+    protected $max_amount;
 
     /**
     * Constructor.
     *
     * @access public
     */
-    function DTAZV()
+    function __construct()
     {
-        $this->DTABase();
+        parent::__construct();
         $this->max_amount = 12500*100;
     }
 
