@@ -653,4 +653,59 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(strftime("%d%m%y", $meta["date"])
                             == strftime("%d%m%y", time()));
     }
+
+    public function testIteratorEmpty()
+    {
+        foreach ($this->fixture as $key => $value) {
+            $this->fail();
+        }
+    }
+
+    public function testIteratorElements()
+    {
+        $this->assertTrue($this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'bank_code' => "RZTIAT22263",
+                'account_number' => "DE21700519950000007229"
+            ),
+            (float) 1234.56,
+            "Test-Verwendungszweck1"
+        ));
+        $this->assertTrue($this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'bank_code' => "RZTIAT22263",
+                'account_number' => "DE21700519950000007229"
+            ),
+            (float) 321.9,
+            "Test-Verwendungszweck2"
+        ));
+
+        foreach ($this->fixture as $key => $value) {
+            // from setUp()
+            $this->assertEquals(strtoupper("Senders Name"), $value['sender_name']);
+            $this->assertEquals("16050000", $value['sender_bank_code']);
+            $this->assertEquals("3503007767", $value['sender_account_number']);
+
+            // same values in addExchange() above
+            $this->assertEquals(strtoupper("A Receivers Name"), $value['receiver_name']);
+            $this->assertEquals("RZTIAT22263", $value['receiver_bank_code']);
+            $this->assertEquals("DE21700519950000007229", $value['receiver_account_number']);
+            $this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY,
+                $value['purposes']);
+
+            // different values in addExchange() above
+            if ($key === 0) {
+                $this->assertEquals(123456, $value['amount']);
+                $this->assertTrue($value['purposes'][0] ===
+                    strtoupper("Test-Verwendungszweck1"));
+            } elseif ($key === 1) {
+                $this->assertEquals(32190, $value['amount']);
+                $this->assertTrue($value['purposes'][0] ===
+                    strtoupper("Test-Verwendungszweck2"));
+            } else {
+                $this->fail();
+            }
+        }
+    }
+
 }

@@ -907,10 +907,94 @@ class DTATest extends PHPUnit_Framework_TestCase
                             == strftime("%d%m%y", time()));
     }
 
+    public function testIteratorEmpty()
+    {
+        foreach ($this->fixture as $key => $value) {
+            $this->fail();
+        }
+    }
+
+    public function testIteratorElements()
+    {
+
+        $this->fixture->addExchange(array(
+            'name' => "A Receivers Name",
+            'bank_code' => "16050000",
+            'account_number' => "3503007767"
+            ),
+            (float) 1234.56,
+            "Test-Verwendungszweck1"
+        );
+        $this->fixture->addExchange(array(
+            'name' => "A Receivers Name",
+            'bank_code' => "16050000",
+            'account_number' => "3503007767"),
+            (float) 321.9,
+            "Test-Verwendungszweck2"
+        );
+
+        foreach ($this->fixture as $key => $value) {
+            // from setUp()
+            $this->assertEquals(strtoupper("Senders Name"), $value['sender_name']);
+            $this->assertEquals("16050000", $value['sender_bank_code']);
+            $this->assertEquals("3503007767", $value['sender_account_number']);
+
+            // same values in addExchange() above
+            $this->assertEquals(strtoupper("A Receivers Name"), $value['receiver_name']);
+            $this->assertEquals("16050000", $value['receiver_bank_code']);
+            $this->assertEquals("3503007767", $value['receiver_account_number']);
+            $this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY,
+                $value['purposes']);
+
+            // different values in addExchange() above
+            if ($key === 0) {
+                $this->assertEquals(123456, $value['amount']);
+                $this->assertTrue($value['purposes'][0] ===
+                    strtoupper("Test-Verwendungszweck1"));
+            } elseif ($key === 1) {
+                $this->assertEquals(32190, $value['amount']);
+                $this->assertTrue($value['purposes'][0] ===
+                    strtoupper("Test-Verwendungszweck2"));
+            } else {
+                $this->fail();
+            }
+        }
+    }
+
+
     public function testParserBasicCredit()
     {
-        $teststring = // 64 chars per line; same as in testContent()
+        $teststring = // same as in testContent()
             '0128AGK1605000000000000SENDERS NAME               '.strftime("%d%m%y", time()).'    3503'.
+            '0077670000000000                                               1'.
+            '0187C16050000333344440013579000000000000000051000 00000000000160'.
+            '50000350300776700000123456   FRANZ MUELLER                      '.
+            'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
+            '                                                                '.
+            '0187C16050000333344440013579000000000000000051000 00000000000160'.
+            '50000350300776700000032190   FRANZ MUELLER                      '.
+            'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
+            '                                                                '.
+            '0128E     000000200000000000000000000002715800000000000066668888'.
+            '0000000155646                                                   ';
+        $dta = new DTA($teststring);
+        $meta = $dta->getMetaData();
+        $this->assertTrue($meta["sender_name"]      == "SENDERS NAME");
+        $this->assertTrue($meta["sender_bank_code"] == "16050000");
+        $this->assertTrue($meta["sender_account"]   == "3503007767");
+        $this->assertTrue($meta["sum_amounts"]      == "1556.46");
+        $this->assertTrue($meta["sum_bankcodes"]    == 2*33334444);
+        $this->assertTrue($meta["sum_accounts"]     == 2*13579000);
+        $this->assertTrue($meta["count"]            == "2");
+        $this->assertTrue(strftime("%d%m%y", $meta["date"])
+                            == strftime("%d%m%y", time()));
+
+    }
+
+    public function testParserBasicCreditBankFile()
+    {
+        $teststring = // same as in testContent() but with type GB
+            '0128AGB1605000000000000SENDERS NAME               '.strftime("%d%m%y", time()).'    3503'.
             '0077670000000000                                               1'.
             '0187C16050000333344440013579000000000000000051000 00000000000160'.
             '50000350300776700000123456   FRANZ MUELLER                      '.
@@ -938,8 +1022,37 @@ class DTATest extends PHPUnit_Framework_TestCase
 
     public function testParserBasicDebit()
     {
-        $teststring = // 64 chars per line; same as in testContent() but as Debit
+        $teststring = // same as in testContent() but type LK
             '0128ALK1605000000000000SENDERS NAME               '.strftime("%d%m%y", time()).'    3503'.
+            '0077670000000000                                               1'.
+            '0187C16050000333344440013579000000000000000051000 00000000000160'.
+            '50000350300776700000123456   FRANZ MUELLER                      '.
+            'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
+            '                                                                '.
+            '0187C16050000333344440013579000000000000000051000 00000000000160'.
+            '50000350300776700000032190   FRANZ MUELLER                      '.
+            'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
+            '                                                                '.
+            '0128E     000000200000000000000000000002715800000000000066668888'.
+            '0000000155646                                                   ';
+        $dta = new DTA($teststring);
+        $meta = $dta->getMetaData();
+        $this->assertTrue($meta["sender_name"]      == "SENDERS NAME");
+        $this->assertTrue($meta["sender_bank_code"] == "16050000");
+        $this->assertTrue($meta["sender_account"]   == "3503007767");
+        $this->assertTrue($meta["sum_amounts"]      == "1556.46");
+        $this->assertTrue($meta["sum_bankcodes"]    == 2*33334444);
+        $this->assertTrue($meta["sum_accounts"]     == 2*13579000);
+        $this->assertTrue($meta["count"]            == "2");
+        $this->assertTrue(strftime("%d%m%y", $meta["date"])
+                            == strftime("%d%m%y", time()));
+
+    }
+
+    public function testParserBasicDebitBankFile()
+    {
+        $teststring = // same as in testContent() but type LB
+            '0128ALB1605000000000000SENDERS NAME               '.strftime("%d%m%y", time()).'    3503'.
             '0077670000000000                                               1'.
             '0187C16050000333344440013579000000000000000051000 00000000000160'.
             '50000350300776700000123456   FRANZ MUELLER                      '.

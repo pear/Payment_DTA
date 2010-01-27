@@ -80,7 +80,7 @@ function dprint($text)
 * @version  Release: @package_version@
 * @link     http://pear.php.net/package/Payment_DTA
 */
-abstract class DTABase implements Countable
+abstract class DTABase implements Countable, Iterator
 {
     /**
     * Account data for the file sender.
@@ -210,9 +210,8 @@ abstract class DTABase implements Countable
             throw new Payment_DTA_Exception("invalid Number '$rc' at position $offset");
         } else {
             $offset += $length;
-            $int_rc = (integer) $rc;
-            dprint("get: '$rc' --> $int_rc\n");
-            return $int_rc;
+            dprint("get: '$rc'\n");
+            return $rc;
         }
     }
 
@@ -565,5 +564,34 @@ abstract class DTABase implements Countable
     * @return string
     */
     abstract function getFileContent();
+
+    /**
+    * Returns the exchanges in JSON format.
+    *
+    * @access public
+    * @return string JSON representation of all exchanges
+    */
+    function asJSON()
+    {
+        return json_encode($this->exchanges);
+    }
+
+    /* for Iterator interface */
+    protected $iterator_position = 0;
+    function current () {
+        return $this->exchanges[$this->iterator_position];
+    }
+    function key () {
+        return $this->iterator_position;
+    }
+    function next () {
+        ++$this->iterator_position;
+    }
+    function rewind () {
+        $this->iterator_position = 0;
+    }
+    function valid () {
+        return isset($this->exchanges[$this->iterator_position]);
+    }
     
 }

@@ -317,29 +317,6 @@ class DTA extends DTABase
     }
 
     /**
-    * Returns the exchanges in JSON format.
-    *
-    * @access public
-    * @return string JSON representation of all exchanges
-    */
-    function asJSON()
-    {
-        return json_encode($this->exchanges);
-    }
-
-    /**
-    * Returns the exchanges in CSV format.
-    *
-    * @access public
-    * @return string
-    */
-    function asCSV()
-    {
-        // TODO
-        return "";
-    }
-
-    /**
     * Returns the full content of the generated DTA file.
     * All added exchanges are processed.
     *
@@ -608,9 +585,9 @@ class DTA extends DTABase
     * @param string $input content of DTA file
     *
     * @throws Payment_DTA_Exception on unrecognized input
-    * @access private
+    * @access protected
     */
-    private function parse($input)
+    protected function parse($input)
     {
         if(strlen($input) % 128) {
             // TODO: useful error handling and return values
@@ -645,8 +622,8 @@ class DTA extends DTABase
             /* field 11a */
             $this->check_str($input, $offset, str_repeat(" ", 15));
             /* field 11b
-             * this holds an optional execution date, DTA will not fill
-             * the field and DTA_Reader will igrore its value
+             * this may hold an optional execution date.
+             * DTA does not fill the field and parse() ignores its content.
              */
             $this->get_str($input, $offset, 8);
             /* field 11c */
@@ -661,13 +638,17 @@ class DTA extends DTABase
             dprint("sender account: $Asender_account\n");
             dprint("-----------------------\n");
 
-            if ($type === "GK") {
+            /* the first char G/L indicates credit and debit exchanges
+             * the second char K/B indicates a customer or bank file
+             * (I do not know if bank files should be treated different)
+             */
+            if ($type === "GK" || $type === "GB") {
                 $this->type = DTA_CREDIT;
-            } elseif ($type === "LK") {
+            } elseif ($type === "LK" || $type === "LB") {
                 $this->type = DTA_DEBIT;
             } else {
                 throw new Payment_DTA_Exception("Invalid type indicator: '$type', ".
-                    "expected either 'GK' or 'LK' (@offset 6).");
+                    "expected either 'GK'/'GB' or 'LK'/'LB' (@offset 6).");
             }
 
             $this->setAccountFileSender(array(
