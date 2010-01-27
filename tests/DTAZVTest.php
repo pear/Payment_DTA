@@ -34,119 +34,119 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
     public function testInstantiateShortBankCode()
     {
         $dtaus = new DTAZV();
-        $DTAZV_asta_account = array(
+        $DTAZV_account = array(
              'name' => "Senders Name",
              'additional_name' => '',
              'bank_code' => "16050",
              'account_number' => "3503007767",
         );
 
-        $this->assertTrue($dtaus->setAccountFileSender($DTAZV_asta_account));
+        $this->assertTrue($dtaus->setAccountFileSender($DTAZV_account));
     }
 
     public function testInstantiateNoBankCode()
     {
         $dtaus = new DTAZV();
-        $DTAZV_asta_account = array(
+        $DTAZV_account = array(
              'name' => "Senders Name",
              'additional_name' => '',
              'bank_code' => "",
              'account_number' => "3503007767",
          );
 
-        $this->assertFalse($dtaus->setAccountFileSender($DTAZV_asta_account));
+        $this->assertFalse($dtaus->setAccountFileSender($DTAZV_account));
     }
 
     public function testInstantiateLongBankCode()
     {
         $dtaus = new DTAZV();
-        $DTAZV_asta_account = array(
+        $DTAZV_account = array(
              'name' => "Senders Name",
              'additional_name' => '',
              'bank_code' => "160500001",
              'account_number' => "3503007767",
          );
 
-        $this->assertFalse($dtaus->setAccountFileSender($DTAZV_asta_account));
+        $this->assertFalse($dtaus->setAccountFileSender($DTAZV_account));
     }
 
     public function testInstantiateNoAccountNumber()
     {
         $dtaus = new DTAZV();
-        $DTAZV_asta_account = array(
+        $DTAZV_account = array(
              'name' => "Senders Name",
              'additional_name' => '',
              'bank_code' => "16050000",
              'account_number' => "",
          );
 
-        $this->assertFalse($dtaus->setAccountFileSender($DTAZV_asta_account));
+        $this->assertFalse($dtaus->setAccountFileSender($DTAZV_account));
     }
 
     public function testInstantiateLongAccountNumber()
     {
         $dtaus = new DTAZV();
-        $DTAZV_asta_account = array(
+        $DTAZV_account = array(
              'name' => "Senders Name",
              'additional_name' => '',
              'bank_code' => "16050000",
              'account_number' => "35030077671",
          );
 
-        $this->assertFalse($dtaus->setAccountFileSender($DTAZV_asta_account));
+        $this->assertFalse($dtaus->setAccountFileSender($DTAZV_account));
     }
 
     public function testInstantiateWithIntegerAccountNumberSmall()
     {
         // small := leq PHP_INT_MAX (on 32-bit with 10 digits)
         $dtaus = new DTAZV();
-        $DTAZV_asta_account = array(
+        $DTAZV_account = array(
              'name' => "Senders Name",
              'additional_name' => 'and some more',
              'bank_code' => "16050000",
              'account_number' => PHP_INT_MAX,
         );
 
-        $this->assertTrue($dtaus->setAccountFileSender($DTAZV_asta_account));
+        $this->assertTrue($dtaus->setAccountFileSender($DTAZV_account));
     }
 
     public function testInstantiateWithIntegerAccountNumberBig()
     {
         $dtaus = new DTAZV();
-        $DTAZV_asta_account = array(
+        $DTAZV_account = array(
              'name' => "Senders Name",
              'additional_name' => 'and some more',
              'bank_code' => "16050000",
              'account_number' => 3503007767,
         );
 
-        $this->assertTrue($dtaus->setAccountFileSender($DTAZV_asta_account));
+        $this->assertTrue($dtaus->setAccountFileSender($DTAZV_account));
     }
 
     public function testInstantiateWithIntegerBankCode()
     {
         $dtaus = new DTAZV();
-        $DTAZV_asta_account = array(
+        $DTAZV_account = array(
              'name' => "Senders Name",
              'additional_name' => '',
              'bank_code' => 16050000,
              'account_number' => "3503007767",
         );
 
-        $this->assertTrue($dtaus->setAccountFileSender($DTAZV_asta_account));
+        $this->assertTrue($dtaus->setAccountFileSender($DTAZV_account));
     }
 
     public function testInstantiateLetterInAccount()
     {
         $dtaus = new DTAZV();
-        $DTAZV_asta_account = array(
+        $DTAZV_account = array(
              'name' => "Senders Name",
              'additional_name' => '',
              'bank_code' => "16050000",
              'account_number' => "3503007A67",
          );
 
-        $this->assertFalse($dtaus->setAccountFileSender($DTAZV_asta_account));
+        $this->assertFalse($dtaus->setAccountFileSender($DTAZV_account));
     }
 
     public function testCountEmpty()
@@ -370,7 +370,7 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
 
     public function testAdditionalSenderName()
     {
-        $DTAZV_asta_account = array(
+        $DTAZV_account = array(
              'name' => "Senders Name",
              'additional_name' => '',
              'bank_code' => "16050000",
@@ -383,7 +383,7 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
             ),
             (float) 1234.56,
             "Test-Verwendungszweck",
-            $DTAZV_asta_account
+            $DTAZV_account
         ));
 
         $this->assertEquals(1, $this->fixture->count());
