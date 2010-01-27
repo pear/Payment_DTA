@@ -59,7 +59,7 @@
  */
 require_once 'PEAR/Exception.php';
 
-class Payment_DTA_Exception extends PEAR_Exception {};
+class Payment_DTA_Exception extends PEAR_Exception { }
 
 /*
  * small debugging helper for initial testing
@@ -80,12 +80,12 @@ function dprint($text)
 * @version  Release: @package_version@
 * @link     http://pear.php.net/package/Payment_DTA
 */
-abstract class DTABase
+abstract class DTABase implements Countable
 {
     /**
     * Account data for the file sender.
     *
-    * @var integer $account_file_sender
+    * @var array $account_file_sender
     * @access protected
     */
     protected $account_file_sender;
@@ -101,7 +101,7 @@ abstract class DTABase
     /**
     * Array of exchanges that the DTA file should contain.
     *
-    * @var integer $exchanges
+    * @var array $exchanges
     * @access protected
     */
     protected $exchanges;
@@ -210,8 +210,9 @@ abstract class DTABase
             throw new Payment_DTA_Exception("invalid Number '$rc' at position $offset");
         } else {
             $offset += $length;
-            dprint("get: '$rc'\n");
-            return $rc;
+            $int_rc = (integer) $rc;
+            dprint("get: '$rc' --> $int_rc\n");
+            return $int_rc;
         }
     }
 

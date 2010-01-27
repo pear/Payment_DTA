@@ -317,6 +317,29 @@ class DTA extends DTABase
     }
 
     /**
+    * Returns the exchanges in JSON format.
+    *
+    * @access public
+    * @return string JSON representation of all exchanges
+    */
+    function asJSON()
+    {
+        return json_encode($this->exchanges);
+    }
+
+    /**
+    * Returns the exchanges in CSV format.
+    *
+    * @access public
+    * @return string
+    */
+    function asCSV()
+    {
+        // TODO
+        return "";
+    }
+
+    /**
     * Returns the full content of the generated DTA file.
     * All added exchanges are processed.
     *
@@ -589,8 +612,6 @@ class DTA extends DTABase
     */
     private function parse($input)
     {
-        dprint("enter parse()\n");
-
         if(strlen($input) % 128) {
             // TODO: useful error handling and return values
             return FALSE;
@@ -645,7 +666,7 @@ class DTA extends DTABase
             } elseif ($type === "LK") {
                 $this->type = DTA_DEBIT;
             } else {
-                throw Payment_DTA_Exception("Invalid type indicator: '$type', ".
+                throw new Payment_DTA_Exception("Invalid type indicator: '$type', ".
                     "expected either 'GK' or 'LK' (@offset 6).");
             }
 
@@ -656,10 +677,10 @@ class DTA extends DTABase
                 "additional_name" => '',
             ));
 	    // TODO: set $Adate or $Aexec_date
-        } catch (ParseError $e) {
+        } catch (Payment_DTA_Exception $e) {
             /* Error in A record */
             dprint("Exception in A record: $e\n");
-            return NULL;
+            throw $e;
         }
 
         while (1) {
@@ -679,7 +700,7 @@ class DTA extends DTABase
             try {
                 // check the record length
                 if (($record_length-187)%29) {
-                    throw Payment_DTA_Exception('invalid C record length');
+                    throw new Payment_DTA_Exception('invalid C record length');
                 }
                 $extensions_length = ($record_length-187)/29;
 
@@ -728,7 +749,7 @@ class DTA extends DTABase
                 /* field 18 */
                 $extensions = $this->get_num($input, $offset, 2);
                 if ($extensions != $extensions_length) {
-                    throw Payment_DTA_Exception('number of extensions '.
+                    throw new Payment_DTA_Exception('number of extensions '.
                         'does not match record length');
                 }
 
@@ -787,7 +808,7 @@ class DTA extends DTABase
                         array_push($extensions_read, array($ext_type, $ext_content));
                         break;
                     case 0:
-                        throw Payment_DTA_Exception('confused about #extensions');
+                        throw new Payment_DTA_Exception('confused about #extensions');
                     }
 
                     // and one switch for the padding
@@ -814,7 +835,7 @@ class DTA extends DTABase
                         switch($ext_type) {
                         case 1:
                             if (!empty($Creceiver_name2)) {
-                                throw Payment_DTA_Exception('multiple '.
+                                throw new Payment_DTA_Exception('multiple '.
                                     'receiver name extensions');
                             } else {
                                 $Creceiver_name2 = $ext_content;
@@ -822,7 +843,7 @@ class DTA extends DTABase
                             break;
                         case 2:
                             if (count($Cpurpose) >= 13) {
-                                throw Payment_DTA_Exception('too many '.
+                                throw new Payment_DTA_Exception('too many '.
                                     'purpose extensions');
                             } else {
                                 array_push($Cpurpose, $ext_content);
@@ -830,22 +851,22 @@ class DTA extends DTABase
                             break;
                         case 3:
                             if (!empty($Csender_name2)) {
-                                throw Payment_DTA_Exception('multiple '.
+                                throw new Payment_DTA_Exception('multiple '.
                                 'sender name extensions');
                             } else {
                                 $Csender_name2 = $ext_content;
                             }
                             break;
                         default:
-                            throw Payment_DTA_Exception('invalid extension type');
+                            throw new Payment_DTA_Exception('invalid extension type');
 
                         }
                     }
                 }
-            } catch (ParseError $e) {
+            } catch (Payment_DTA_Exception $e) {
                 /* Error in C record */
                 dprint("Exception in C record: $e\n");
-                return NULL;
+                throw $e;
             }
 
             if (!isset($Csender_name2)) {$Csender_name2 = "";}
@@ -900,10 +921,10 @@ class DTA extends DTABase
 
             dprint("read the E record with correct checksums\n");
 
-        } catch (ParseError $e) {
+        } catch (Payment_DTA_Exception $e) {
             /* Error in E record */
             dprint("Exception in E record: $e\n");
-            return NULL;
+            throw $e;
         }
     }
 }
