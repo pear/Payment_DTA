@@ -154,7 +154,7 @@ class DTATest extends PHPUnit_Framework_TestCase
         if (!method_exists($this->fixture, 'count')) {
             $this->markTestSkipped('no count() in v1.2.0');
         } else {
-            $this->assertEquals(0, $this->fixture->count());
+            $this->assertSame(0, $this->fixture->count());
         }
     }
 
@@ -179,7 +179,7 @@ class DTATest extends PHPUnit_Framework_TestCase
                 "Test-Verwendungszweck"
             );
 
-            $this->assertEquals(2, $this->fixture->count());
+            $this->assertSame(2, $this->fixture->count());
         }
     }
 
@@ -193,7 +193,7 @@ class DTATest extends PHPUnit_Framework_TestCase
             (float) 0.0,
             "Ein Test-Verwendungszweck"
         );
-        $this->assertEquals(0, $this->fixture->count());
+        $this->assertSame(0, $this->fixture->count());
     }
 
     public function testMaxAmount()
@@ -206,7 +206,7 @@ class DTATest extends PHPUnit_Framework_TestCase
             (float) PHP_INT_MAX/100,
             "Ein Test-Verwendungszweck"
         );
-        $this->assertEquals(1, $this->fixture->count());
+        $this->assertSame(1, $this->fixture->count());
     }
 
     public function testAmountTooBig()
@@ -219,7 +219,7 @@ class DTATest extends PHPUnit_Framework_TestCase
             (float) (PHP_INT_MAX/100+1),
             "Ein Test-Verwendungszweck"
         );
-        $this->assertEquals(0, $this->fixture->count());
+        $this->assertSame(0, $this->fixture->count());
     }
 
     public function testAmountSumNoOverflow()
@@ -237,7 +237,7 @@ class DTATest extends PHPUnit_Framework_TestCase
                     "Ein Test-Verwendungszweck"
                 );
             }
-            $this->assertEquals(10, $this->fixture->count());
+            $this->assertSame(10, $this->fixture->count());
         }
     }
 
@@ -258,7 +258,7 @@ class DTATest extends PHPUnit_Framework_TestCase
                     "Ein Test-Verwendungszweck"
                 );
             }
-            $this->assertEquals(9, $this->fixture->count());
+            $this->assertSame(9, $this->fixture->count());
         }
     }
 
@@ -283,7 +283,7 @@ class DTATest extends PHPUnit_Framework_TestCase
     public function testMakeValidString()
     {
         $result = $this->fixture->makeValidString("ä Ä~öü§ß");
-        $this->assertEquals("AE AE OEUE SS", $result);
+        $this->assertSame("AE AE OEUE SS", $result);
     }
 
     public function testMakeValidStringExtended()
@@ -292,7 +292,7 @@ class DTATest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('v1.2.0 had fewer char replacements');
         } else {
             $result = $this->fixture->makeValidString("ä Äáöøüß");
-            $this->assertEquals("AE AEAOEOUESS", $result);
+            $this->assertSame("AE AEAOEOUESS", $result);
         }
     }
 
@@ -332,7 +332,7 @@ class DTATest extends PHPUnit_Framework_TestCase
             (float) 1234.56,
             "Kurzer Test-Verwendungszweck"
         ));
-        $this->assertEquals(512, strlen($this->fixture->getFileContent()));
+        $this->assertSame(512, strlen($this->fixture->getFileContent()));
     }
 
     public function testAdditionalSenderName()
@@ -353,7 +353,7 @@ class DTATest extends PHPUnit_Framework_TestCase
             (float) 1234.56,
             "Kurzer Test-Verwendungszweck"
         ));
-        $this->assertEquals(512, strlen($this->fixture->getFileContent()));
+        $this->assertSame(512, strlen($this->fixture->getFileContent()));
     }
 
     public function testAdditionalSenderNameWithIntegers()
@@ -374,7 +374,7 @@ class DTATest extends PHPUnit_Framework_TestCase
             (float) 1234.56,
             "Kurzer Test-Verwendungszweck"
         ));
-        $this->assertEquals(512, strlen($this->fixture->getFileContent()));
+        $this->assertSame(512, strlen($this->fixture->getFileContent()));
     }
 
     public function testAdditionalRecvName()
@@ -388,7 +388,7 @@ class DTATest extends PHPUnit_Framework_TestCase
             (float) 1234.56,
             "Kurzer Test-Verwendungszweck"
         ));
-        $this->assertEquals(512, strlen($this->fixture->getFileContent()));
+        $this->assertSame(512, strlen($this->fixture->getFileContent()));
     }
 
     public function testFileLengthRejectLongAccountNumber()
@@ -409,7 +409,7 @@ class DTATest extends PHPUnit_Framework_TestCase
             "Kurzer Test-Verwendungszweck"
         );
 
-        $this->assertEquals(256, strlen($this->fixture->getFileContent()));
+        $this->assertSame(256, strlen($this->fixture->getFileContent()));
     }
 
     public function testFileLengthLeadingZerosAccountNumber()
@@ -431,7 +431,7 @@ class DTATest extends PHPUnit_Framework_TestCase
             "Kurzer Test-Verwendungszweck"
         );
 
-        $this->assertEquals(256, strlen($this->fixture->getFileContent()));
+        $this->assertSame(256, strlen($this->fixture->getFileContent()));
     }
 
     public function testCountLeadingZerosAccountNumber()
@@ -452,7 +452,7 @@ class DTATest extends PHPUnit_Framework_TestCase
             (float) 321.9,
             "Kurzer Test-Verwendungszweck"
         );
-        $this->assertEquals(0, $this->fixture->count());
+        $this->assertSame(0, $this->fixture->count());
     }
 
     /* following tests should check for correct file size, i.e. correct
@@ -468,7 +468,7 @@ class DTATest extends PHPUnit_Framework_TestCase
             (float) 1234.56,
             "Kurzer Test-Verwendungszweck"
         ));
-        $this->assertEquals(128*(1+2+1), strlen($this->fixture->getFileContent()));
+        $this->assertSame(128*(1+2+1), strlen($this->fixture->getFileContent()));
     }
 
     public function testFileLengthTwoTransfersNoExt()
@@ -489,7 +489,7 @@ class DTATest extends PHPUnit_Framework_TestCase
             (float) 321.9,
             "Kurzer Test-Verwendungszweck"
         ));
-        $this->assertEquals(128*(1+(2*2)+1), strlen($this->fixture->getFileContent()));
+        $this->assertSame(128*(1+(2*2)+1), strlen($this->fixture->getFileContent()));
     }
 
     public function testFileLengthOneTransferOneExt()
@@ -504,7 +504,7 @@ class DTATest extends PHPUnit_Framework_TestCase
             (float) 1234.56,
             "Kurzer Test-Verwendungszweck"
         ));
-        $this->assertEquals(128*(1+2+1), strlen($this->fixture->getFileContent()));
+        $this->assertSame(128*(1+2+1), strlen($this->fixture->getFileContent()));
     }
 
     public function testFileLengthOneTransferTwoExt()
@@ -520,7 +520,7 @@ class DTATest extends PHPUnit_Framework_TestCase
             array("Verwendungszweck Zeile 1",
                   "Verwendungszweck Zeile 2")
         ));
-        $this->assertEquals(128*(1+2+1), strlen($this->fixture->getFileContent()));
+        $this->assertSame(128*(1+2+1), strlen($this->fixture->getFileContent()));
     }
 
     public function testFileLengthOneTransferTwoExt2a()
@@ -543,7 +543,7 @@ class DTATest extends PHPUnit_Framework_TestCase
             (float) 1234.56,
             array("Verwendungszweck Zeile 1")
         ));
-        $this->assertEquals(128*(1+2+1), strlen($this->fixture->getFileContent()));
+        $this->assertSame(128*(1+2+1), strlen($this->fixture->getFileContent()));
     }
 
     public function testFileLengthOneTransferTwoExt2b()
@@ -566,7 +566,7 @@ class DTATest extends PHPUnit_Framework_TestCase
             (float) 1234.56,
             "Verwendungszweck Zeile 1"
         ));
-        $this->assertEquals(128*(1+2+1), strlen($this->fixture->getFileContent()));
+        $this->assertSame(128*(1+2+1), strlen($this->fixture->getFileContent()));
     }
 
     public function testFileLengthOneTransferThreeExt()
@@ -583,7 +583,7 @@ class DTATest extends PHPUnit_Framework_TestCase
                   "Verwendungszweck Zeile 3")
         ));
         // C record needs three parts now
-        $this->assertEquals(128*(1+3+1), strlen($this->fixture->getFileContent()));
+        $this->assertSame(128*(1+3+1), strlen($this->fixture->getFileContent()));
     }
 
     public function testFileLengthOneTransferSixExt()
@@ -602,7 +602,7 @@ class DTATest extends PHPUnit_Framework_TestCase
                   "Verwendungszweck Zeile 5",
                   "Verwendungszweck Zeile 6")
         ));
-        $this->assertEquals(128*(1+3+1), strlen($this->fixture->getFileContent()));
+        $this->assertSame(128*(1+3+1), strlen($this->fixture->getFileContent()));
     }
 
     public function testFileLengthOneTransferSevenExt()
@@ -623,7 +623,7 @@ class DTATest extends PHPUnit_Framework_TestCase
                   "Verwendungszweck Zeile 7")
         ));
         // C record needs four parts now
-        $this->assertEquals(128*(1+4+1), strlen($this->fixture->getFileContent()));
+        $this->assertSame(128*(1+4+1), strlen($this->fixture->getFileContent()));
     }
 
     public function testFileLengthOneTransferTenExt()
@@ -646,7 +646,7 @@ class DTATest extends PHPUnit_Framework_TestCase
                   "Verwendungszweck Zeile 9",
                   "Verwendungszweck Zeile 10")
         ));
-        $this->assertEquals(128*(1+4+1), strlen($this->fixture->getFileContent()));
+        $this->assertSame(128*(1+4+1), strlen($this->fixture->getFileContent()));
     }
 
     public function testFileLengthOneTransferElevenExt()
@@ -671,7 +671,7 @@ class DTATest extends PHPUnit_Framework_TestCase
                   "Verwendungszweck Zeile 11")
         ));
         // C record needs five parts now
-        $this->assertEquals(128*(1+5+1), strlen($this->fixture->getFileContent()));
+        $this->assertSame(128*(1+5+1), strlen($this->fixture->getFileContent()));
     }
 
     public function testFileLengthOneTransferFourteenExt()
@@ -698,7 +698,7 @@ class DTATest extends PHPUnit_Framework_TestCase
                   "Verwendungszweck Zeile 13",
                   "Verwendungszweck Zeile 14")
         ));
-        $this->assertEquals(128*(1+5+1), strlen($this->fixture->getFileContent()));
+        $this->assertSame(128*(1+5+1), strlen($this->fixture->getFileContent()));
     }
 
     public function testFileLengthOneTransferFifteenExt()
@@ -734,7 +734,7 @@ class DTATest extends PHPUnit_Framework_TestCase
                   "Verwendungszweck Zeile 13",
                   "Verwendungszweck Zeile 14")
         ));
-        $this->assertEquals(128*(1+6+1), strlen($this->fixture->getFileContent()));
+        $this->assertSame(128*(1+6+1), strlen($this->fixture->getFileContent()));
     }
 
     public function testPurposeLineLimit()
@@ -762,7 +762,7 @@ class DTATest extends PHPUnit_Framework_TestCase
                   "Verwendungszweck Zeile 14",
                   "Verwendungszweck Zeile 15")
         ));
-        $this->assertEquals(0, $this->fixture->count());
+        $this->assertSame(0, $this->fixture->count());
     }
 
     public function testSaveFileTrue()
@@ -787,7 +787,7 @@ class DTATest extends PHPUnit_Framework_TestCase
         if ($this->fixture->saveFile($tmpfname)) {
             $file_content = file_get_contents($tmpfname);
             unlink($tmpfname);
-            $this->assertEquals(768, strlen($file_content));
+            $this->assertSame(768, strlen($file_content));
         } else {
             $this->assertTrue(false);
         }
@@ -842,7 +842,7 @@ class DTATest extends PHPUnit_Framework_TestCase
             '                                                                '.
             '0128E     000000200000000000000000000002715800000000000066668888'.
             '0000000155646                                                   ';
-        $this->assertEquals($expected, $this->fixture->getFileContent());
+        $this->assertSame($expected, $this->fixture->getFileContent());
     }
 
     public function testGetMetaData1()
@@ -935,14 +935,14 @@ class DTATest extends PHPUnit_Framework_TestCase
 
         foreach ($this->fixture as $key => $value) {
             // from setUp()
-            $this->assertEquals(strtoupper("Senders Name"), $value['sender_name']);
-            $this->assertEquals("16050000", $value['sender_bank_code']);
-            $this->assertEquals("3503007767", $value['sender_account_number']);
+            $this->assertSame(strtoupper("Senders Name"), $value['sender_name']);
+            $this->assertSame("16050000", $value['sender_bank_code']);
+            $this->assertSame("3503007767", $value['sender_account_number']);
 
             // same values in addExchange() above
-            $this->assertEquals(strtoupper("A Receivers Name"), $value['receiver_name']);
-            $this->assertEquals("16050000", $value['receiver_bank_code']);
-            $this->assertEquals("3503007767", $value['receiver_account_number']);
+            $this->assertSame(strtoupper("A Receivers Name"), $value['receiver_name']);
+            $this->assertSame("16050000", $value['receiver_bank_code']);
+            $this->assertSame("3503007767", $value['receiver_account_number']);
             $this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY,
                 $value['purposes']);
 

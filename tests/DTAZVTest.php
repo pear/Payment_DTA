@@ -151,8 +151,8 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
 
     public function testCountEmpty()
     {
-        $this->assertEquals(0, $this->fixture->count());
-        $this->assertEquals(256+256, strlen($this->fixture->getFileContent()));
+        $this->assertSame(0, $this->fixture->count());
+        $this->assertSame(256+256, strlen($this->fixture->getFileContent()));
     }
 
     public function testCountNonEmpty()
@@ -173,8 +173,8 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
             "Ein ganz lange Test-Verwendungszweck der über 35 Zeichen lang sein soll um umbrochen zu werden"
         ));
 
-        $this->assertEquals(2, $this->fixture->count());
-        $this->assertEquals(256+768+768+256, strlen($this->fixture->getFileContent()));
+        $this->assertSame(2, $this->fixture->count());
+        $this->assertSame(256+768+768+256, strlen($this->fixture->getFileContent()));
     }
 
     public function testInvalidBankCode()
@@ -195,8 +195,8 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
             "Ein ganz lange Test-Verwendungszweck der über 35 Zeichen lang sein soll um umbrochen zu werden"
         ));
 
-        $this->assertEquals(1, $this->fixture->count());
-        $this->assertEquals(256+768+256, strlen($this->fixture->getFileContent()));
+        $this->assertSame(1, $this->fixture->count());
+        $this->assertSame(256+768+256, strlen($this->fixture->getFileContent()));
     }
 
     public function testDTAZVMaxAmountPass()
@@ -209,7 +209,7 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
             "Ein ganz lange Test-Verwendungszweck der über 35 Zeichen lang sein soll um umbrochen zu werden"
         ));
 
-        $this->assertEquals(1, $this->fixture->count());
+        $this->assertSame(1, $this->fixture->count());
     }
 
     public function testDTAZVMaxAmountFail()
@@ -222,7 +222,7 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
             12500.01,
             "Ein ganz lange Test-Verwendungszweck der über 35 Zeichen lang sein soll um umbrochen zu werden"
         ));
-        $this->assertEquals(0, $this->fixture->count());
+        $this->assertSame(0, $this->fixture->count());
     }
 
     public function testDTAZVLowerMaxAmountPass()
@@ -240,7 +240,7 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
             "Test-Verwendungszweck"
         ));
 
-        $this->assertEquals(1, $this->fixture->count());
+        $this->assertSame(1, $this->fixture->count());
     }
 
     public function testDTAZVLowerMaxAmountFail()
@@ -258,7 +258,7 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
             1000.01,
             "Test-Verwendungszweck"
         ));
-        $this->assertEquals(0, $this->fixture->count());
+        $this->assertSame(0, $this->fixture->count());
     }
 
     public function testDTAZVHigherMaxAmountPass()
@@ -276,7 +276,7 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
             "Test-Verwendungszweck"
         ));
 
-        $this->assertEquals(1, $this->fixture->count());
+        $this->assertSame(1, $this->fixture->count());
     }
 
     public function testDTAZVHigherMaxAmountFail()
@@ -294,7 +294,7 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
             50000.00999,
             "Test-Verwendungszweck"
         ));
-        $this->assertEquals(0, $this->fixture->count());
+        $this->assertSame(0, $this->fixture->count());
     }
 
     public function testDTAZVDisableMaxAmountPass()
@@ -312,7 +312,7 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
             "Test-Verwendungszweck"
         ));
 
-        $this->assertEquals(1, $this->fixture->count());
+        $this->assertSame(1, $this->fixture->count());
     }
 
     public function testDTAZVDisableMaxAmountFail()
@@ -330,7 +330,7 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
             PHP_INT_MAX/100 + 1,
             "Test-Verwendungszweck"
         ));
-        $this->assertEquals(0, $this->fixture->count());
+        $this->assertSame(0, $this->fixture->count());
     }
 
 
@@ -347,8 +347,8 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
                 "um umbrochen zu werden")
         ));
 
-        $this->assertEquals(1, $this->fixture->count());
-        $this->assertEquals(256+768+256, strlen($this->fixture->getFileContent()));
+        $this->assertSame(1, $this->fixture->count());
+        $this->assertSame(256+768+256, strlen($this->fixture->getFileContent()));
     }
 
     public function testUmlautInRecvName()
@@ -364,8 +364,8 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
                 "um umbrochen zu werden")
         ));
 
-        $this->assertEquals(1, $this->fixture->count());
-        $this->assertEquals(256+768+256, strlen($this->fixture->getFileContent()));
+        $this->assertSame(1, $this->fixture->count());
+        $this->assertSame(256+768+256, strlen($this->fixture->getFileContent()));
     }
 
     public function testAdditionalSenderName()
@@ -386,8 +386,8 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
             $DTAZV_account
         ));
 
-        $this->assertEquals(1, $this->fixture->count());
-        $this->assertEquals(256+768+256, strlen($this->fixture->getFileContent()));
+        $this->assertSame(1, $this->fixture->count());
+        $this->assertSame(256+768+256, strlen($this->fixture->getFileContent()));
     }
 
     public function testAdditionalSenderNameWithIntegers()
@@ -408,8 +408,8 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
             $DTAZV_test_account
         ));
 
-        $this->assertEquals(1, $this->fixture->count());
-        $this->assertEquals(256+768+256, strlen($this->fixture->getFileContent()));
+        $this->assertSame(1, $this->fixture->count());
+        $this->assertSame(256+768+256, strlen($this->fixture->getFileContent()));
     }
 
     public function testValidStringTrue()
@@ -433,7 +433,7 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
     public function testMakeValidString()
     {
         $result = $this->fixture->makeValidString("ä Ä~áöøü§ß");
-        $this->assertEquals("AE AE AOEOUE SS", $result);
+        $this->assertSame("AE AE AOEOUE SS", $result);
     }
 
     public function testFileLength()
@@ -454,7 +454,7 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
             "Ein ganz lange Test-Verwendungszweck der über 35 Zeichen lang sein soll um umbrochen zu werden"
         ));
 
-        $this->assertEquals(256+768+768+256, strlen($this->fixture->getFileContent()));
+        $this->assertSame(256+768+768+256, strlen($this->fixture->getFileContent()));
     }
 
     public function testChecksum()
@@ -482,7 +482,7 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
          * thus intval(1234.56)+intval(1234.56) = 2468
          */
         $content = $this->fixture->getFileContent();
-        $this->assertEquals(2468, (int)substr($content, 256+768+768+5, 15));
+        $this->assertSame(2468, (int)substr($content, 256+768+768+5, 15));
     }
 
     public function testGermanBLZ()
@@ -503,7 +503,7 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
             "Ein ganz lange Test-Verwendungszweck der über 35 Zeichen lang sein soll um umbrochen zu werden"
         ));
 
-        $this->assertEquals(256+768+768+256, strlen($this->fixture->getFileContent()));
+        $this->assertSame(256+768+768+256, strlen($this->fixture->getFileContent()));
     }
 
     public function testSaveFileTrue()
@@ -521,7 +521,7 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
         if ($this->fixture->saveFile($tmpfname)) {
             $file_content = file_get_contents($tmpfname);
             unlink($tmpfname);
-            $this->assertEquals(256+768+256, strlen($file_content));
+            $this->assertSame(256+768+256, strlen($file_content));
         } else {
             $this->assertTrue(false);
         }
@@ -593,7 +593,7 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
             '                                                                '.
             '                                                                '.
             '                                                                ';
-        $this->assertEquals($expected, $this->fixture->getFileContent());
+        $this->assertSame($expected, $this->fixture->getFileContent());
     }
 
     public function testGetMetaData1()
@@ -682,14 +682,14 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
 
         foreach ($this->fixture as $key => $value) {
             // from setUp()
-            $this->assertEquals(strtoupper("Senders Name"), $value['sender_name']);
-            $this->assertEquals("16050000", $value['sender_bank_code']);
-            $this->assertEquals("3503007767", $value['sender_account_number']);
+            $this->assertSame(strtoupper("Senders Name"), $value['sender_name']);
+            $this->assertSame("16050000", $value['sender_bank_code']);
+            $this->assertSame("3503007767", $value['sender_account_number']);
 
             // same values in addExchange() above
-            $this->assertEquals(strtoupper("A Receivers Name"), $value['receiver_name']);
-            $this->assertEquals("RZTIAT22263", $value['receiver_bank_code']);
-            $this->assertEquals("DE21700519950000007229", $value['receiver_account_number']);
+            $this->assertSame(strtoupper("A Receivers Name"), $value['receiver_name']);
+            $this->assertSame("RZTIAT22263", $value['receiver_bank_code']);
+            $this->assertSame("DE21700519950000007229", $value['receiver_account_number']);
             $this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY,
                 $value['purposes']);
 
