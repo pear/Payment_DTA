@@ -55,6 +55,22 @@
  */
 
 /**
+ * include PEAR_Exception class
+ */
+require_once 'PEAR/Exception.php';
+
+class Payment_DTA_Exception extends PEAR_Exception {};
+
+/*
+ * small debugging helper for initial testing
+ * TODO: remove later
+ */
+function dprint($text)
+{
+    //print $text;
+}
+
+/**
 * DTABase class provides common functions to classes DTA and DTAZV.
 *
 * @category Payment
@@ -111,8 +127,6 @@ abstract class DTABase
 
     /**
     * Constructor.
-    *
-    * @access protected
     */
     function __construct()
     {
@@ -121,6 +135,84 @@ abstract class DTABase
         $this->exchanges            = array();
         $this->timestamp            = time();
         $this->sum_amounts          = 0;
+    }
+
+    /**
+    * Checks if string $input contains the expected value at an offset.
+    * After the check the offset is increased.
+    *
+    * @param string  $input string to check
+    * @param integer $offset current offset into input
+    * @param string  $expected expected string at the offset
+    *
+    * @return boolean true if input is as expected, otherwise an exception is thrown
+    * @throws Payment_DTA_Exception if input differs from expected string
+    * @access protected
+    */
+    protected function check_str($input, &$offset, $expected) {
+        $len   = strlen($expected);
+        $found = substr($input, $offset, $len);
+
+        if ($found !== $expected) {
+            throw new Payment_DTA_Exception("input string at position $offset ".
+                "('$found') does not match expected value '$expected'");
+        } else {
+            dprint("check: '$found'\n");
+            $offset += $len;
+            return true;
+        }
+    }
+
+    /**
+    * Read string of given length from input at offset.
+    * Afterwards the offset is increased.
+    *
+    * @param string  $input string to check
+    * @param integer $offset current offset into input
+    * @param integer $length chars to read
+    *
+    * @return string the read string of length $length
+    * @throws Payment_DTA_Exception if input is too short or contains invalid chars
+    * @access protected
+    */
+    protected function get_str($input, &$offset, $length) {
+        $rc = substr($input, $offset, $length);
+        if (!$rc) {
+            throw new Payment_DTA_Exception("input string not long enough to ".
+                "read $length bytes at position $offset");
+        } elseif (!$this->validString($rc)) {
+            throw new Payment_DTA_Exception("invalid String '$rc' at position $offset");
+        } else {
+            $offset += $length;
+            dprint("get: '$rc'\n");
+            return $rc;
+        }
+    }
+
+    /**
+    * Read integer number of given length from input at offset.
+    * Afterwards the offset is increased.
+    *
+    * @param string  $input string to check
+    * @param integer $offset current offset into input
+    * @param integer $length chars to read
+    *
+    * @return int the read number
+    * @throws Payment_DTA_Exception if input is too short or contains invalid chars
+    * @access protected
+    */
+    protected function get_num($input, &$offset, $length) {
+        $rc = substr($input, $offset, $length);
+        if (!$rc) {
+            throw new Payment_DTA_Exception("input string not long enough to ".
+                "read $length bytes at position $offset");
+        } elseif (!ctype_digit($rc)) {
+            throw new Payment_DTA_Exception("invalid Number '$rc' at position $offset");
+        } else {
+            $offset += $length;
+            dprint("get: '$rc'\n");
+            return $rc;
+        }
     }
 
     /**

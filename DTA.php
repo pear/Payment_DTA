@@ -120,23 +120,38 @@ class DTA extends DTABase
     protected $sum_accounts;
 
     /**
-    * Constructor. The type of the DTA file must be set. One file can
-    * only contain credits (DTA_CREDIT) OR debits (DTA_DEBIT).
-    * This is a definement of the DTA format.
+    * Constructor.
     *
-    * @param integer $type Determines the type of the DTA file.
-    *                       Either DTA_CREDIT or DTA_DEBIT. Must be set.
+    * Either creates an empty DTA object or imports one.
+    * If the parameter is a string, then it is expected to be in DTA format
+    * an its content (sender and transactions) is importet.
+    * Otherwise the parameter has to be the type of the new DTA object,
+    * either DTA_CREDIT or DTA_DEBIT.
+    *
+    * If a given string cannot be parsed, an empty DTA object of
+    * type DTA_CREDIT is created.
+    *
+    * @param integer|string $type Either a string with DTA data or the type of the
+    *                       new DTA file (DTA_CREDIT or DTA_DEBIT). Must be set.
     *
     * @access public
     */
     function __construct($type)
     {
         parent::__construct();
-
-        $this->type = $type;
-
         $this->sum_bankcodes = 0;
         $this->sum_accounts  = 0;
+
+        if (is_int($type)) {
+            $this->type = $type;
+        } elseif (is_string($type)) {
+            try {
+                $this->parse($type);
+            } catch (Payment_DTA_Exception $e) {
+                // and now?
+                $this->type = DTA_CREDIT;
+            }
+        }
     }
 
     /**
@@ -562,5 +577,333 @@ class DTA extends DTABase
         $meta["sum_accounts"]  = floatval($this->sum_accounts);
 
         return $meta;
+    }
+
+    /**
+    * Parser. Read data from an existing DTA file content.
+    *
+    * @param string $input content of DTA file
+    *
+    * @throws Payment_DTA_Exception on unrecognized input
+    * @access private
+    */
+    private function parse($input)
+    {
+        dprint("enter parse()\n");
+
+        if(strlen($input) % 128) {
+            // TODO: useful error handling and return values
+            return FALSE;
+        }
+
+        $checksum_account = 0;
+        $checksum_blz     = 0;
+        $checksum_amount  = 0;
+        $offset = 0;
+
+        /* A record */
+        try {
+            /* field 1+2 */
+            $this->check_str($input, $offset, "0128A");
+            /* field  3 */
+            $type = $this->get_str($input, $offset, 2);
+            /* field  4 */
+            $Asender_blz = $this->get_num($input, $offset, 8);
+            /* field  5 */
+            $this->check_str($input, $offset, "00000000");
+            /* field  6 */
+            $Asender_name = rtrim($this->get_str($input, $offset, 27));
+            /* field  7 */
+            $Adate = $this->get_num($input, $offset, 6);
+            /* field  8 */
+            $this->check_str($input, $offset, "    ");
+            /* field  9 */
+            $Asender_account = $this->get_num($input, $offset, 10);
+            /* field 10 */
+            $this->check_str($input, $offset, "0000000000");
+            /* field 11a */
+            $this->check_str($input, $offset, str_repeat(" ", 15));
+            /* field 11b
+             * this holds an optional execution date, DTA will not fill
+             * the field and DTA_Reader will igrore its value
+             */
+            $this->get_str($input, $offset, 8);
+            /* field 11c */
+            $this->check_str($input, $offset, str_repeat(" ", 24));
+            /* field 12 */
+            $this->check_str($input, $offset, "1");
+
+            // use read values to construct fill this object's variables
+            dprint("read the A record with values:\n");
+            dprint("sender name: $Asender_name\n");
+            dprint("sender BLZ: $Asender_blz\n");
+            dprint("sender account: $Asender_account\n");
+            dprint("-----------------------\n");
+
+            if ($type === "GK") {
+                $this->type = DTA_CREDIT;
+            } elseif ($type === "LK") {
+                $this->type = DTA_DEBIT;
+            } else {
+                throw Payment_DTA_Exception("Invalid type indicator: '$type', ".
+                    "expected either 'GK' or 'LK' (@offset 6).");
+            }
+
+            $this->setAccountFileSender(array(
+                "name"            => $Asender_name,
+                "bank_code"       => $Asender_blz,
+                "account_number"  => $Asender_account,
+                "additional_name" => '',
+            ));
+	    // TODO: set $Adate or $Aexec_date
+        } catch (ParseError $e) {
+            /* Error in A record */
+            dprint("Exception in A record: $e\n");
+            return NULL;
+        }
+
+        while (1) {
+            // TODO: add try/catch block
+            /* field 1 */
+            $record_length = $this->get_num($input, $offset, 4);
+            /* field 2 */
+            $record_type = $this->get_str($input, $offset, 1);
+
+            if ($record_type == 'E') {
+                break;
+            } elseif ($record_type != 'C') {
+                // Error, invalid record type
+                return NULL;
+            }
+            /* C record */
+            try {
+                // check the record length
+                if (($record_length-187)%29) {
+                    throw Payment_DTA_Exception('invalid C record length');
+                }
+                $extensions_length = ($record_length-187)/29;
+
+                /* field  3 */
+                $Cbank_blz = $this->get_num($input, $offset, 8); // usually 0
+                /* field  4 */
+                $Creceiver_blz = $this->get_num($input, $offset, 8);
+                /* field  5 */
+                $Creceiver_account = $this->get_num($input, $offset, 10);
+                /* field  6 */
+                $this->check_str($input, $offset, "0");
+                // either 0s or aninternal customer number:
+                $this->get_num($input, $offset, 11);
+                $this->check_str($input, $offset, "0");
+                /* field  7 */
+                // kind of payment, has form '5x000'
+                $this->check_str($input, $offset, "5"); // 5
+                $this->get_str($input, $offset, 1);
+                $this->check_str($input, $offset, "000");
+                /* field  8 */
+                $this->check_str($input, $offset, " ");
+                /* field  9 */
+                $this->check_str($input, $offset, "00000000000");
+                /* field 10 */
+                $Csender_blz = $this->get_num($input, $offset, 8);
+                /* field 11 */
+                $Csender_account = $this->get_num($input, $offset, 10);
+                /* field 12 */
+                $Camount = $this->get_num($input, $offset, 11);
+                /* field 13 */
+                $this->check_str($input, $offset, "   ");
+                /* field 14a */
+                $Creceiver_name = rtrim($this->get_str($input, $offset, 27));
+                /* field 14b */
+                $this->check_str($input, $offset, "        ");
+                // end 1st part of C record
+                assert($offset % 128 === 0);
+                /* field 15 */
+                $Csender_name = rtrim($this->get_str($input, $offset, 27));
+                /* field 16 */
+                $Cpurpose = array(rtrim($this->get_str($input, $offset, 27)));
+                /* field 17a */
+                $this->check_str($input, $offset, "1");
+                /* field 17b */
+                $this->check_str($input, $offset, "  ");
+                /* field 18 */
+                $extensions = $this->get_num($input, $offset, 2);
+                if ($extensions != $extensions_length) {
+                    throw Payment_DTA_Exception('number of extensions '.
+                        'does not match record length');
+                }
+
+                // extensions to C record, read into array & processed later
+                $extensions_read = array();
+
+                // first handle the up to 2 extensions inside the 2nd part
+                if ($extensions == 0) { // only padding
+                    $this->check_str($input, $offset, str_repeat(" ", 69));
+                } elseif ($extensions == 1) {
+                    /* field 19 */
+                    $ext_type = $this->get_num($input, $offset, 2);
+                    /* field 20 */
+                    $ext_content = $this->get_str($input, $offset, 27);
+                    array_push($extensions_read, array($ext_type, $ext_content));
+                    /* fields 21,22,23 */
+                    $this->check_str($input, $offset, str_repeat(" ", 2+27+11));
+                } else {
+                    /* field 19 */
+                    $ext_type = $this->get_num($input, $offset, 2);
+                    /* field 20 */
+                    $ext_content = $this->get_str($input, $offset, 27);
+                    array_push($extensions_read, array($ext_type, $ext_content));
+                    /* field 21 */
+                    $ext_type = $this->get_num($input, $offset, 2);
+                    /* field 22 */
+                    $ext_content = $this->get_str($input, $offset, 27);
+                    array_push($extensions_read, array($ext_type, $ext_content));
+                    /* fields 23 */
+                    $this->check_str($input, $offset, str_repeat(" ", 11));
+                }
+                // end 2nd part of C record
+                assert($offset % 128 === 0);
+
+                // up to 4 more parts, each with 128 bytes & up to 4 extensions
+                while (count($extensions_read) < $extensions) {
+                    $ext_in_part = $extensions - count($extensions_read);
+                    // one switch to read the content
+                    switch($ext_in_part) {
+                    default: // =4
+                    case 4: /* fallthrough */
+                        $ext_type = $this->get_num($input, $offset, 2);
+                        $ext_content = $this->get_str($input, $offset, 27);
+                        array_push($extensions_read, array($ext_type, $ext_content));
+                    case 3: /* fallthrough */
+                        $ext_type = $this->get_num($input, $offset, 2);
+                        $ext_content = $this->get_str($input, $offset, 27);
+                        array_push($extensions_read, array($ext_type, $ext_content));
+                    case 2: /* fallthrough */
+                        $ext_type = $this->get_num($input, $offset, 2);
+                        $ext_content = $this->get_str($input, $offset, 27);
+                        array_push($extensions_read, array($ext_type, $ext_content));
+                    case 1: /* fallthrough */
+                        $ext_type = $this->get_num($input, $offset, 2);
+                        $ext_content = $this->get_str($input, $offset, 27);
+                        array_push($extensions_read, array($ext_type, $ext_content));
+                        break;
+                    case 0:
+                        throw Payment_DTA_Exception('confused about #extensions');
+                    }
+
+                    // and one switch for the padding
+                    switch($ext_in_part) {
+                    case 1:
+                        $this->check_str($input, $offset, str_repeat(" ", 29));
+                    case 2: /* fallthrough */
+                        $this->check_str($input, $offset, str_repeat(" ", 29));
+                    case 3: /* fallthrough */
+                        $this->check_str($input, $offset, str_repeat(" ", 29));
+                    case 4: /* fallthrough */
+                    default: /* fallthrough */
+                        $this->check_str($input, $offset, str_repeat(" ", 12));
+                        break;
+                    }
+                    // end n-th part of C record
+                    assert($offset % 128 === 0);
+
+                    // process read extension content
+                    foreach ($extensions_read as $ext) {
+                        $ext_type = $ext[0];
+                        $ext_content = $ext[1];
+
+                        switch($ext_type) {
+                        case 1:
+                            if (!empty($Creceiver_name2)) {
+                                throw Payment_DTA_Exception('multiple '.
+                                    'receiver name extensions');
+                            } else {
+                                $Creceiver_name2 = $ext_content;
+                            }
+                            break;
+                        case 2:
+                            if (count($Cpurpose) >= 13) {
+                                throw Payment_DTA_Exception('too many '.
+                                    'purpose extensions');
+                            } else {
+                                array_push($Cpurpose, $ext_content);
+                            }
+                            break;
+                        case 3:
+                            if (!empty($Csender_name2)) {
+                                throw Payment_DTA_Exception('multiple '.
+                                'sender name extensions');
+                            } else {
+                                $Csender_name2 = $ext_content;
+                            }
+                            break;
+                        default:
+                            throw Payment_DTA_Exception('invalid extension type');
+
+                        }
+                    }
+                }
+            } catch (ParseError $e) {
+                /* Error in C record */
+                dprint("Exception in C record: $e\n");
+                return NULL;
+            }
+
+            if (!isset($Csender_name2)) {$Csender_name2 = "";}
+            if (!isset($Creceiver_name2)) {$Creceiver_name2 = "";}
+            dprint("read a C record with values:\n");
+            dprint("sender: $Csender_name, $Csender_name2, $Csender_blz, $Csender_account\n");
+            dprint("receiver: $Creceiver_name, $Creceiver_name2, $Creceiver_blz, $Creceiver_account\n");
+            dprint("amount: $Camount\n");
+            dprint("purpose: ".join($Cpurpose, "/")."\n");
+            dprint("-----------------------\n");
+
+
+            $this->addExchange(
+                array('name' => $Creceiver_name,
+                    'bank_code' => $Creceiver_blz,
+                    'account_number' => $Creceiver_account,
+                    'additional_name' => $Creceiver_name2),
+                $Camount/100.0,
+                $Cpurpose,
+                array('name' => $Csender_name,
+                    'bank_code' => $Csender_blz,
+                    'account_number' => $Csender_account,
+                    'additional_name' => $Csender_name2)
+            );
+            $checksum_account += $Creceiver_account;
+            $checksum_blz     += $Creceiver_blz;
+            $checksum_amount  += $Camount;
+        } // while(1)
+        /* E record */
+        try {
+            /* already read field 1 & 2 */
+            /* field 3 */
+            $this->check_str($input, $offset, "     ");
+            /* field 4 */
+            $this->check_str($input, $offset,
+                str_pad($this->count(), 7, "0", STR_PAD_LEFT));
+            /* field 5 */
+            $this->check_str($input, $offset, str_repeat("0", 13));
+            /* field 6 */
+            $this->check_str($input, $offset,
+                str_pad($checksum_account, 17, "0", STR_PAD_LEFT));
+            /* field 7 */
+            $this->check_str($input, $offset,
+                str_pad($checksum_blz, 17, "0", STR_PAD_LEFT));
+            /* field 8 */
+            $this->check_str($input, $offset,
+                str_pad($checksum_amount, 13, "0", STR_PAD_LEFT));
+            /* field 9 */
+            $this->check_str($input, $offset, str_repeat(" ", 51));
+            // end of E record
+            assert($offset % 128 === 0);
+
+            dprint("read the E record with correct checksums\n");
+
+        } catch (ParseError $e) {
+            /* Error in E record */
+            dprint("Exception in E record: $e\n");
+            return NULL;
+        }
     }
 }

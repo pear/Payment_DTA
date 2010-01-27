@@ -823,6 +823,7 @@ class DTATest extends PHPUnit_Framework_TestCase
             (float) 321.9,
             "Test-Verwendungszweck"
         );
+
         $date = strftime("%d%m%y", time());
 
         $expected = // 64 chars per line:
@@ -902,4 +903,34 @@ class DTATest extends PHPUnit_Framework_TestCase
         $this->assertTrue(strftime("%d%m%y", $meta["date"])
                             == strftime("%d%m%y", time()));
     }
+
+    public function testParserBasics()
+    {
+        $teststring = // 64 chars per line; same as in testContent()
+            '0128AGK1605000000000000SENDERS NAME               '.strftime("%d%m%y", time()).'    3503'.
+            '0077670000000000                                               1'.
+            '0187C16050000333344440013579000000000000000051000 00000000000160'.
+            '50000350300776700000123456   FRANZ MUELLER                      '.
+            'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
+            '                                                                '.
+            '0187C16050000333344440013579000000000000000051000 00000000000160'.
+            '50000350300776700000032190   FRANZ MUELLER                      '.
+            'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
+            '                                                                '.
+            '0128E     000000200000000000000000000002715800000000000066668888'.
+            '0000000155646                                                   ';
+        $dta = new DTA($teststring);
+        $meta = $dta->getMetaData();
+        $this->assertTrue($meta["sender_name"]      == "SENDERS NAME");
+        $this->assertTrue($meta["sender_bank_code"] == "16050000");
+        $this->assertTrue($meta["sender_account"]   == "3503007767");
+        $this->assertTrue($meta["sum_amounts"]      == "1556.46");
+        $this->assertTrue($meta["sum_bankcodes"]    == 2*33334444);
+        $this->assertTrue($meta["sum_accounts"]     == 2*13579000);
+        $this->assertTrue($meta["count"]            == "2");
+        $this->assertTrue(strftime("%d%m%y", $meta["date"])
+                            == strftime("%d%m%y", time()));
+
+    }
+
 }
