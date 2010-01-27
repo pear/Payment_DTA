@@ -5,6 +5,9 @@ require_once 'PHPUnit/Framework.php';
 chdir(dirname(__FILE__) . '/../');
 require_once 'DTAZV.php';
 
+// to prevent E_STRICT errors from strftime()
+date_default_timezone_set('Europe/Berlin');
+
 class DTAZVTest extends PHPUnit_Framework_TestCase
 {
     protected $backupGlobals = FALSE;
