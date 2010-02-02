@@ -59,7 +59,54 @@
  */
 require_once 'PEAR/Exception.php';
 
+/**
+* Payment_DTA_Exception is this packages' basic exception class.
+*
+* @category Payment
+* @package  Payment_DTA
+* @author   Martin Schütte <info@mschuette.name>
+* @license  http://www.debian.org/misc/bsd.license  BSD License (3 Clause)
+* @version  Release: @package_version@
+* @link     http://pear.php.net/package/Payment_DTA
+*/
 class Payment_DTA_Exception extends PEAR_Exception { }
+
+/**
+* Payment_DTA_ParseException indicates parsing problems.
+*
+* @category Payment
+* @package  Payment_DTA
+* @author   Martin Schütte <info@mschuette.name>
+* @license  http://www.debian.org/misc/bsd.license  BSD License (3 Clause)
+* @version  Release: @package_version@
+* @link     http://pear.php.net/package/Payment_DTA
+*/
+class Payment_DTA_ParseException extends Payment_DTA_Exception {}
+
+/**
+* Payment_DTA_FatalParseException indicates a non-recoverable parsing problem,
+* that makes it impossible to build a usable object.
+*
+* @category Payment
+* @package  Payment_DTA
+* @author   Martin Schütte <info@mschuette.name>
+* @license  http://www.debian.org/misc/bsd.license  BSD License (3 Clause)
+* @version  Release: @package_version@
+* @link     http://pear.php.net/package/Payment_DTA
+*/
+class Payment_DTA_FatalParseException extends Payment_DTA_ParseException {}
+
+/**
+* Payment_DTA_ChecksumException indicates a wrong checksum in a DTA file.
+*
+* @category Payment
+* @package  Payment_DTA
+* @author   Martin Schütte <info@mschuette.name>
+* @license  http://www.debian.org/misc/bsd.license  BSD License (3 Clause)
+* @version  Release: @package_version@
+* @link     http://pear.php.net/package/Payment_DTA
+*/
+class Payment_DTA_ChecksumException extends Payment_DTA_Exception {}
 
 /*
  * small debugging helper for initial testing

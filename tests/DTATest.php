@@ -1094,7 +1094,138 @@ class DTATest extends PHPUnit_Framework_TestCase
             '                                                                '.
             '0128E     000000200000000000000000000002715800000000000066668888'.
             '0000000155646                                                   ';
+        $this->setExpectedException('Payment_DTA_FatalParseException');
         $dta = new DTA($teststring);
-        $this->assertTrue($dta->count() === 0);
     }
+
+    public function testParserWrongLength()
+    {
+        $teststring = // same as in testContent() but 1 byte longer
+            '0128AGK1605000000000000SENDERS NAME               '.strftime("%d%m%y", time()).'    3503'.
+            '0077670000000000                                               1'.
+            '0187C16050000333344440013579000000000000000051000 00000000000160'.
+            '50000350300776700000123456   FRANZ MUELLER                      '.
+            'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
+            '                                                                '.
+            '0187C16050000333344440013579000000000000000051000 00000000000160'.
+            '50000350300776700000032190   FRANZ MUELLER                      '.
+            'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
+            '                                                                '.
+            '0128E     000000200000000000000000000002715800000000000066668888'.
+            '0000000155646                                                    ';
+        $this->setExpectedException('Payment_DTA_FatalParseException');
+        $dta = new DTA($teststring);
+    }
+
+    public function testParserWrongCType()
+    {
+        $teststring = // same as in testContent() but 2nd C record has an X instead
+            '0128AGK1605000000000000SENDERS NAME               '.strftime("%d%m%y", time()).'    3503'.
+            '0077670000000000                                               1'.
+            '0187C16050000333344440013579000000000000000051000 00000000000160'.
+            '50000350300776700000123456   FRANZ MUELLER                      '.
+            'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
+            '                                                                '.
+            '0187X16050000333344440013579000000000000000051000 00000000000160'.
+            '50000350300776700000032190   FRANZ MUELLER                      '.
+            'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
+            '                                                                '.
+            '0128E     000000200000000000000000000002715800000000000066668888'.
+            '0000000155646                                                   ';
+        $this->setExpectedException('Payment_DTA_ParseException');
+        $dta = new DTA($teststring);
+        $this->assertTrue($dta->count() === 1);
+    }
+    public function testParserWrongCLength()
+    {
+        $teststring = // same as in testContent() but 2nd C record has length 188
+            '0128AGK1605000000000000SENDERS NAME               '.strftime("%d%m%y", time()).'    3503'.
+            '0077670000000000                                               1'.
+            '0187C16050000333344440013579000000000000000051000 00000000000160'.
+            '50000350300776700000123456   FRANZ MUELLER                      '.
+            'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
+            '                                                                '.
+            '0188C16050000333344440013579000000000000000051000 00000000000160'.
+            '50000350300776700000032190   FRANZ MUELLER                      '.
+            'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
+            '                                                                '.
+            '0128E     000000200000000000000000000002715800000000000066668888'.
+            '0000000155646                                                   ';
+        $this->setExpectedException('Payment_DTA_ParseException');
+        $dta = new DTA($teststring);
+        $this->assertTrue($dta->count() === 1);
+    }
+    public function testParserWrongCheckCount()
+    {
+        $teststring = // same as in testContent() but E record indicates 3 C records
+            '0128AGK1605000000000000SENDERS NAME               '.strftime("%d%m%y", time()).'    3503'.
+            '0077670000000000                                               1'.
+            '0187C16050000333344440013579000000000000000051000 00000000000160'.
+            '50000350300776700000123456   FRANZ MUELLER                      '.
+            'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
+            '                                                                '.
+            '0187C16050000333344440013579000000000000000051000 00000000000160'.
+            '50000350300776700000032190   FRANZ MUELLER                      '.
+            'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
+            '                                                                '.
+            '0128E     000000300000000000000000000002715800000000000066668888'.
+            '0000000155646                                                   ';
+        $this->setExpectedException('Payment_DTA_ChecksumException');
+        $dta = new DTA($teststring);
+    }
+    public function testParserWrongCheckAccounts()
+    {
+        $teststring = // same as in testContent() but E record has wrong account sum
+            '0128AGK1605000000000000SENDERS NAME               '.strftime("%d%m%y", time()).'    3503'.
+            '0077670000000000                                               1'.
+            '0187C16050000333344440013579000000000000000051000 00000000000160'.
+            '50000350300776700000123456   FRANZ MUELLER                      '.
+            'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
+            '                                                                '.
+            '0187C16050000333344440013579000000000000000051000 00000000000160'.
+            '50000350300776700000032190   FRANZ MUELLER                      '.
+            'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
+            '                                                                '.
+            '0128E     000000200000000000000000000002715900000000000066668888'.
+            '0000000155646                                                   ';
+        $this->setExpectedException('Payment_DTA_ChecksumException');
+        $dta = new DTA($teststring);
+    }
+    public function testParserWrongCheckBLZs()
+    {
+        $teststring = // same as in testContent() but E record has wrong bank code sum
+            '0128AGK1605000000000000SENDERS NAME               '.strftime("%d%m%y", time()).'    3503'.
+            '0077670000000000                                               1'.
+            '0187C16050000333344440013579000000000000000051000 00000000000160'.
+            '50000350300776700000123456   FRANZ MUELLER                      '.
+            'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
+            '                                                                '.
+            '0187C16050000333344440013579000000000000000051000 00000000000160'.
+            '50000350300776700000032190   FRANZ MUELLER                      '.
+            'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
+            '                                                                '.
+            '0128E     000000200000000000000000000002715800000000000066668887'.
+            '0000000155646                                                   ';
+        $this->setExpectedException('Payment_DTA_ChecksumException');
+        $dta = new DTA($teststring);
+    }
+    public function testParserWrongCheckAmounts()
+    {
+        $teststring = // same as in testContent() but E record has wrong amount sum
+            '0128AGK1605000000000000SENDERS NAME               '.strftime("%d%m%y", time()).'    3503'.
+            '0077670000000000                                               1'.
+            '0187C16050000333344440013579000000000000000051000 00000000000160'.
+            '50000350300776700000123456   FRANZ MUELLER                      '.
+            'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
+            '                                                                '.
+            '0187C16050000333344440013579000000000000000051000 00000000000160'.
+            '50000350300776700000032190   FRANZ MUELLER                      '.
+            'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
+            '                                                                '.
+            '0128E     000000200000000000000000000002715800000000000066668888'.
+            '0000000055646                                                   ';
+        $this->setExpectedException('Payment_DTA_ChecksumException');
+        $dta = new DTA($teststring);
+    }
+
 }
