@@ -669,6 +669,7 @@ class DTA extends DTABase
                 "account_number"  => $Asender_account,
                 "additional_name" => '',
             ))) {
+                // should never happen
                 throw new Payment_DTA_FatalParseException("Cannot setAccountFileSender()");
             }
 	    // TODO: set $Adate or $Aexec_date
@@ -685,11 +686,15 @@ class DTA extends DTABase
                 /* field 2 */
                 $record_type = $this->get_str($input, $offset, 1);
             } catch (Payment_DTA_Exception $e) {
-                throw new Payment_DTA_ParseException("Invalid record length", $e);
+                throw new Payment_DTA_ParseException("Non-numerical record length", $e);
             }
 
             // determine if C or E record
             if ($record_type == 'E') {
+                if ($record_length != 128) {
+                    throw new Payment_DTA_ParseException("Invalid E record length ".
+                        "$record_length != 128 at offset ".($offset-5));
+                }
                 break;
             } elseif ($record_type != 'C') {
                 throw new Payment_DTA_ParseException("Invalid record type ".
@@ -809,6 +814,7 @@ class DTA extends DTABase
                         array_push($extensions_read, array($ext_type, $ext_content));
                         break;
                     case 0:
+                        // should never happen
                         throw new Payment_DTA_ParseException('confused about '.
                             'number of extensions in transaction number '.
                             strval($this->count()+1));
@@ -829,13 +835,14 @@ class DTA extends DTABase
                     }
                     // end n-th part of C record
                     assert($offset % 128 === 0);
+                }
 
-                    // process read extension content
-                    foreach ($extensions_read as $ext) {
-                        $ext_type = $ext[0];
-                        $ext_content = $ext[1];
+                // process read extension content
+                foreach ($extensions_read as $ext) {
+                    $ext_type = $ext[0];
+                    $ext_content = $ext[1];
 
-                        switch($ext_type) {
+                    switch($ext_type) {
                         case 1:
                             if (!empty($Creceiver_name2)) {
                                 throw new Payment_DTA_ParseException('multiple '.
@@ -846,7 +853,8 @@ class DTA extends DTABase
                             }
                             break;
                         case 2:
-                            if (count($Cpurpose) >= 13) {
+                            if (count($Cpurpose) >= 14) {
+                                // allowed: 1 line in fixed part + 13 in extensions
                                 throw new Payment_DTA_ParseException('too many '.
                                     'purpose extensions in transaction number '.
                                     strval($this->count()+1));
@@ -865,9 +873,8 @@ class DTA extends DTABase
                             break;
                         default:
                             throw new Payment_DTA_ParseException('invalid '.
-                                    'extension type in transaction number '.
-                                    strval($this->count()+1));
-                        }
+                                'extension type in transaction number '.
+                                strval($this->count()+1));
                     }
                 }
             } catch (Payment_DTA_ParseException $e) {
@@ -900,6 +907,7 @@ class DTA extends DTABase
                     'account_number' => $Csender_account,
                     'additional_name' => $Csender_name2)
             )) {
+                // should never happen
                 throw new Payment_DTA_ParseException("Cannot addExchange() ".
                     "for transaction number ".strval($this->count()+1), $e);
             }
@@ -949,10 +957,10 @@ class DTA extends DTABase
                             "E record checksum mismatch for transfer amount: ".
                             "reads $E_check_amount, expected $checksum_amount");
             }
-        } catch (Payment_DTA_ParseException $e) {
-            throw new Payment_DTA_ParseException("Error in E record", $e);
         } catch (Payment_DTA_ChecksumException $e) {
             throw $e;
+        } catch (Payment_DTA_Exception $e) {
+            throw new Payment_DTA_ParseException("Error in E record", $e);
         }
     }
 }

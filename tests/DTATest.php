@@ -789,7 +789,7 @@ class DTATest extends PHPUnit_Framework_TestCase
             unlink($tmpfname);
             $this->assertSame(768, strlen($file_content));
         } else {
-            $this->assertTrue(false);
+            $this->fail();
         }
     }
 
@@ -857,15 +857,16 @@ class DTATest extends PHPUnit_Framework_TestCase
         ));
 
         $meta = $this->fixture->getMetaData();
-        $this->assertTrue($meta["sender_name"]      == "SENDERS NAME");
-        $this->assertTrue($meta["sender_bank_code"] == "16050000");
-        $this->assertTrue($meta["sender_account"]   == "3503007767");
-        $this->assertTrue($meta["sum_amounts"]      == "1234.56");
-        $this->assertTrue($meta["sum_bankcodes"]    == "16050000");
-        $this->assertTrue($meta["sum_accounts"]     == "3503007767");
-        $this->assertTrue($meta["count"]            == "1");
-        $this->assertTrue(strftime("%d%m%y", $meta["date"])
-                            == strftime("%d%m%y", time()));
+        $this->assertEquals("SENDERS NAME", $meta["sender_name"]);
+        $this->assertEquals("16050000", $meta["sender_bank_code"]);
+        $this->assertEquals("3503007767", $meta["sender_account"]);
+        $this->assertEquals(1234.56, $meta["sum_amounts"]);
+        $this->assertEquals(16050000, $meta["sum_bankcodes"]);
+        $this->assertEquals(3503007767, $meta["sum_accounts"]);
+        $this->assertEquals("1", $meta["count"]);
+        $this->assertEquals(strftime("%d%m%y", time()),
+            strftime("%d%m%y", $meta["date"]));
+
     }
 
     public function testGetMetaData2()
@@ -896,15 +897,15 @@ class DTATest extends PHPUnit_Framework_TestCase
         ));
 
         $meta = $this->fixture->getMetaData();
-        $this->assertTrue($meta["sender_name"]      == "SENDERS NAME");
-        $this->assertTrue($meta["sender_bank_code"] == "16050000");
-        $this->assertTrue($meta["sender_account"]   == "3503007767");
-        $this->assertTrue($meta["sum_amounts"]      == 3*1234.56);
-        $this->assertTrue($meta["sum_bankcodes"]    == 3*16050000);
-        $this->assertTrue($meta["sum_accounts"]     == 3*3503007767);
-        $this->assertTrue($meta["count"]            == "3");
-        $this->assertTrue(strftime("%d%m%y", $meta["date"])
-                            == strftime("%d%m%y", time()));
+        $this->assertEquals("SENDERS NAME", $meta["sender_name"]);
+        $this->assertEquals("16050000", $meta["sender_bank_code"]);
+        $this->assertEquals("3503007767", $meta["sender_account"]);
+        $this->assertEquals(3*1234.56, $meta["sum_amounts"]);
+        $this->assertEquals(3*16050000, $meta["sum_bankcodes"]);
+        $this->assertEquals(3*3503007767, $meta["sum_accounts"]);
+        $this->assertEquals("3", $meta["count"]);
+        $this->assertEquals(strftime("%d%m%y", time()),
+            strftime("%d%m%y", $meta["date"]));
     }
 
     public function testIteratorEmpty()
@@ -949,12 +950,12 @@ class DTATest extends PHPUnit_Framework_TestCase
             // different values in addExchange() above
             if ($key === 0) {
                 $this->assertEquals(123456, $value['amount']);
-                $this->assertTrue($value['purposes'][0] ===
-                    strtoupper("Test-Verwendungszweck1"));
+                $this->assertEquals(strtoupper("Test-Verwendungszweck1"),
+                    $value['purposes'][0]);
             } elseif ($key === 1) {
                 $this->assertEquals(32190, $value['amount']);
-                $this->assertTrue($value['purposes'][0] ===
-                    strtoupper("Test-Verwendungszweck2"));
+                $this->assertEquals(strtoupper("Test-Verwendungszweck2"),
+                    $value['purposes'][0]);
             } else {
                 $this->fail();
             }
@@ -979,16 +980,15 @@ class DTATest extends PHPUnit_Framework_TestCase
             '0000000155646                                                   ';
         $dta = new DTA($teststring);
         $meta = $dta->getMetaData();
-        $this->assertTrue($meta["sender_name"]      == "SENDERS NAME");
-        $this->assertTrue($meta["sender_bank_code"] == "16050000");
-        $this->assertTrue($meta["sender_account"]   == "3503007767");
-        $this->assertTrue($meta["sum_amounts"]      == "1556.46");
-        $this->assertTrue($meta["sum_bankcodes"]    == 2*33334444);
-        $this->assertTrue($meta["sum_accounts"]     == 2*13579000);
-        $this->assertTrue($meta["count"]            == "2");
-        $this->assertTrue(strftime("%d%m%y", $meta["date"])
-                            == strftime("%d%m%y", time()));
-
+        $this->assertEquals("SENDERS NAME", $meta["sender_name"]);
+        $this->assertEquals("16050000", $meta["sender_bank_code"]);
+        $this->assertEquals("3503007767", $meta["sender_account"]);
+        $this->assertEquals("1556.46", $meta["sum_amounts"]);
+        $this->assertEquals(2*33334444, $meta["sum_bankcodes"]);
+        $this->assertEquals(2*13579000, $meta["sum_accounts"]);
+        $this->assertEquals("2", $meta["count"]);
+        $this->assertEquals(strftime("%d%m%y", time()),
+            strftime("%d%m%y", $meta["date"]));
     }
 
     public function testParserBasicCreditBankFile()
@@ -1008,16 +1008,15 @@ class DTATest extends PHPUnit_Framework_TestCase
             '0000000155646                                                   ';
         $dta = new DTA($teststring);
         $meta = $dta->getMetaData();
-        $this->assertTrue($meta["sender_name"]      == "SENDERS NAME");
-        $this->assertTrue($meta["sender_bank_code"] == "16050000");
-        $this->assertTrue($meta["sender_account"]   == "3503007767");
-        $this->assertTrue($meta["sum_amounts"]      == "1556.46");
-        $this->assertTrue($meta["sum_bankcodes"]    == 2*33334444);
-        $this->assertTrue($meta["sum_accounts"]     == 2*13579000);
-        $this->assertTrue($meta["count"]            == "2");
-        $this->assertTrue(strftime("%d%m%y", $meta["date"])
-                            == strftime("%d%m%y", time()));
-
+        $this->assertEquals("SENDERS NAME", $meta["sender_name"]);
+        $this->assertEquals("16050000", $meta["sender_bank_code"]);
+        $this->assertEquals("3503007767", $meta["sender_account"]);
+        $this->assertEquals("1556.46", $meta["sum_amounts"]);
+        $this->assertEquals(2*33334444, $meta["sum_bankcodes"]);
+        $this->assertEquals(2*13579000, $meta["sum_accounts"]);
+        $this->assertEquals("2", $meta["count"]);
+        $this->assertEquals(strftime("%d%m%y", time()),
+            strftime("%d%m%y", $meta["date"]));
     }
 
     public function testParserBasicDebit()
@@ -1037,16 +1036,15 @@ class DTATest extends PHPUnit_Framework_TestCase
             '0000000155646                                                   ';
         $dta = new DTA($teststring);
         $meta = $dta->getMetaData();
-        $this->assertTrue($meta["sender_name"]      == "SENDERS NAME");
-        $this->assertTrue($meta["sender_bank_code"] == "16050000");
-        $this->assertTrue($meta["sender_account"]   == "3503007767");
-        $this->assertTrue($meta["sum_amounts"]      == "1556.46");
-        $this->assertTrue($meta["sum_bankcodes"]    == 2*33334444);
-        $this->assertTrue($meta["sum_accounts"]     == 2*13579000);
-        $this->assertTrue($meta["count"]            == "2");
-        $this->assertTrue(strftime("%d%m%y", $meta["date"])
-                            == strftime("%d%m%y", time()));
-
+        $this->assertEquals("SENDERS NAME", $meta["sender_name"]);
+        $this->assertEquals("16050000", $meta["sender_bank_code"]);
+        $this->assertEquals("3503007767", $meta["sender_account"]);
+        $this->assertEquals("1556.46", $meta["sum_amounts"]);
+        $this->assertEquals(2*33334444, $meta["sum_bankcodes"]);
+        $this->assertEquals(2*13579000, $meta["sum_accounts"]);
+        $this->assertEquals("2", $meta["count"]);
+        $this->assertEquals(strftime("%d%m%y", time()),
+            strftime("%d%m%y", $meta["date"]));
     }
 
     public function testParserBasicDebitBankFile()
@@ -1066,16 +1064,15 @@ class DTATest extends PHPUnit_Framework_TestCase
             '0000000155646                                                   ';
         $dta = new DTA($teststring);
         $meta = $dta->getMetaData();
-        $this->assertTrue($meta["sender_name"]      == "SENDERS NAME");
-        $this->assertTrue($meta["sender_bank_code"] == "16050000");
-        $this->assertTrue($meta["sender_account"]   == "3503007767");
-        $this->assertTrue($meta["sum_amounts"]      == "1556.46");
-        $this->assertTrue($meta["sum_bankcodes"]    == 2*33334444);
-        $this->assertTrue($meta["sum_accounts"]     == 2*13579000);
-        $this->assertTrue($meta["count"]            == "2");
-        $this->assertTrue(strftime("%d%m%y", $meta["date"])
-                            == strftime("%d%m%y", time()));
-
+        $this->assertEquals("SENDERS NAME", $meta["sender_name"]);
+        $this->assertEquals("16050000", $meta["sender_bank_code"]);
+        $this->assertEquals("3503007767", $meta["sender_account"]);
+        $this->assertEquals("1556.46", $meta["sum_amounts"]);
+        $this->assertEquals(2*33334444, $meta["sum_bankcodes"]);
+        $this->assertEquals(2*13579000, $meta["sum_accounts"]);
+        $this->assertEquals("2", $meta["count"]);
+        $this->assertEquals(strftime("%d%m%y", time()),
+            strftime("%d%m%y", $meta["date"]));
     }
 
     public function testParserBasicInvalidType()
@@ -1134,7 +1131,7 @@ class DTATest extends PHPUnit_Framework_TestCase
             '0000000155646                                                   ';
         $this->setExpectedException('Payment_DTA_ParseException');
         $dta = new DTA($teststring);
-        $this->assertTrue($dta->count() === 1);
+        $this->assertSame(1, $dta->count());
     }
     public function testParserWrongCLength()
     {
@@ -1153,7 +1150,7 @@ class DTATest extends PHPUnit_Framework_TestCase
             '0000000155646                                                   ';
         $this->setExpectedException('Payment_DTA_ParseException');
         $dta = new DTA($teststring);
-        $this->assertTrue($dta->count() === 1);
+        $this->assertSame(1, $dta->count());
     }
     public function testParserWrongCheckCount()
     {
@@ -1209,6 +1206,7 @@ class DTATest extends PHPUnit_Framework_TestCase
         $this->setExpectedException('Payment_DTA_ChecksumException');
         $dta = new DTA($teststring);
     }
+
     public function testParserWrongCheckAmounts()
     {
         $teststring = // same as in testContent() but E record has wrong amount sum
@@ -1228,4 +1226,697 @@ class DTATest extends PHPUnit_Framework_TestCase
         $dta = new DTA($teststring);
     }
 
+    public function testParserCExtensions_0()
+    {
+        // no extensions
+        $DTA_test_account = array(
+             'name' => "Senders Name",
+             'bank_code' => "16050000",
+             'account_number' => "350300767",
+         );
+        $this->fixture->setAccountFileSender($DTA_test_account);
+        $this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'bank_code' => "16050000",
+                'account_number' => "3503007767"
+            ),
+            (float) 1234.56,
+            array("Verwendungszweck Zeile 1")
+        );
+        $test = new DTA($this->fixture->getFileContent());
+        $this->assertSame(1, $test->count());
+    }
+
+    public function testParserCExtensions_1()
+    {
+        $DTA_test_account = array(
+             'name' => "Senders Name",
+             'bank_code' => "16050000",
+             'account_number' => "350300767",
+         );
+        $this->fixture->setAccountFileSender($DTA_test_account);
+        $this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'bank_code' => "16050000",
+                'account_number' => "3503007767"
+            ),
+            (float) 1234.56,
+            array("Verwendungszweck Zeile 1",
+                  "Verwendungszweck Zeile 2")
+        );
+        $test = new DTA($this->fixture->getFileContent());
+        $this->assertSame(1, $test->count());
+    }
+
+    public function testParserCExtensions_2()
+    {
+        $DTA_test_account = array(
+             'name' => "Senders Name",
+             'bank_code' => "16050000",
+             'account_number' => "350300767",
+         );
+        $this->fixture->setAccountFileSender($DTA_test_account);
+        $this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'bank_code' => "16050000",
+                'account_number' => "3503007767"
+            ),
+            (float) 1234.56,
+            array("Verwendungszweck Zeile 1",
+                  "Verwendungszweck Zeile 2",
+                  "Verwendungszweck Zeile 3")
+        );
+        $test = new DTA($this->fixture->getFileContent());
+        $this->assertSame(1, $test->count());
+    }
+
+    public function testParserCExtensions_3()
+    {
+        $DTA_test_account = array(
+             'name' => "Senders Name",
+             'bank_code' => "16050000",
+             'account_number' => "350300767",
+         );
+        $this->fixture->setAccountFileSender($DTA_test_account);
+        $this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'bank_code' => "16050000",
+                'account_number' => "3503007767"
+            ),
+            (float) 1234.56,
+            array("Verwendungszweck Zeile 1",
+                  "Verwendungszweck Zeile 2",
+                  "Verwendungszweck Zeile 3",
+                  "Verwendungszweck Zeile 4")
+        );
+        $test = new DTA($this->fixture->getFileContent());
+        $this->assertSame(1, $test->count());
+    }
+
+    public function testParserCExtensions_4()
+    {
+        $DTA_test_account = array(
+             'name' => "Senders Name",
+             'bank_code' => "16050000",
+             'account_number' => "350300767",
+         );
+        $this->fixture->setAccountFileSender($DTA_test_account);
+        $this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'bank_code' => "16050000",
+                'account_number' => "3503007767"
+            ),
+            (float) 1234.56,
+            array("Verwendungszweck Zeile 1",
+                  "Verwendungszweck Zeile 2",
+                  "Verwendungszweck Zeile 3",
+                  "Verwendungszweck Zeile 4",
+                  "Verwendungszweck Zeile 5")
+        );
+        $test = new DTA($this->fixture->getFileContent());
+        $this->assertSame(1, $test->count());
+    }
+
+    public function testParserCExtensions_5()
+    {
+        $DTA_test_account = array(
+             'name' => "Senders Name",
+             'bank_code' => "16050000",
+             'account_number' => "350300767",
+         );
+        $this->fixture->setAccountFileSender($DTA_test_account);
+        $this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'bank_code' => "16050000",
+                'account_number' => "3503007767"
+            ),
+            (float) 1234.56,
+            array("Verwendungszweck Zeile 1",
+                  "Verwendungszweck Zeile 2",
+                  "Verwendungszweck Zeile 3",
+                  "Verwendungszweck Zeile 4",
+                  "Verwendungszweck Zeile 5",
+                  "Verwendungszweck Zeile 6")
+        );
+        $test = new DTA($this->fixture->getFileContent());
+        $this->assertSame(1, $test->count());
+    }
+
+    public function testParserCExtensions_6()
+    {
+        $DTA_test_account = array(
+             'name' => "Senders Name",
+             'bank_code' => "16050000",
+             'account_number' => "350300767",
+         );
+        $this->fixture->setAccountFileSender($DTA_test_account);
+        $this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'bank_code' => "16050000",
+                'account_number' => "3503007767"
+            ),
+            (float) 1234.56,
+            array("Verwendungszweck Zeile 1",
+                  "Verwendungszweck Zeile 2",
+                  "Verwendungszweck Zeile 3",
+                  "Verwendungszweck Zeile 4",
+                  "Verwendungszweck Zeile 5",
+                  "Verwendungszweck Zeile 6",
+                  "Verwendungszweck Zeile 7")
+        );
+        $test = new DTA($this->fixture->getFileContent());
+        $this->assertSame(1, $test->count());
+    }
+
+    public function testParserCExtensions_7()
+    {
+        $DTA_test_account = array(
+             'name' => "Senders Name",
+             'bank_code' => "16050000",
+             'account_number' => "350300767",
+         );
+        $this->fixture->setAccountFileSender($DTA_test_account);
+        $this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'bank_code' => "16050000",
+                'account_number' => "3503007767"
+            ),
+            (float) 1234.56,
+            array("Verwendungszweck Zeile 1",
+                  "Verwendungszweck Zeile 2",
+                  "Verwendungszweck Zeile 3",
+                  "Verwendungszweck Zeile 4",
+                  "Verwendungszweck Zeile 5",
+                  "Verwendungszweck Zeile 6",
+                  "Verwendungszweck Zeile 7",
+                  "Verwendungszweck Zeile 8")
+        );
+        $test = new DTA($this->fixture->getFileContent());
+        $this->assertSame(1, $test->count());
+    }
+
+    public function testParserCExtensions_8()
+    {
+        $DTA_test_account = array(
+             'name' => "Senders Name",
+             'bank_code' => "16050000",
+             'account_number' => "350300767",
+         );
+        $this->fixture->setAccountFileSender($DTA_test_account);
+        $this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'bank_code' => "16050000",
+                'account_number' => "3503007767"
+            ),
+            (float) 1234.56,
+            array("Verwendungszweck Zeile 1",
+                  "Verwendungszweck Zeile 2",
+                  "Verwendungszweck Zeile 3",
+                  "Verwendungszweck Zeile 4",
+                  "Verwendungszweck Zeile 5",
+                  "Verwendungszweck Zeile 6",
+                  "Verwendungszweck Zeile 7",
+                  "Verwendungszweck Zeile 8",
+                  "Verwendungszweck Zeile 9")
+        );
+        $test = new DTA($this->fixture->getFileContent());
+        $this->assertSame(1, $test->count());
+    }
+
+    public function testParserCExtensions_9()
+    {
+        $DTA_test_account = array(
+             'name' => "Senders Name",
+             'bank_code' => "16050000",
+             'account_number' => "350300767",
+         );
+        $this->fixture->setAccountFileSender($DTA_test_account);
+        $this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'bank_code' => "16050000",
+                'account_number' => "3503007767"
+            ),
+            (float) 1234.56,
+            array("Verwendungszweck Zeile 1",
+                  "Verwendungszweck Zeile 2",
+                  "Verwendungszweck Zeile 3",
+                  "Verwendungszweck Zeile 4",
+                  "Verwendungszweck Zeile 5",
+                  "Verwendungszweck Zeile 6",
+                  "Verwendungszweck Zeile 7",
+                  "Verwendungszweck Zeile 8",
+                  "Verwendungszweck Zeile 9",
+                  "Verwendungszweck Zeile 10")
+        );
+        $test = new DTA($this->fixture->getFileContent());
+        $this->assertSame(1, $test->count());
+    }
+
+    public function testParserCExtensions_10()
+    {
+        $DTA_test_account = array(
+             'name' => "Senders Name",
+             'bank_code' => "16050000",
+             'account_number' => "350300767",
+         );
+        $this->fixture->setAccountFileSender($DTA_test_account);
+        $this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'bank_code' => "16050000",
+                'account_number' => "3503007767"
+            ),
+            (float) 1234.56,
+            array("Verwendungszweck Zeile 1",
+                  "Verwendungszweck Zeile 2",
+                  "Verwendungszweck Zeile 3",
+                  "Verwendungszweck Zeile 4",
+                  "Verwendungszweck Zeile 5",
+                  "Verwendungszweck Zeile 6",
+                  "Verwendungszweck Zeile 7",
+                  "Verwendungszweck Zeile 8",
+                  "Verwendungszweck Zeile 9",
+                  "Verwendungszweck Zeile 10",
+                  "Verwendungszweck Zeile 11")
+        );
+        $test = new DTA($this->fixture->getFileContent());
+        $this->assertSame(1, $test->count());
+    }
+
+    public function testParserCExtensions_11()
+    {
+        $DTA_test_account = array(
+             'name' => "Senders Name",
+             'bank_code' => "16050000",
+             'account_number' => "350300767",
+         );
+        $this->fixture->setAccountFileSender($DTA_test_account);
+        $this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'bank_code' => "16050000",
+                'account_number' => "3503007767"
+            ),
+            (float) 1234.56,
+            array("Verwendungszweck Zeile 1",
+                  "Verwendungszweck Zeile 2",
+                  "Verwendungszweck Zeile 3",
+                  "Verwendungszweck Zeile 4",
+                  "Verwendungszweck Zeile 5",
+                  "Verwendungszweck Zeile 6",
+                  "Verwendungszweck Zeile 7",
+                  "Verwendungszweck Zeile 8",
+                  "Verwendungszweck Zeile 9",
+                  "Verwendungszweck Zeile 10",
+                  "Verwendungszweck Zeile 11",
+                  "Verwendungszweck Zeile 12")
+        );
+        $test = new DTA($this->fixture->getFileContent());
+        $this->assertSame(1, $test->count());
+    }
+
+    public function testParserCExtensions_12()
+    {
+        $DTA_test_account = array(
+             'name' => "Senders Name",
+             'bank_code' => "16050000",
+             'account_number' => "350300767",
+         );
+        $this->fixture->setAccountFileSender($DTA_test_account);
+        $this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'bank_code' => "16050000",
+                'account_number' => "3503007767"
+            ),
+            (float) 1234.56,
+            array("Verwendungszweck Zeile 1",
+                  "Verwendungszweck Zeile 2",
+                  "Verwendungszweck Zeile 3",
+                  "Verwendungszweck Zeile 4",
+                  "Verwendungszweck Zeile 5",
+                  "Verwendungszweck Zeile 6",
+                  "Verwendungszweck Zeile 7",
+                  "Verwendungszweck Zeile 8",
+                  "Verwendungszweck Zeile 9",
+                  "Verwendungszweck Zeile 10",
+                  "Verwendungszweck Zeile 11",
+                  "Verwendungszweck Zeile 12",
+                  "Verwendungszweck Zeile 13")
+        );
+        $test = new DTA($this->fixture->getFileContent());
+        $this->assertSame(1, $test->count());
+    }
+
+    public function testParserCExtensions_13()
+    {
+        $DTA_test_account = array(
+             'name' => "Senders Name",
+             'bank_code' => "16050000",
+             'account_number' => "350300767",
+         );
+        $this->fixture->setAccountFileSender($DTA_test_account);
+        $this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'bank_code' => "16050000",
+                'account_number' => "3503007767"
+            ),
+            (float) 1234.56,
+            array("Verwendungszweck Zeile 1",
+                  "Verwendungszweck Zeile 2",
+                  "Verwendungszweck Zeile 3",
+                  "Verwendungszweck Zeile 4",
+                  "Verwendungszweck Zeile 5",
+                  "Verwendungszweck Zeile 6",
+                  "Verwendungszweck Zeile 7",
+                  "Verwendungszweck Zeile 8",
+                  "Verwendungszweck Zeile 9",
+                  "Verwendungszweck Zeile 10",
+                  "Verwendungszweck Zeile 11",
+                  "Verwendungszweck Zeile 12",
+                  "Verwendungszweck Zeile 13",
+                  "Verwendungszweck Zeile 14")
+        );
+        $test = new DTA($this->fixture->getFileContent());
+        $this->assertSame(1, $test->count());
+    }
+
+    public function testParserCExtensions_14()
+    {
+        $DTA_test_account = array(
+             'name' => "Senders Name",
+             'additional_name' => "Additional Senders Name",
+             'bank_code' => "16050000",
+             'account_number' => "350300767",
+         );
+        $this->fixture->setAccountFileSender($DTA_test_account);
+        $this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'bank_code' => "16050000",
+                'account_number' => "3503007767"
+            ),
+            (float) 1234.56,
+            array("Verwendungszweck Zeile 1",
+                  "Verwendungszweck Zeile 2",
+                  "Verwendungszweck Zeile 3",
+                  "Verwendungszweck Zeile 4",
+                  "Verwendungszweck Zeile 5",
+                  "Verwendungszweck Zeile 6",
+                  "Verwendungszweck Zeile 7",
+                  "Verwendungszweck Zeile 8",
+                  "Verwendungszweck Zeile 9",
+                  "Verwendungszweck Zeile 10",
+                  "Verwendungszweck Zeile 11",
+                  "Verwendungszweck Zeile 12",
+                  "Verwendungszweck Zeile 13",
+                  "Verwendungszweck Zeile 14")
+        );
+        $test = new DTA($this->fixture->getFileContent());
+        $this->assertSame(1, $test->count());
+    }
+
+    public function testParserCExtensions_15()
+    {
+        $DTA_test_account = array(
+             'name' => "Senders Name",
+             'additional_name' => "Additional Senders Name",
+             'bank_code' => "16050000",
+             'account_number' => "350300767",
+         );
+        $this->fixture->setAccountFileSender($DTA_test_account);
+        $this->fixture->addExchange(array(
+                'name' => "A Receivers Name",
+                'additional_name' => "Additional Receivers Name",
+                'bank_code' => "16050000",
+                'account_number' => "3503007767"
+            ),
+            (float) 1234.56,
+            array("Verwendungszweck Zeile 1",
+                  "Verwendungszweck Zeile 2",
+                  "Verwendungszweck Zeile 3",
+                  "Verwendungszweck Zeile 4",
+                  "Verwendungszweck Zeile 5",
+                  "Verwendungszweck Zeile 6",
+                  "Verwendungszweck Zeile 7",
+                  "Verwendungszweck Zeile 8",
+                  "Verwendungszweck Zeile 9",
+                  "Verwendungszweck Zeile 10",
+                  "Verwendungszweck Zeile 11",
+                  "Verwendungszweck Zeile 12",
+                  "Verwendungszweck Zeile 13",
+                  "Verwendungszweck Zeile 14")
+        );
+        $test = new DTA($this->fixture->getFileContent());
+        $this->assertSame(1, $test->count());
+    }
+
+    public function testParserCExtensions_16_Fail()
+    {
+        $teststring1 = // created with testParserCExtensions_15()
+            '0128AGK1605000000000000SENDERS NAME               020210    0350'.
+            '3007670000000000                                               1'.
+            '0622C16050000160500003503007767000000000000051000 00000000000160'.
+            '50000035030076700000123456   A RECEIVERS NAME                   '.
+            'SENDERS NAME               VERWENDUNGSZWECK ZEILE 1   1  1501ADD'.
+            'ITIONAL RECEIVERS NAME  02VERWENDUNGSZWECK ZEILE 2              '.
+            '02VERWENDUNGSZWECK ZEILE 3   02VERWENDUNGSZWECK ZEILE 4   02VERW'.
+            'ENDUNGSZWECK ZEILE 5   02VERWENDUNGSZWECK ZEILE 6               '.
+            '02VERWENDUNGSZWECK ZEILE 7   02VERWENDUNGSZWECK ZEILE 8   02VERW'.
+            'ENDUNGSZWECK ZEILE 9   02VERWENDUNGSZWECK ZEILE 10              '.
+            '02VERWENDUNGSZWECK ZEILE 11  02VERWENDUNGSZWECK ZEILE 12  02VERW'.
+            'ENDUNGSZWECK ZEILE 13  02VERWENDUNGSZWECK ZEILE 14              '.
+            '03ADDITIONAL SENDERS NAME                                       '.
+            '                                                                '.
+            '0128E     000000100000000000000000000350300776700000000016050000'.
+            '0000000123456                                                   ';
+
+        $teststring = // invalid with 16 extensions in C record
+            '0128AGK1605000000000000SENDERS NAME               020210    0350'.
+            '3007670000000000                                               1'.
+            '0622C16050000160500003503007767000000000000051000 00000000000160'.
+            '50000035030076700000123456   A RECEIVERS NAME                   '.
+            'SENDERS NAME               VERWENDUNGSZWECK ZEILE 1   1  1601ADD'.
+            'ITIONAL RECEIVERS NAME  02VERWENDUNGSZWECK ZEILE 2              '.
+            '02VERWENDUNGSZWECK ZEILE 3   02VERWENDUNGSZWECK ZEILE 4   02VERW'.
+            'ENDUNGSZWECK ZEILE 5   02VERWENDUNGSZWECK ZEILE 6               '.
+            '02VERWENDUNGSZWECK ZEILE 7   02VERWENDUNGSZWECK ZEILE 8   02VERW'.
+            'ENDUNGSZWECK ZEILE 9   02VERWENDUNGSZWECK ZEILE 10              '.
+            '02VERWENDUNGSZWECK ZEILE 11  02VERWENDUNGSZWECK ZEILE 12  02VERW'.
+            'ENDUNGSZWECK ZEILE 13  02VERWENDUNGSZWECK ZEILE 14              '.
+            '03ADDITIONAL SENDERS NAME    02VERWENDUNGSZWECK ZEILE 15        '.
+            '                                                                '.
+            '0128E     000000100000000000000000000350300776700000000016050000'.
+            '0000000123456                                                   ';
+        $this->setExpectedException('Payment_DTA_ParseException');
+        $dta = new DTA($teststring);
+    }
+
+    public function testParserCExtensions_purpose_Fail()
+    {
+        $teststring = // 14 purpose extensions
+            '0128AGK1605000000000000SENDERS NAME               020210    0350'.
+            '3007670000000000                                               1'.
+            '0622C16050000160500003503007767000000000000051000 00000000000160'.
+            '50000035030076700000123456   A RECEIVERS NAME                   '.
+            'SENDERS NAME               VERWENDUNGSZWECK ZEILE 1   1  1501ADD'.
+            'ITIONAL RECEIVERS NAME  02VERWENDUNGSZWECK ZEILE 2              '.
+            '02VERWENDUNGSZWECK ZEILE 3   02VERWENDUNGSZWECK ZEILE 4   02VERW'.
+            'ENDUNGSZWECK ZEILE 5   02VERWENDUNGSZWECK ZEILE 6               '.
+            '02VERWENDUNGSZWECK ZEILE 7   02VERWENDUNGSZWECK ZEILE 8   02VERW'.
+            'ENDUNGSZWECK ZEILE 9   02VERWENDUNGSZWECK ZEILE 10              '.
+            '02VERWENDUNGSZWECK ZEILE 11  02VERWENDUNGSZWECK ZEILE 12  02VERW'.
+            'ENDUNGSZWECK ZEILE 13  02VERWENDUNGSZWECK ZEILE 14              '.
+            '02VERWENDUNGSZWECK ZEILE 15                                     '.
+            '                                                                '.
+            '0128E     000000100000000000000000000350300776700000000016050000'.
+            '0000000123456                                                   ';
+        $this->setExpectedException('Payment_DTA_ParseException');
+        $dta = new DTA($teststring);
+    }
+
+    public function testParserCExtensions_sender_Fail()
+    {
+        $teststring = // 2 add. sender name extensions
+            '0128AGK1605000000000000SENDERS NAME               020210    0350'.
+            '3007670000000000                                               1'.
+            '0622C16050000160500003503007767000000000000051000 00000000000160'.
+            '50000035030076700000123456   A RECEIVERS NAME                   '.
+            'SENDERS NAME               VERWENDUNGSZWECK ZEILE 1   1  1501ADD'.
+            'ITIONAL RECEIVERS NAME  02VERWENDUNGSZWECK ZEILE 2              '.
+            '02VERWENDUNGSZWECK ZEILE 3   02VERWENDUNGSZWECK ZEILE 4   02VERW'.
+            'ENDUNGSZWECK ZEILE 5   02VERWENDUNGSZWECK ZEILE 6               '.
+            '02VERWENDUNGSZWECK ZEILE 7   02VERWENDUNGSZWECK ZEILE 8   02VERW'.
+            'ENDUNGSZWECK ZEILE 9   02VERWENDUNGSZWECK ZEILE 10              '.
+            '02VERWENDUNGSZWECK ZEILE 11  02VERWENDUNGSZWECK ZEILE 12  02VERW'.
+            'ENDUNGSZWECK ZEILE 13  03ADDITIONAL SENDERS NAME1               '.
+            '03ADDITIONAL SENDERS NAME2                                      '.
+            '                                                                '.
+            '0128E     000000100000000000000000000350300776700000000016050000'.
+            '0000000123456                                                   ';
+        $this->setExpectedException('Payment_DTA_ParseException');
+        $dta = new DTA($teststring);
+    }
+
+    public function testParserCExtensions_receiver_Fail()
+    {
+        $teststring = // 2 add. receiver name extensions
+            '0128AGK1605000000000000SENDERS NAME               020210    0350'.
+            '3007670000000000                                               1'.
+            '0622C16050000160500003503007767000000000000051000 00000000000160'.
+            '50000035030076700000123456   A RECEIVERS NAME                   '.
+            'SENDERS NAME               VERWENDUNGSZWECK ZEILE 1   1  1501ADD'.
+            'ITIONAL RECEIVERS NAME1 02VERWENDUNGSZWECK ZEILE 2              '.
+            '02VERWENDUNGSZWECK ZEILE 3   02VERWENDUNGSZWECK ZEILE 4   02VERW'.
+            'ENDUNGSZWECK ZEILE 5   02VERWENDUNGSZWECK ZEILE 6               '.
+            '02VERWENDUNGSZWECK ZEILE 7   02VERWENDUNGSZWECK ZEILE 8   02VERW'.
+            'ENDUNGSZWECK ZEILE 9   02VERWENDUNGSZWECK ZEILE 10              '.
+            '02VERWENDUNGSZWECK ZEILE 11  02VERWENDUNGSZWECK ZEILE 12  02VERW'.
+            'ENDUNGSZWECK ZEILE 13  02VERWENDUNGSZWECK ZEILE 14              '.
+            '01ADDITIONAL RECEIVERS NAME2                                    '.
+            '                                                                '.
+            '0128E     000000100000000000000000000350300776700000000016050000'.
+            '0000000123456                                                   ';
+        $this->setExpectedException('Payment_DTA_ParseException');
+        $dta = new DTA($teststring);
+    }
+
+    public function testParserInvalidRecordLengthC()
+    {
+        $teststring = // C record length: 620 instead of 622
+            '0128AGK1605000000000000SENDERS NAME               020210    0350'.
+            '3007670000000000                                               1'.
+            '0620C16050000160500003503007767000000000000051000 00000000000160'.
+            '50000035030076700000123456   A RECEIVERS NAME                   '.
+            'SENDERS NAME               VERWENDUNGSZWECK ZEILE 1   1  1501ADD'.
+            'ITIONAL RECEIVERS NAME  02VERWENDUNGSZWECK ZEILE 2              '.
+            '02VERWENDUNGSZWECK ZEILE 3   02VERWENDUNGSZWECK ZEILE 4   02VERW'.
+            'ENDUNGSZWECK ZEILE 5   02VERWENDUNGSZWECK ZEILE 6               '.
+            '02VERWENDUNGSZWECK ZEILE 7   02VERWENDUNGSZWECK ZEILE 8   02VERW'.
+            'ENDUNGSZWECK ZEILE 9   02VERWENDUNGSZWECK ZEILE 10              '.
+            '02VERWENDUNGSZWECK ZEILE 11  02VERWENDUNGSZWECK ZEILE 12  02VERW'.
+            'ENDUNGSZWECK ZEILE 13  02VERWENDUNGSZWECK ZEILE 14              '.
+            '03ADDITIONAL SENDERS NAME                                       '.
+            '                                                                '.
+            '0128E     000000100000000000000000000350300776700000000016050000'.
+            '0000000123456                                                   ';
+        $this->setExpectedException('Payment_DTA_ParseException');
+        $dta = new DTA($teststring);
+        $this->assertSame(0, $dta->count());
+    }
+
+    public function testParserInvalidRecordLengthE()
+    {
+        $teststring = // E record length: 129 instead of 128
+            '0128AGK1605000000000000SENDERS NAME               020210    0350'.
+            '3007670000000000                                               1'.
+            '0622C16050000160500003503007767000000000000051000 00000000000160'.
+            '50000035030076700000123456   A RECEIVERS NAME                   '.
+            'SENDERS NAME               VERWENDUNGSZWECK ZEILE 1   1  1501ADD'.
+            'ITIONAL RECEIVERS NAME  02VERWENDUNGSZWECK ZEILE 2              '.
+            '02VERWENDUNGSZWECK ZEILE 3   02VERWENDUNGSZWECK ZEILE 4   02VERW'.
+            'ENDUNGSZWECK ZEILE 5   02VERWENDUNGSZWECK ZEILE 6               '.
+            '02VERWENDUNGSZWECK ZEILE 7   02VERWENDUNGSZWECK ZEILE 8   02VERW'.
+            'ENDUNGSZWECK ZEILE 9   02VERWENDUNGSZWECK ZEILE 10              '.
+            '02VERWENDUNGSZWECK ZEILE 11  02VERWENDUNGSZWECK ZEILE 12  02VERW'.
+            'ENDUNGSZWECK ZEILE 13  02VERWENDUNGSZWECK ZEILE 14              '.
+            '03ADDITIONAL SENDERS NAME                                       '.
+            '                                                                '.
+            '0129E     000000100000000000000000000350300776700000000016050000'.
+            '0000000123456                                                   ';
+        $this->setExpectedException('Payment_DTA_ParseException');
+        $dta = new DTA($teststring);
+        $this->assertSame(1, $dta->count());
+    }
+
+    public function testParserInvalidRecordLengthNonNumeric()
+    {
+        $teststring = // E record length: 12a instead of 128
+            '0128AGK1605000000000000SENDERS NAME               020210    0350'.
+            '3007670000000000                                               1'.
+            '0622C16050000160500003503007767000000000000051000 00000000000160'.
+            '50000035030076700000123456   A RECEIVERS NAME                   '.
+            'SENDERS NAME               VERWENDUNGSZWECK ZEILE 1   1  1501ADD'.
+            'ITIONAL RECEIVERS NAME  02VERWENDUNGSZWECK ZEILE 2              '.
+            '02VERWENDUNGSZWECK ZEILE 3   02VERWENDUNGSZWECK ZEILE 4   02VERW'.
+            'ENDUNGSZWECK ZEILE 5   02VERWENDUNGSZWECK ZEILE 6               '.
+            '02VERWENDUNGSZWECK ZEILE 7   02VERWENDUNGSZWECK ZEILE 8   02VERW'.
+            'ENDUNGSZWECK ZEILE 9   02VERWENDUNGSZWECK ZEILE 10              '.
+            '02VERWENDUNGSZWECK ZEILE 11  02VERWENDUNGSZWECK ZEILE 12  02VERW'.
+            'ENDUNGSZWECK ZEILE 13  02VERWENDUNGSZWECK ZEILE 14              '.
+            '03ADDITIONAL SENDERS NAME                                       '.
+            '                                                                '.
+            '012aE     000000100000000000000000000350300776700000000016050000'.
+            '0000000123456                                                   ';
+        $this->setExpectedException('Payment_DTA_ParseException');
+        $dta = new DTA($teststring);
+        $this->assertSame(1, $dta->count());
+    }
+
+    public function testParserInvalidExtensionType()
+    {
+        $teststring = // last purpose line with invalid type 04
+            '0128AGK1605000000000000SENDERS NAME               020210    0350'.
+            '3007670000000000                                               1'.
+            '0622C16050000160500003503007767000000000000051000 00000000000160'.
+            '50000035030076700000123456   A RECEIVERS NAME                   '.
+            'SENDERS NAME               VERWENDUNGSZWECK ZEILE 1   1  1501ADD'.
+            'ITIONAL RECEIVERS NAME  02VERWENDUNGSZWECK ZEILE 2              '.
+            '02VERWENDUNGSZWECK ZEILE 3   02VERWENDUNGSZWECK ZEILE 4   02VERW'.
+            'ENDUNGSZWECK ZEILE 5   02VERWENDUNGSZWECK ZEILE 6               '.
+            '02VERWENDUNGSZWECK ZEILE 7   02VERWENDUNGSZWECK ZEILE 8   02VERW'.
+            'ENDUNGSZWECK ZEILE 9   02VERWENDUNGSZWECK ZEILE 10              '.
+            '02VERWENDUNGSZWECK ZEILE 11  02VERWENDUNGSZWECK ZEILE 12  02VERW'.
+            'ENDUNGSZWECK ZEILE 13  04VERWENDUNGSZWECK ZEILE 14              '.
+            '03ADDITIONAL SENDERS NAME                                       '.
+            '                                                                '.
+            '0128E     000000100000000000000000000350300776700000000016050000'.
+            '0000000123456                                                   ';
+        $this->setExpectedException('Payment_DTA_ParseException');
+        $dta = new DTA($teststring);
+        $this->assertSame(0, $dta->count());
+    }
+
+    public function testParserInvalidERecord()
+    {
+        // just to maximize phpunit coverage  ;)
+        $teststring = // add a 0 after 0128E
+            '0128AGK1605000000000000SENDERS NAME               020210    0350'.
+            '3007670000000000                                               1'.
+            '0622C16050000160500003503007767000000000000051000 00000000000160'.
+            '50000035030076700000123456   A RECEIVERS NAME                   '.
+            'SENDERS NAME               VERWENDUNGSZWECK ZEILE 1   1  1501ADD'.
+            'ITIONAL RECEIVERS NAME  02VERWENDUNGSZWECK ZEILE 2              '.
+            '02VERWENDUNGSZWECK ZEILE 3   02VERWENDUNGSZWECK ZEILE 4   02VERW'.
+            'ENDUNGSZWECK ZEILE 5   02VERWENDUNGSZWECK ZEILE 6               '.
+            '02VERWENDUNGSZWECK ZEILE 7   02VERWENDUNGSZWECK ZEILE 8   02VERW'.
+            'ENDUNGSZWECK ZEILE 9   02VERWENDUNGSZWECK ZEILE 10              '.
+            '02VERWENDUNGSZWECK ZEILE 11  02VERWENDUNGSZWECK ZEILE 12  02VERW'.
+            'ENDUNGSZWECK ZEILE 13  02VERWENDUNGSZWECK ZEILE 14              '.
+            '03ADDITIONAL SENDERS NAME                                       '.
+            '                                                                '.
+            '0128E0    000000100000000000000000000350300776700000000016050000'.
+            '0000000123456                                                   ';
+        $this->setExpectedException('Payment_DTA_ParseException');
+        $dta = new DTA($teststring);
+        $this->assertSame(1, $dta->count());
+    }
+
+    /*
+     * DTA data created by testParserCExtensions_15()
+     * useful to build more negative test cases
+        $teststring1 =
+            '0128AGK1605000000000000SENDERS NAME               020210    0350'.
+            '3007670000000000                                               1'.
+            '0622C16050000160500003503007767000000000000051000 00000000000160'.
+            '50000035030076700000123456   A RECEIVERS NAME                   '.
+            'SENDERS NAME               VERWENDUNGSZWECK ZEILE 1   1  1501ADD'.
+            'ITIONAL RECEIVERS NAME  02VERWENDUNGSZWECK ZEILE 2              '.
+            '02VERWENDUNGSZWECK ZEILE 3   02VERWENDUNGSZWECK ZEILE 4   02VERW'.
+            'ENDUNGSZWECK ZEILE 5   02VERWENDUNGSZWECK ZEILE 6               '.
+            '02VERWENDUNGSZWECK ZEILE 7   02VERWENDUNGSZWECK ZEILE 8   02VERW'.
+            'ENDUNGSZWECK ZEILE 9   02VERWENDUNGSZWECK ZEILE 10              '.
+            '02VERWENDUNGSZWECK ZEILE 11  02VERWENDUNGSZWECK ZEILE 12  02VERW'.
+            'ENDUNGSZWECK ZEILE 13  02VERWENDUNGSZWECK ZEILE 14              '.
+            '03ADDITIONAL SENDERS NAME                                       '.
+            '                                                                '.
+            '0128E     000000100000000000000000000350300776700000000016050000'.
+            '0000000123456                                                   ';
+     */
 }
