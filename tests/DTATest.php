@@ -111,16 +111,21 @@ class DTATest extends PHPUnit_Framework_TestCase
 
     public function testInstantiateWithIntegerAccountNumberSmall()
     {
-        // small := leq PHP_INT_MAX (on 32-bit with 10 digits)
-        $dtaus = new DTA(DTA_CREDIT);
-        $DTA_test_account = array(
-             'name' => "Senders Name",
-             'additional_name' => '',
-             'bank_code' => "1605000",
-             'account_number' => PHP_INT_MAX-1,
-         );
-
-        $this->assertTrue($dtaus->setAccountFileSender($DTA_test_account));
+        // this test is only for 32-bit systems where some (10-digit)
+        // account numbers are representable with integers but others are not
+        if (PHP_INT_MAX != 2147483647) {
+            $this->markTestSkipped('unexpected PHP_INT_MAX -- no 32bit system');
+        } else {
+            // small := leq PHP_INT_MAX (on 32-bit with 10 digits)
+            $dtaus = new DTA(DTA_CREDIT);
+            $DTA_test_account = array(
+                 'name' => "Senders Name",
+                 'additional_name' => '',
+                 'bank_code' => "1605000",
+                 'account_number' => PHP_INT_MAX-1,
+             );
+            $this->assertTrue($dtaus->setAccountFileSender($DTA_test_account));
+        }
     }
 
     public function testInstantiateWithIntegerAccountNumberBig()
@@ -198,15 +203,37 @@ class DTATest extends PHPUnit_Framework_TestCase
 
     public function testMaxAmount()
     {
-        $this->fixture->addExchange(array(
-                'name' => "A Receivers Name",
-                'bank_code' => "16050000",
-                'account_number' => "3503007767"
-            ),
-            (float) PHP_INT_MAX/100,
-            "Ein Test-Verwendungszweck"
-        );
-        $this->assertSame(1, $this->fixture->count());
+        /*
+         * this test was written for 32bit systems.
+         * on 64bit systems the value PHP_INT_MAX/100 is too big for a float,
+         * i.e. introduces a considerable rounding error (yielding a cent
+         * amount > PHP_INT_MAX). Thus the 64bit-case is only a workaround
+         * to test some smaller value.
+         */
+
+        if (PHP_INT_MAX === 2147483647) { // 32bit
+            $this->fixture->addExchange(array(
+                    'name' => "A Receivers Name",
+                    'bank_code' => "16050000",
+                    'account_number' => "3503007767"
+                ),
+                (float) PHP_INT_MAX/100,
+                "Ein Test-Verwendungszweck"
+            );
+            $this->assertSame(1, $this->fixture->count());
+        } elseif (PHP_INT_MAX === 9223372036854775807) { // 64bit
+            $this->fixture->addExchange(array(
+                    'name' => "A Receivers Name",
+                    'bank_code' => "16050000",
+                    'account_number' => "3503007767"
+                ),
+                (float) (PHP_INT_MAX-1000)/100,
+                "Ein Test-Verwendungszweck"
+            );
+            $this->assertSame(1, $this->fixture->count());
+        } else {
+            $this->markTestSkipped('unexpected PHP_INT_MAX -- no 32bit/64bit system?');
+        }
     }
 
     public function testAmountTooBig()

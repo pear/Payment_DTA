@@ -98,16 +98,21 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
 
     public function testInstantiateWithIntegerAccountNumberSmall()
     {
-        // small := leq PHP_INT_MAX (on 32-bit with 10 digits)
-        $dtaus = new DTAZV();
-        $DTAZV_account = array(
-             'name' => "Senders Name",
-             'additional_name' => 'and some more',
-             'bank_code' => "16050000",
-             'account_number' => PHP_INT_MAX,
-        );
-
-        $this->assertTrue($dtaus->setAccountFileSender($DTAZV_account));
+        // this test is only for 32-bit systems where some (10-digit)
+        // account numbers are representable with integers but others are not
+        if (PHP_INT_MAX != 2147483647) {
+            $this->markTestSkipped('unexpected PHP_INT_MAX -- no 32bit system');
+        } else {
+            // small := leq PHP_INT_MAX (on 32-bit with 10 digits)
+            $dtaus = new DTAZV();
+            $DTAZV_account = array(
+                 'name' => "Senders Name",
+                 'additional_name' => 'and some more',
+                 'bank_code' => "16050000",
+                 'account_number' => PHP_INT_MAX,
+            );
+            $this->assertTrue($dtaus->setAccountFileSender($DTAZV_account));
+        }
     }
 
     public function testInstantiateWithIntegerAccountNumberBig()
@@ -299,6 +304,11 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
 
     public function testDTAZVDisableMaxAmountPass()
     {
+        /*
+         * PHP_INT_MAX/100 causes problems on 64bit systems
+         * (cf. DTATest.php, testMaxAmount()).
+         * Thus use an arbitrary but large value.
+         */
         if (!method_exists($this->fixture, 'setMaxAmount')) {
             $this->markTestSkipped('no method setMaxAmount()');
             return;
@@ -308,7 +318,7 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
                 'name' => "A Receivers Name",
                 'bank_code' => "RZTIAT22263",
                 'account_number' => "DE21700519950000007229"),
-            PHP_INT_MAX/100 - 1,
+            (PHP_INT_MAX-1000)/100 - 1,
             "Test-Verwendungszweck"
         ));
 
