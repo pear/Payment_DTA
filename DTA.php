@@ -118,18 +118,21 @@ class DTA extends DTABase
     protected $sum_accounts;
 
     /**
-    * Constructor.
+    * Last parsing exception or false.
     *
-    * Creates an empty DTA object or imports one.
+    * @var Payment_DTA_Exception|boolean $lastexception
+    */
+    protected $lastexception;
+
+    /**
+    * Constructor. Creates an empty DTA object or imports one.
+    *
     * If the parameter is a string, then it is expected to be in DTA format
     * an its content (sender and transactions) is imported. If the string cannot
-    * be parsed an exception is thrown -- three error categories are possible:
-    * - a Payment_DTA_FatalParseException indicates a fatal error and the
-    *   constructed object is invalid,
-    * - a Payment_DTA_ParseException indicates an error in the input, but all
-    *   transactions up to the unexpected field were read into the new object,
-    * - a Payment_DTA_ChecksumException indicates that the complete DTA file
-    *   was read into the object but the file's internal checksums were incorrect.
+    * be parsed at all then an empty DTA object with type DTA_CREDIT is returned.
+    * If only parts of the string can be parsed, then all transactions before the
+    * error are included into the object.
+    * The user should use getParsingError() to check whether a parsing error occured.
     *
     * Otherwise the parameter has to be the type of the new DTA object,
     * either DTA_CREDIT or DTA_DEBIT. In this case exceptions are never
@@ -137,7 +140,6 @@ class DTA extends DTABase
     *
     * @param integer|string $type Either a string with DTA data or the type of the
     *                       new DTA file (DTA_CREDIT or DTA_DEBIT). Must be set.
-    * @throws Payment_DTA_Exception only with string parameter on unrecognized input
     * @access public
     */
     function __construct($type)
@@ -145,12 +147,45 @@ class DTA extends DTABase
         parent::__construct();
         $this->sum_bankcodes = 0;
         $this->sum_accounts  = 0;
+        $this->lastexception = false;
 
         if (is_int($type)) {
             $this->type = $type;
         } else {
-            $this->parse($type);
+            try {
+                $this->parse($type);
+            } catch (Payment_DTA_FatalParseException $e) {
+                // cannot construct this object, reset everything
+                parent::__construct();
+                $this->sum_bankcodes = 0;
+                $this->sum_accounts  = 0;
+                $this->type = DTA_CREDIT;
+                $this->lastexception = $e;
+            } catch (Payment_DTA_Exception $e) {
+                // object is valid, but save the error
+                $this->lastexception = $e;
+            }
         }
+    }
+
+    /**
+    * Get parsing error.
+    *
+    * Returns the last exception thrown when parsing DTA data; either
+    * - false: no error occured, valid DTA file was read into the object,
+    * - Payment_DTA_ChecksumException indicates that the complete DTA file
+    *   was read into the object but the file's internal checksums were incorrect,
+    * - Payment_DTA_ParseException indicates an error in the input, but all
+    *   transactions up to the unexpected field were read into the new object,
+    * - Payment_DTA_FatalParseException indicates a fatal error, thus the
+    *   constructed object is empty.
+    *
+    * @access public
+    * @return Payment_DTA_Exception|boolean
+    */
+    function getParsingError()
+    {
+        return $this->lastexception;
     }
 
     /**
@@ -878,6 +913,7 @@ class DTA extends DTABase
                     }
                 }
             } catch (Payment_DTA_ParseException $e) {
+                // TODO: try to skip record and continue with next one
                 throw new Payment_DTA_ParseException("Error in C record, ".
                     "in transaction number ".strval($this->count()+1), $e);
             }

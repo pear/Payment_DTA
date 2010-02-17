@@ -65,22 +65,26 @@ if (empty($dtafilestring) && (empty($_FILES) || empty($_FILES["userfile"]))) {
 } else {
     $dtafilestring = $dtafilestring ? $dtafilestring
         : file_get_contents($_FILES["userfile"]["tmp_name"]);
-    if(!$dtafilestring) {
+    if (!$dtafilestring) {
         print "<p class='status'>Fehler: Kann DTA-Datei nicht lesen...</p></body></html>";
         die();
     }
 
     print "<p class='status'>Lese DTA-Datei ...</p>";
 
-    try {
-        $dta = new DTA($dtafilestring);
-    } catch (Payment_DTA_FatalParseException $e) {
-        print "<p class='status'>Schwerer Fehler: $e</p></body></html>";
-        die();
-    } catch (Payment_DTA_ParseException $e) {
-        print "<p class='status'>Fehler: $e</p>";
-    } catch (Payment_DTA_ChecksumException $e) {
-        print "<p class='status'>Datei enthält falsche Prüfsumme: $e</p>";
+    $dta = new DTA($dtafilestring);
+    
+    if ($dta->getParsingError() = $e) {
+        if (get_class($e) == "Payment_DTA_FatalParseException") {
+            print "<p class='status'>Schwerer Fehler: $e</p></body></html>";
+            die();
+        } elseif (get_class($e) == "Payment_DTA_ParseException") {
+            print "<p class='status'>Fehler: $e</p>";
+        } elseif (get_class($e) == "Payment_DTA_ChecksumException") {
+            print "<p class='status'>Datei enthält falsche Prüfsumme: $e</p>";
+        } else {
+            print "<p class='status'>Unerwarteter Fehler: $e</p>";
+        }
     }
 $meta = $dta->getMetaData();
 ?>
