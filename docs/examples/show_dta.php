@@ -87,7 +87,7 @@ if (empty($dtafilestring) && (empty($_FILES) || empty($_FILES["userfile"]))) {
 
     $dta = new DTA($dtafilestring);
     
-    if ($dta->getParsingError() = $e) {
+    if ($e = $dta->getParsingError()) {
         if (get_class($e) == "Payment_DTA_FatalParseException") {
             print "<p class='status'>Schwerer Fehler: $e</p></body></html>";
             die();
