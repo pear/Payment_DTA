@@ -129,18 +129,19 @@ class DTAZV extends DTABase
     */
     function setAccountFileSender($account)
     {
-        $account['account_number'] =
-            strval($account['account_number']);
-        $account['bank_code']      =
-            strval($account['bank_code']);
+        $account['account_number']
+            = strval($account['account_number']);
+        $account['bank_code']
+            = strval($account['bank_code']);
 
         if (strlen($account['name']) > 0
-         && strlen($account['bank_code']) > 0
-         && strlen($account['bank_code']) <= 8
-         && ctype_digit($account['bank_code'])
-         && strlen($account['account_number']) > 0
-         && strlen($account['account_number']) <= 10
-         && ctype_digit($account['account_number'])) {
+            && strlen($account['bank_code']) > 0
+            && strlen($account['bank_code']) <= 8
+            && ctype_digit($account['bank_code'])
+            && strlen($account['account_number']) > 0
+            && strlen($account['account_number']) <= 10
+            && ctype_digit($account['account_number'])
+        ) {
             if (empty($account['additional_name'])) {
                 $account['additional_name'] = "";
             }
@@ -215,47 +216,47 @@ class DTAZV extends DTABase
         }
 
         if (empty($account_sender['name'])) {
-            $account_sender['name'] =
-                $this->account_file_sender['name'];
+            $account_sender['name']
+                = $this->account_file_sender['name'];
         }
         if (empty($account_sender['additional_name'])) {
-            $account_sender['additional_name'] =
-                $this->account_file_sender['additional_name'];
+            $account_sender['additional_name']
+                = $this->account_file_sender['additional_name'];
         }
         if (empty($account_sender['street'])) {
-            $account_sender['street'] =
-                $this->account_file_sender['street'];
+            $account_sender['street']
+                = $this->account_file_sender['street'];
         }
         if (empty($account_sender['city'])) {
-            $account_sender['city'] =
-                $this->account_file_sender['city'];
+            $account_sender['city']
+                = $this->account_file_sender['city'];
         }
         if (empty($account_sender['bank_code'])) {
-            $account_sender['bank_code'] =
-                $this->account_file_sender['bank_code'];
+            $account_sender['bank_code']
+                = $this->account_file_sender['bank_code'];
         }
         if (empty($account_sender['account_number'])) {
-            $account_sender['account_number'] =
-                $this->account_file_sender['account_number'];
+            $account_sender['account_number']
+                = $this->account_file_sender['account_number'];
         }
 
         // check arguments
         if (strlen($account_receiver['bank_code']) == 8) {
             if (is_numeric($account_receiver['bank_code'])) {
                 // german BLZ -> allowed with special format
-                $account_receiver['bank_code'] =
-                    '///' . $account_receiver['bank_code'];
+                $account_receiver['bank_code']
+                    = '///' . $account_receiver['bank_code'];
             } else {
                 // short BIC -> fill to 11 chars
-                $account_receiver['bank_code'] =
-                    $account_receiver['bank_code'] . 'XXX';
+                $account_receiver['bank_code']
+                    = $account_receiver['bank_code'] . 'XXX';
             }
         }
 
-        $account_sender['account_number'] =
-            strval($account_sender['account_number']);
-        $account_sender['bank_code']      =
-            strval($account_sender['bank_code']);
+        $account_sender['account_number']
+            = strval($account_sender['account_number']);
+        $account_sender['bank_code']
+            = strval($account_sender['bank_code']);
 
         /*
          * notes for IBAN: currently only checked for length;
@@ -267,36 +268,43 @@ class DTAZV extends DTABase
          */
         $cents = (int)(round($amount * 100));
         if (strlen($account_receiver['name']) > 0
-         && strlen($account_receiver['bank_code']) == 11
-         && strlen($account_receiver['account_number']) > 12
-         && strlen($account_receiver['account_number']) <= 34
-         && strlen($account_sender['name']) > 0
-         && strlen($account_sender['bank_code']) > 0
-         && strlen($account_sender['bank_code']) <= 8
-         && ctype_digit($account_sender['bank_code'])
-         && strlen($account_sender['account_number']) > 0
-         && strlen($account_sender['account_number']) <= 10
-         && ctype_digit($account_sender['account_number'])
-         && is_numeric($amount) && $cents > 0
-         && $cents <= $this->max_amount
-         && $this->sum_amounts <= PHP_INT_MAX - $cents
-         && ((is_array($purposes) && count($purposes) >= 1 && count($purposes) <= 4)
-             || (is_string($purposes) && strlen($purposes) > 0))) {
+            && strlen($account_receiver['bank_code']) == 11
+            && strlen($account_receiver['account_number']) > 12
+            && strlen($account_receiver['account_number']) <= 34
+            && strlen($account_sender['name']) > 0
+            && strlen($account_sender['bank_code']) > 0
+            && strlen($account_sender['bank_code']) <= 8
+            && ctype_digit($account_sender['bank_code'])
+            && strlen($account_sender['account_number']) > 0
+            && strlen($account_sender['account_number']) <= 10
+            && ctype_digit($account_sender['account_number'])
+            && is_numeric($amount) && $cents > 0
+            && $cents <= $this->max_amount
+            && $this->sum_amounts <= PHP_INT_MAX - $cents
+            && ((is_array($purposes) && count($purposes) >= 1 && count($purposes) <= 4)
+                || (is_string($purposes) && strlen($purposes) > 0))
+        ) {
 
             $this->sum_amounts += $cents;
 
             if (is_string($purposes)) {
-                $filtered_purposes = str_split($this->makeValidString($purposes), 35);
+                $filtered_purposes = str_split(
+                    $this->makeValidString($purposes), 35
+                );
                 $filtered_purposes = array_slice($filtered_purposes, 0, 14);
             } else {
                 $filtered_purposes = array();
                 array_slice($purposes, 0, 4);
                 foreach ($purposes as $purposeline) {
-                    $filtered_purposes[] = substr($this->makeValidString($purposeline), 0, 35);
+                    $filtered_purposes[] = substr(
+                        $this->makeValidString($purposeline), 0, 35
+                    );
                 }
             }
             // ensure four lines
-            $filtered_purposes = array_slice(array_pad($filtered_purposes, 4, ""), 0, 4);
+            $filtered_purposes = array_slice(
+                array_pad($filtered_purposes, 4, ""), 0, 4
+            );
 
             $this->exchanges[] = array(
                 "sender_name"              => substr($this->makeValidString($account_sender['name']), 0, 35),
@@ -349,20 +357,26 @@ class DTAZV extends DTABase
         // Q02 record type
         $content .= "Q";
         // Q03 BLZ receiving this file (usually the sender's bank)
-        $content .= str_pad($this->account_file_sender['bank_code'],
-                        8, "0", STR_PAD_LEFT);
+        $content .= str_pad(
+            $this->account_file_sender['bank_code'], 8, "0", STR_PAD_LEFT
+        );
         // Q04 customer number (usually the sender's account)
-        $content .= str_pad($this->account_file_sender['account_number'],
-                        10, "0", STR_PAD_LEFT);
+        $content .= str_pad(
+            $this->account_file_sender['account_number'], 10, "0", STR_PAD_LEFT
+        );
         // Q05 sender's address
-        $content .= str_pad($this->account_file_sender['name'],
-                        35, " ", STR_PAD_RIGHT);
-        $content .= str_pad($this->account_file_sender['additional_name'],
-                        35, " ", STR_PAD_RIGHT);
-        $content .= str_pad($this->account_file_sender['street'],
-                        35, " ", STR_PAD_RIGHT);
-        $content .= str_pad($this->account_file_sender['city'],
-                        35, " ", STR_PAD_RIGHT);
+        $content .= str_pad(
+            $this->account_file_sender['name'], 35, " ", STR_PAD_RIGHT
+        );
+        $content .= str_pad(
+            $this->account_file_sender['additional_name'], 35, " ", STR_PAD_RIGHT
+        );
+        $content .= str_pad(
+            $this->account_file_sender['street'], 35, " ", STR_PAD_RIGHT
+        );
+        $content .= str_pad(
+            $this->account_file_sender['city'], 35, " ", STR_PAD_RIGHT
+        );
         // Q06 date of file creation
         $content .= strftime("%d%m%y", $this->timestamp);
         // Q07 daily counter
@@ -396,13 +410,15 @@ class DTAZV extends DTABase
             // T02 record type
             $content .= "T";
             // T03 sender's bank
-            $content .= str_pad($exchange['sender_bank_code'],
-                            8, "0", STR_PAD_LEFT);
+            $content .= str_pad(
+                $exchange['sender_bank_code'], 8, "0", STR_PAD_LEFT
+            );
             // T04a currency (fixed)
             $content .= "EUR";
             // T04b sender's account
-            $content .= str_pad($exchange['sender_account_number'],
-                            10, "0", STR_PAD_LEFT);
+            $content .= str_pad(
+                $exchange['sender_account_number'], 10, "0", STR_PAD_LEFT
+            );
             // T05 execution date (optional, if != Q6)
             $content .= str_repeat("0", 6);
             // T06 BLZ, empty for Standardüberweisung
@@ -412,8 +428,9 @@ class DTAZV extends DTABase
             // T07b account, empty for Standardüberweisung
             $content .= str_repeat("0", 10);
             // T08 receiver's BIC
-            $content .= str_pad($exchange['receiver_bank_code'],
-                            11, "X", STR_PAD_RIGHT);
+            $content .= str_pad(
+                $exchange['receiver_bank_code'], 11, "X", STR_PAD_RIGHT
+            );
             // T09a country code, empty for Standardüberweisung
             $content .= str_repeat(" ", 3);
             // T09b receiver's bank address, empty for Standardüberweisung
@@ -421,24 +438,30 @@ class DTAZV extends DTABase
             // T10a receiver's country code --> use cc from IBAN
             $content .= substr($exchange['receiver_account_number'], 0, 2) . ' ';
             // T10b receiver's address
-            $content .= str_pad($exchange['receiver_name'],
-                            35, " ", STR_PAD_RIGHT);
-            $content .= str_pad($exchange['receiver_additional_name'],
-                            35, " ", STR_PAD_RIGHT);
-            $content .= str_pad($exchange['receiver_street'],
-                            35, " ", STR_PAD_RIGHT);
-            $content .= str_pad($exchange['receiver_city'],
-                            35, " ", STR_PAD_RIGHT);
+            $content .= str_pad(
+                $exchange['receiver_name'], 35, " ", STR_PAD_RIGHT
+            );
+            $content .= str_pad(
+                $exchange['receiver_additional_name'], 35, " ", STR_PAD_RIGHT
+            );
+            $content .= str_pad(
+                $exchange['receiver_street'], 35, " ", STR_PAD_RIGHT
+            );
+            $content .= str_pad(
+                $exchange['receiver_city'], 35, " ", STR_PAD_RIGHT
+            );
             // T11 empty for Standardüberweisung
             $content .= str_repeat(" ", 2*35);
             // T12 receiver's IBAN
-            $content .= '/' . str_pad($exchange['receiver_account_number'],
-                            34, " ", STR_PAD_RIGHT);
+            $content .= '/' . str_pad(
+                $exchange['receiver_account_number'], 34, " ", STR_PAD_RIGHT
+            );
             // T13 currency
             $content .= "EUR";
             // T14a amount (integer)
-            $content .= str_pad(intval($exchange['amount']/100),
-                            14, "0", STR_PAD_LEFT);
+            $content .= str_pad(
+                intval($exchange['amount']/100), 14, "0", STR_PAD_LEFT
+            );
             // T14b amount (decimal places)
             $content .= str_pad(($exchange['amount']%100)*10, 3, "0", STR_PAD_LEFT);
             // T15 purpose
@@ -500,7 +523,8 @@ class DTAZV extends DTABase
     * Amounts > 50000 Euro are not allowed in a "EU-Standardüberweisung",
     *   thus yielding a malformed DTAZV.
     *
-    * @param integer $newmax New maximum allowed amount in Euro or 0 to disable check.
+    * @param integer $newmax New maximum allowed amount in Euro
+    *                        or 0 to disable check.
     *
     * @access public
     * @since 1.3.2

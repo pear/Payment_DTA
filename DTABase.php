@@ -69,7 +69,9 @@ require_once 'PEAR/Exception.php';
 * @version  Release: @package_version@
 * @link     http://pear.php.net/package/Payment_DTA
 */
-class Payment_DTA_Exception extends PEAR_Exception { }
+class Payment_DTA_Exception extends PEAR_Exception
+{
+}
 
 /**
 * Payment_DTA_ParseException indicates parsing problems.
@@ -81,7 +83,9 @@ class Payment_DTA_Exception extends PEAR_Exception { }
 * @version  Release: @package_version@
 * @link     http://pear.php.net/package/Payment_DTA
 */
-class Payment_DTA_ParseException extends Payment_DTA_Exception {}
+class Payment_DTA_ParseException extends Payment_DTA_Exception
+{
+}
 
 /**
 * Payment_DTA_FatalParseException indicates a non-recoverable parsing problem,
@@ -94,7 +98,9 @@ class Payment_DTA_ParseException extends Payment_DTA_Exception {}
 * @version  Release: @package_version@
 * @link     http://pear.php.net/package/Payment_DTA
 */
-class Payment_DTA_FatalParseException extends Payment_DTA_ParseException {}
+class Payment_DTA_FatalParseException extends Payment_DTA_ParseException
+{
+}
 
 /**
 * Payment_DTA_ChecksumException indicates a wrong checksum in a DTA file.
@@ -106,7 +112,9 @@ class Payment_DTA_FatalParseException extends Payment_DTA_ParseException {}
 * @version  Release: @package_version@
 * @link     http://pear.php.net/package/Payment_DTA
 */
-class Payment_DTA_ChecksumException extends Payment_DTA_Exception {}
+class Payment_DTA_ChecksumException extends Payment_DTA_Exception
+{
+}
 
 /*
  * small debugging helper for initial testing
@@ -188,15 +196,16 @@ abstract class DTABase implements Countable, Iterator
     * Checks if string $input contains the expected value at an offset.
     * After the check the offset is increased.
     *
-    * @param string  $input string to check
-    * @param integer $offset current offset into input
+    * @param string  $input    string to check
+    * @param integer &$offset  current offset into input
     * @param string  $expected expected string at the offset
     *
     * @return boolean true if input is as expected, otherwise an exception is thrown
     * @throws Payment_DTA_Exception if input differs from expected string
     * @access protected
     */
-    protected function check_str($input, &$offset, $expected) {
+    protected function checkStr($input, &$offset, $expected)
+    {
         $len   = strlen($expected);
         $found = substr($input, $offset, $len);
 
@@ -214,21 +223,23 @@ abstract class DTABase implements Countable, Iterator
     * Read string of given length from input at offset.
     * Afterwards the offset is increased.
     *
-    * @param string  $input string to check
-    * @param integer $offset current offset into input
-    * @param integer $length chars to read
+    * @param string  $input   string to check
+    * @param integer &$offset current offset into input
+    * @param integer $length  chars to read
     *
     * @return string the read string of length $length
     * @throws Payment_DTA_Exception if input is too short or contains invalid chars
     * @access protected
     */
-    protected function get_str($input, &$offset, $length) {
+    protected function getStr($input, &$offset, $length)
+    {
         $rc = substr($input, $offset, $length);
         if (!$rc) {
             throw new Payment_DTA_Exception("input string not long enough to ".
                 "read $length bytes at position $offset");
         } elseif (!$this->validString($rc)) {
-            throw new Payment_DTA_Exception("invalid String '$rc' at position $offset");
+            throw new Payment_DTA_Exception("invalid String '$rc' ".
+                "at position $offset");
         } else {
             $offset += $length;
             dprint("get: '$rc'\n");
@@ -240,21 +251,23 @@ abstract class DTABase implements Countable, Iterator
     * Read integer number of given length from input at offset.
     * Afterwards the offset is increased.
     *
-    * @param string  $input string to check
-    * @param integer $offset current offset into input
-    * @param integer $length chars to read
+    * @param string  $input   string to check
+    * @param integer &$offset current offset into input
+    * @param integer $length  chars to read
     *
     * @return int the read number
     * @throws Payment_DTA_Exception if input is too short or contains invalid chars
     * @access protected
     */
-    protected function get_num($input, &$offset, $length) {
+    protected function getNum($input, &$offset, $length)
+    {
         $rc = substr($input, $offset, $length);
         if (!$rc) {
             throw new Payment_DTA_Exception("input string not long enough to ".
                 "read $length bytes at position $offset");
         } elseif (!ctype_digit($rc)) {
-            throw new Payment_DTA_Exception("invalid Number '$rc' at position $offset");
+            throw new Payment_DTA_Exception("invalid Number '$rc' ".
+                "at position $offset");
         } else {
             $offset += $length;
             dprint("get: '$rc'\n");
@@ -505,8 +518,11 @@ abstract class DTABase implements Countable, Iterator
 
         // ensure UTF-8, for single-byte-encodings use either
         //     the internal encoding or assume ISO-8859-1
-        $utf8string = mb_convert_encoding($string,
-            "UTF-8", array("UTF-8", mb_internal_encoding(), "ISO-8859-1"));
+        $utf8string = mb_convert_encoding(
+            $string,
+            "UTF-8",
+            array("UTF-8", mb_internal_encoding(), "ISO-8859-1")
+        );
 
         // replace known special chars
         $result = strtr($utf8string, $special_chars);
@@ -623,21 +639,26 @@ abstract class DTABase implements Countable, Iterator
         return json_encode($this->exchanges);
     }
 
-    /* for Iterator interface */
+    /* variable and methods to implement Iterator interface */
     protected $iterator_position = 0;
-    function current () {
+    function current()
+    {
         return $this->exchanges[$this->iterator_position];
     }
-    function key () {
+    function key()
+    {
         return $this->iterator_position;
     }
-    function next () {
+    function next()
+    {
         ++$this->iterator_position;
     }
-    function rewind () {
+    function rewind()
+    {
         $this->iterator_position = 0;
     }
-    function valid () {
+    function valid()
+    {
         return isset($this->exchanges[$this->iterator_position]);
     }
     
