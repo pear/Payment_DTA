@@ -711,13 +711,6 @@ class DTA extends DTABase
             /* field 12 */
             $this->checkStr($input, $offset, "1");
 
-            // use read values to construct fill this object's variables
-            dprint("read the A record with values:\n");
-            dprint("sender name: $Asender_name\n");
-            dprint("sender BLZ: $Asender_blz\n");
-            dprint("sender account: $Asender_account\n");
-            dprint("-----------------------\n");
-
             /* the first char G/L indicates credit and debit exchanges
              * the second char K/B indicates a customer or bank file
              * (I do not know if bank files should be treated different)
@@ -747,8 +740,6 @@ class DTA extends DTABase
             }
             // TODO: set $Adate or $Aexec_date
         } catch (Payment_DTA_Exception $e) {
-            /* Error in A record */
-            dprint("Exception in A record: $e\n");
             throw new Payment_DTA_FatalParseException("Exception in A record", $e);
         }
 
@@ -963,12 +954,6 @@ class DTA extends DTABase
             if (!isset($Creceiver_name2)) {
                 $Creceiver_name2 = "";
             }
-            dprint("read a C record with values:\n");
-            dprint("sender: $Csender_name, $Csender_name2, $Csender_blz, $Csender_account\n");
-            dprint("receiver: $Creceiver_name, $Creceiver_name2, $Creceiver_blz, $Creceiver_account\n");
-            dprint("amount: $Camount\n");
-            dprint("purpose: ".join($Cpurpose, "/")."\n");
-            dprint("-----------------------\n");
 
             $rc = $this->addExchange(
                 array(

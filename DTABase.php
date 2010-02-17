@@ -116,15 +116,6 @@ class Payment_DTA_ChecksumException extends Payment_DTA_Exception
 {
 }
 
-/*
- * small debugging helper for initial testing
- * TODO: remove later
- */
-function dprint($text)
-{
-    //print $text;
-}
-
 /**
 * DTABase class provides common functions to classes DTA and DTAZV.
 *
@@ -213,7 +204,6 @@ abstract class DTABase implements Countable, Iterator
             throw new Payment_DTA_Exception("input string at position $offset ".
                 "('$found') does not match expected value '$expected'");
         } else {
-            dprint("check: '$found'\n");
             $offset += $len;
             return true;
         }
@@ -242,7 +232,6 @@ abstract class DTABase implements Countable, Iterator
                 "at position $offset");
         } else {
             $offset += $length;
-            dprint("get: '$rc'\n");
             return $rc;
         }
     }
@@ -270,7 +259,6 @@ abstract class DTABase implements Countable, Iterator
                 "at position $offset");
         } else {
             $offset += $length;
-            dprint("get: '$rc'\n");
             return $rc;
         }
     }
