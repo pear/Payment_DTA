@@ -1,24 +1,25 @@
 <?php
 
-// +----------------------------------------------------------------------+
-// | PHP Version 4                                                        |
-// +----------------------------------------------------------------------+
-// | Copyright (c) 2003-2005 Hermann Stainer, Web-Gear                    |
-// | http://www.web-gear.com/                                             |
-// | All rights reserved.                                                 |
-// +----------------------------------------------------------------------+
-// | Payment_DTA example:                                                 |
-// | Example of creating a DTA credit file with one transaction.          |
-// |                                                                      |
-// +----------------------------------------------------------------------+
-// | Author: Hermann Stainer <hs@web-gear.com>                            |
-// +----------------------------------------------------------------------+
-//
-// $Id$
+/**
+ * Payment_DTA example:
+ * Example of creating a DTA credit file with one transaction.
+ *
+ * PHP version 4 and 5
+ *
+ * Copyright (c) 2003-2005 Hermann Stainer, Web-Gear
+ * http://www.web-gear.com/
+ * All rights reserved.
+ *
+ * @category  Payment
+ * @package   Payment_DTA
+ * @author    Hermann Stainer <hs@web-gear.com>
+ * @copyright 2003-2005 Hermann Stainer, Web-Gear
+ * @license   http://www.debian.org/misc/bsd.license  BSD License (3 Clause)
+ * @version   SVN: $Id$
+ * @link      http://pear.php.net/package/Payment_DTA
+ */
 
-
-
-require_once("Payment/DTA.php");
+require_once "Payment/DTA.php";
 
 
 /**
@@ -34,11 +35,13 @@ $dta_file = new DTA(DTA_CREDIT);
 * Set file sender. This is also the default sender for transactions.
 */
 
-$dta_file->setAccountFileSender(array(
-    "name"           => "Michael Mustermann",
-    "bank_code"      => 11112222,
-    "account_number" => 654321
-));
+$dta_file->setAccountFileSender(
+    array(
+        "name"           => "Michael Mustermann",
+        "bank_code"      => 11112222,
+        "account_number" => 654321
+    )
+);
 
 /**
 * Add transaction.

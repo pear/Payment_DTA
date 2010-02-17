@@ -1,4 +1,20 @@
 <?php
+
+/**
+ * Example how to use the meta data to create a "Begleitzettel",
+ * a document to accompany and summarize a DTA disk.
+ *
+ * PHP version 4 and 5
+ *
+ * @category  Payment
+ * @package   Payment_DTA
+ * @author    Martin Schütte <info@mschuette.name>
+ * @copyright 2009 Martin Schütte
+ * @license   http://www.debian.org/misc/bsd.license  BSD License (3 Clause)
+ * @version   SVN: $Id$
+ * @link      http://pear.php.net/package/Payment_DTA
+ */
+
 require_once 'Payment_DTA/DTA.php';
 
 $dtaus = new DTA(DTA_CREDIT);
@@ -9,7 +25,8 @@ $DTA_test_account = array(
 );
 $dtaus->setAccountFileSender($DTA_test_account);
 
-$dtaus->addExchange(array(
+$dtaus->addExchange(
+    array(
         'name' => "Emil Empfänger",
         'bank_code' => "16050000",
         'account_number' => "3503007767"
