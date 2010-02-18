@@ -16,8 +16,7 @@
  * @link      http://pear.php.net/package/Payment_DTA
  */
 
-//require_once "Payment/DTA.php";
-require_once "../../DTA.php";
+require_once "Payment/DTA.php";
 
 $dtafilestring =
     '0128AGK1605000000000000SENDERS NAME               300110    3503'.
@@ -86,8 +85,9 @@ if (empty($dtafilestring) && (empty($_FILES) || empty($_FILES["userfile"]))) {
     print "<p class='status'>Lese DTA-Datei ...</p>";
 
     $dta = new DTA($dtafilestring);
-    
-    if ($e = $dta->getParsingError()) {
+
+    $e = $dta->getParsingError();
+    if ($e) {
         if (get_class($e) == "Payment_DTA_FatalParseException") {
             print "<p class='status'>Schwerer Fehler: $e</p></body></html>";
             die();
