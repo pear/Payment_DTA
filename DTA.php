@@ -1030,6 +1030,10 @@ class DTA extends DTABase
          * - Should we try to parse truncated files, i.e. ones with a wrong length?
          * - Should we try to find records with a wrong offset, e.g. when an
          *   encoding error shifts all following records 4 bytes backwards?
+         * - Should we abort on any error or rather skip the exchange and continue?
+         *   In the later case we need a way to preserve/indicate the problem
+         *   because any simple ParseException in a C record will be masked by
+         *   a resulting ChecksumException in the E record.
          * - TODO: We should read non-ASCII chars in A/C records. Some programs
          *   write 8-bit chars into the fields.
          */
@@ -1050,15 +1054,22 @@ class DTA extends DTABase
             throw new Payment_DTA_FatalParseException("Exception in A record", $e);
         }
 
-        // do not consume input by using getStr() in control structures
+        //do not consume input by using getStr()/getNum() here
         while ($input[$offset + 4] == 'C') {
             /* C record */
+            $c_start = $offset;
+            $c_length = intval(substr($input, $offset, 4));
             try {
                 $this->_parseCrecord($input, $offset, $checks);
-            } catch (Payment_DTA_ParseException $e) {
-                // TODO: try to skip record and continue with next one
-                throw new Payment_DTA_ParseException("Error in C record, ".
-                    "in transaction number ".strval($this->count()+1), $e);
+            } catch (Payment_DTA_Exception $e) {
+                // TODO: this is the place to either throw the Exception
+                //       or ignore the error and continue with the next
+                //       C record.
+                //throw new Payment_DTA_ParseException("Error in C record, ".
+                //    "in transaction number ".strval($this->count()+1), $e);
+
+                // skip to next 128-byte aligned record
+                $offset = $c_start + 128 * (1 + intval($c_length/128));
             }
         } // while
 

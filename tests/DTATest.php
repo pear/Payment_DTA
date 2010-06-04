@@ -1167,6 +1167,25 @@ class DTATest extends PHPUnit_Framework_TestCase
             get_class($dta->getParsingError()));
     }
 
+    public function testParserSkipInvalidCRecord()
+    {
+        $teststring = // same as in testContent() but error in 1st C record
+            '0128AGK1605000000000000SENDERS NAME               '.strftime("%d%m%y", time()).'    3503'.
+            '0077670000000000                                               1'.
+            '0187C16050000333344440013579000000000000000051000 00000000000160'.
+            '50000350300776700000123456   FRANZ?MUELLER                      '.
+            'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
+            '                                                                '.
+            '0187C16050000333344440013579000000000000000051000 00000000000160'.
+            '50000350300776700000032190   FRANZ MUELLER                      '.
+            'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
+            '                                                                '.
+            '0128E     000000200000000000000000000002715800000000000066668888'.
+            '0000000155646                                                   ';
+        $dta = new DTA($teststring);
+        $this->assertSame(1, $dta->count());
+    }
+
     public function testParserWrongCType()
     {
         $teststring = // same as in testContent() but 2nd C record has an X instead
@@ -1204,7 +1223,7 @@ class DTATest extends PHPUnit_Framework_TestCase
             '0000000155646                                                   ';
         $dta = new DTA($teststring);
         $this->assertSame(1, $dta->count());
-        $this->assertEquals('Payment_DTA_ParseException',
+        $this->assertEquals('Payment_DTA_ChecksumException',
             get_class($dta->getParsingError()));
     }
     public function testParserWrongCheckCount()
