@@ -647,6 +647,360 @@ class DTA extends DTABase
     }
 
     /**
+    * Auxillary parser to consume A records.
+    *
+    * @param string  $input   content of DTA file
+    * @param integer &$offset read offset into $input
+    *
+    * @throws Payment_DTA_Exception on unrecognized input
+    * @access private
+    * @return void
+    */
+    private function _parseArecord($input, &$offset)
+    {
+        /* field 1+2 */
+        $this->checkStr($input, $offset, "0128A");
+        /* field  3 */
+        $type = $this->getStr($input, $offset, 2);
+        /* field  4 */
+        $Asender_blz = $this->getNum($input, $offset, 8);
+        /* field  5 */
+        $this->checkStr($input, $offset, "00000000");
+        /* field  6 */
+        $Asender_name = rtrim($this->getStr($input, $offset, 27));
+        /* field  7 */
+        $Adate = $this->getNum($input, $offset, 6);
+        /* field  8 */
+        $this->checkStr($input, $offset, "    ");
+        /* field  9 */
+        $Asender_account = $this->getNum($input, $offset, 10);
+        /* field 10 */
+        $this->checkStr($input, $offset, "0000000000");
+        /* field 11a */
+        $this->checkStr($input, $offset, str_repeat(" ", 15));
+        /* field 11b
+         * this may hold an optional execution date.
+         * DTA does not fill the field and parse() ignores its content.
+        */
+        $this->getStr($input, $offset, 8);
+        /* field 11c */
+        $this->checkStr($input, $offset, str_repeat(" ", 24));
+        /* field 12 */
+        $this->checkStr($input, $offset, "1");
+
+        /* the first char G/L indicates credit and debit exchanges
+         * the second char K/B indicates a customer or bank file
+         * (I do not know if bank files should be treated different)
+        */
+        if ($type === "GK" || $type === "GB") {
+            $this->type = DTA_CREDIT;
+        } elseif ($type === "LK" || $type === "LB") {
+            $this->type = DTA_DEBIT;
+        } else {
+            throw new Payment_DTA_FatalParseException(
+                "Invalid type indicator: '$type', expected ".
+                "either 'GK'/'GB' or 'LK'/'LB' (@offset 6).");
+        }
+
+        $rc = $this->setAccountFileSender(
+            array(
+            "name"            => $Asender_name,
+            "bank_code"       => $Asender_blz,
+            "account_number"  => $Asender_account,
+            "additional_name" => '',
+            )
+        );
+        if (!$rc) {
+            // should never happen
+            throw new Payment_DTA_FatalParseException(
+                "Cannot setAccountFileSender()");
+        }
+        // TODO: set $Adate or $Aexec_date
+    }
+
+    /**
+    * Auxillary parser to consume C records.
+    *
+    * @param string  $input   content of DTA file
+    * @param integer &$offset read offset into $input
+    * @param array   &$checks holds checksums for validation in E record
+    *
+    * @throws Payment_DTA_Exception on unrecognized input
+    * @access private
+    * @return void
+    */
+    private function _parseCrecord($input, &$offset, &$checks)
+    {
+        /* field 1 */
+        $record_length = $this->getNum($input, $offset, 4);
+        /* field 2 */
+        $this->checkStr($input, $offset, "C");
+
+        // check the record length
+        if (($record_length-187)%29) {
+            throw new Payment_DTA_ParseException('invalid C record length');
+        }
+        $extensions_length = ($record_length-187)/29;
+
+        /* field  3 */
+        $Cbank_blz = $this->getNum($input, $offset, 8); // usually 0, ignored
+        /* field  4 */
+        $Creceiver_blz = $this->getNum($input, $offset, 8);
+        /* field  5 */
+        $Creceiver_account = $this->getNum($input, $offset, 10);
+        /* field  6 */
+        $this->checkStr($input, $offset, "0");
+        // either 0s or aninternal customer number:
+        $this->getNum($input, $offset, 11);
+        $this->checkStr($input, $offset, "0");
+        /* field  7 */
+        // kind of payment, has form '5x000'
+        $this->checkStr($input, $offset, "5");
+        $this->getStr($input, $offset, 1); // ignored
+        $this->checkStr($input, $offset, "000");
+        /* field  8 */
+        $this->checkStr($input, $offset, " ");
+        /* field  9 */
+        $this->checkStr($input, $offset, "00000000000");
+        /* field 10 */
+        $Csender_blz = $this->getNum($input, $offset, 8);
+        /* field 11 */
+        $Csender_account = $this->getNum($input, $offset, 10);
+        /* field 12 */
+        $Camount = $this->getNum($input, $offset, 11);
+        /* field 13 */
+        $this->checkStr($input, $offset, "   ");
+        /* field 14a */
+        $Creceiver_name = rtrim($this->getStr($input, $offset, 27));
+        /* field 14b */
+        $this->checkStr($input, $offset, "        ");
+        // end 1st part of C record
+        assert($offset % 128 === 0);
+        /* field 15 */
+        $Csender_name = rtrim($this->getStr($input, $offset, 27));
+        /* field 16 */
+        $Cpurpose = array(rtrim($this->getStr($input, $offset, 27)));
+        /* field 17a */
+        $this->checkStr($input, $offset, "1");
+        /* field 17b */
+        $this->checkStr($input, $offset, "  ");
+        /* field 18 */
+        $extensions = $this->getNum($input, $offset, 2);
+        if ($extensions != $extensions_length) {
+            throw new Payment_DTA_ParseException('number of extensions '.
+                'does not match record length in transaction number '.
+                strval($this->count()+1));
+        }
+
+        // extensions to C record, read into array & processed later
+        $extensions_read = array();
+
+        // first handle the up to 2 extensions inside the 2nd part
+        if ($extensions == 0) { // only padding
+            $this->checkStr($input, $offset, str_repeat(" ", 69));
+        } elseif ($extensions == 1) {
+            /* field 19 */
+            $ext_type = $this->getNum($input, $offset, 2);
+            /* field 20 */
+            $ext_content = $this->getStr($input, $offset, 27);
+            array_push($extensions_read, array($ext_type, $ext_content));
+            /* fields 21,22,23 */
+            $this->checkStr($input, $offset, str_repeat(" ", 2+27+11));
+        } else {
+            /* field 19 */
+            $ext_type = $this->getNum($input, $offset, 2);
+            /* field 20 */
+            $ext_content = $this->getStr($input, $offset, 27);
+            array_push($extensions_read, array($ext_type, $ext_content));
+            /* field 21 */
+            $ext_type = $this->getNum($input, $offset, 2);
+            /* field 22 */
+            $ext_content = $this->getStr($input, $offset, 27);
+            array_push($extensions_read, array($ext_type, $ext_content));
+            /* fields 23 */
+            $this->checkStr($input, $offset, str_repeat(" ", 11));
+        }
+        // end 2nd part of C record
+        assert($offset % 128 === 0);
+
+        // up to 4 more parts, each with 128 bytes & up to 4 extensions
+        while (count($extensions_read) < $extensions) {
+            $ext_in_part = $extensions - count($extensions_read);
+            // one switch to read the content
+            switch($ext_in_part) {
+            default: // =4
+            case 4: /* fallthrough */
+                $ext_type = $this->getNum($input, $offset, 2);
+                $ext_content = $this->getStr($input, $offset, 27);
+                array_push($extensions_read, array($ext_type, $ext_content));
+            case 3: /* fallthrough */
+                $ext_type = $this->getNum($input, $offset, 2);
+                $ext_content = $this->getStr($input, $offset, 27);
+                array_push($extensions_read, array($ext_type, $ext_content));
+            case 2: /* fallthrough */
+                $ext_type = $this->getNum($input, $offset, 2);
+                $ext_content = $this->getStr($input, $offset, 27);
+                array_push($extensions_read, array($ext_type, $ext_content));
+            case 1: /* fallthrough */
+                $ext_type = $this->getNum($input, $offset, 2);
+                $ext_content = $this->getStr($input, $offset, 27);
+                array_push($extensions_read, array($ext_type, $ext_content));
+                break;
+            case 0:
+                // should never happen
+                throw new Payment_DTA_ParseException('confused about '.
+                    'number of extensions in transaction number '.
+                    strval($this->count()+1));
+            }
+
+            // and one switch for the padding
+            switch($ext_in_part) {
+            case 1:
+                $this->checkStr($input, $offset, str_repeat(" ", 29));
+            case 2: /* fallthrough */
+                $this->checkStr($input, $offset, str_repeat(" ", 29));
+            case 3: /* fallthrough */
+                $this->checkStr($input, $offset, str_repeat(" ", 29));
+            case 4: /* fallthrough */
+            default: /* fallthrough */
+                $this->checkStr($input, $offset, str_repeat(" ", 12));
+                break;
+            }
+            // end n-th part of C record
+            assert($offset % 128 === 0);
+        }
+
+        // process read extension content
+        foreach ($extensions_read as $ext) {
+            $ext_type = $ext[0];
+            $ext_content = $ext[1];
+
+            switch($ext_type) {
+            case 1:
+                if (!empty($Creceiver_name2)) {
+                    throw new Payment_DTA_ParseException('multiple '.
+                        'receiver name extensions in transaction number '.
+                        strval($this->count()+1));
+                } else {
+                    $Creceiver_name2 = $ext_content;
+                }
+                break;
+            case 2:
+                if (count($Cpurpose) >= 14) {
+                    // allowed: 1 line in fixed part + 13 in extensions
+                    throw new Payment_DTA_ParseException('too many '.
+                        'purpose extensions in transaction number '.
+                        strval($this->count()+1));
+                } else {
+                    array_push($Cpurpose, $ext_content);
+                }
+                break;
+            case 3:
+                if (!empty($Csender_name2)) {
+                    throw new Payment_DTA_ParseException('multiple '.
+                        'receiver name extensions in transaction number '.
+                        strval($this->count()+1));
+                } else {
+                    $Csender_name2 = $ext_content;
+                }
+                break;
+            default:
+                throw new Payment_DTA_ParseException('invalid '.
+                    'extension type in transaction number '.
+                    strval($this->count()+1));
+            }
+        }
+
+        if (!isset($Csender_name2)) {
+            $Csender_name2 = "";
+        }
+        if (!isset($Creceiver_name2)) {
+            $Creceiver_name2 = "";
+        }
+
+        /* we read the fields, now add an exchange */
+        $rc = $this->addExchange(
+            array(
+                'name' => $Creceiver_name,
+                'bank_code' => $Creceiver_blz,
+                'account_number' => $Creceiver_account,
+                'additional_name' => $Creceiver_name2
+            ),
+            $Camount/100.0,
+            $Cpurpose,
+            array(
+                'name' => $Csender_name,
+                'bank_code' => $Csender_blz,
+                'account_number' => $Csender_account,
+                'additional_name' => $Csender_name2
+            )
+        );
+        if (!$rc) {
+            // should never happen
+            throw new Payment_DTA_ParseException("Cannot addExchange() ".
+                "for transaction number ".strval($this->count()+1), $e);
+        }
+        $checks['account'] += $Creceiver_account;
+        $checks['blz']     += $Creceiver_blz;
+        $checks['amount']  += $Camount;
+    }
+
+    /**
+    * Auxillary parser to consume E records.
+    *
+    * @param string  $input   content of DTA file
+    * @param integer &$offset read offset into $input
+    * @param array   $checks  holds checksums for validation
+    *
+    * @throws Payment_DTA_Exception on unrecognized input
+    * @access private
+    * @return void
+    */
+    private function _parseErecord($input, &$offset, $checks)
+    {
+        /* field 1+2 */
+        $this->checkStr($input, $offset, "0128E");
+        /* field 3 */
+        $this->checkStr($input, $offset, "     ");
+        /* field 4 */
+        $E_check_count = $this->getNum($input, $offset, 7);
+        /* field 5 */
+        $this->checkStr($input, $offset, str_repeat("0", 13));
+        /* field 6 */
+        $E_check_account = $this->getNum($input, $offset, 17);
+        /* field 7 */
+        $E_check_blz = $this->getNum($input, $offset, 17);
+        /* field 8 */
+        $E_check_amount = $this->getNum($input, $offset, 13);
+        /* field 9 */
+        $this->checkStr($input, $offset, str_repeat(" ", 51));
+        // end of E record
+        assert($offset % 128 === 0);
+
+        // check checksums
+        if ($E_check_count != $this->count()) {
+                    throw new Payment_DTA_ChecksumException(
+                        "E record checksum mismatch for transaction count: ".
+                        "reads $E_check_count, expected ".$this->count());
+        }
+        if ($E_check_account != $checks['account']) {
+                    throw new Payment_DTA_ChecksumException(
+                        "E record checksum mismatch for account numbers: ".
+                        "reads $E_check_account, expected ".$checks['account']);
+        }
+        if ($E_check_blz != $checks['blz']) {
+                    throw new Payment_DTA_ChecksumException(
+                        "E record checksum mismatch for bank codes: ".
+                        "reads $E_check_blz, expected ".$checks['blz']);
+        }
+        if ($E_check_amount != $checks['amount']) {
+                    throw new Payment_DTA_ChecksumException(
+                        "E record checksum mismatch for transfer amount: ".
+                        "reads $E_check_amount, expected ".$checks['amount']);
+        }
+    }
+
+    /**
     * Parser. Read data from an existing DTA file content.
     *
     * Parsing can leave us with four situations:
@@ -669,359 +1023,48 @@ class DTA extends DTABase
     */
     protected function parse($input)
     {
+        /*
+         * Open Questions/TODOs for the parsing code:
+         * - Are the provided exceptions adequate? (Or are they too verbose for
+         *   practical use or OTOH not detailed enough to really handle errors?)
+         * - Should we try to parse truncated files, i.e. ones with a wrong length?
+         * - Should we try to find records with a wrong offset, e.g. when an
+         *   encoding error shifts all following records 4 bytes backwards?
+         * - TODO: We should read non-ASCII chars in A/C records. Some programs
+         *   write 8-bit chars into the fields.
+         */
         if (strlen($input) % 128) {
-            // TODO: should we try to parse anyway, e.g. to handle truncated files?
             throw new Payment_DTA_FatalParseException("invalid length");
         }
 
-        $checksum_account = 0;
-        $checksum_blz     = 0;
-        $checksum_amount  = 0;
+        $checks = array(
+            'account' => 0,
+            'blz' => 0,
+            'amount' => 0);
         $offset = 0;
 
         /* A record */
         try {
-            /* field 1+2 */
-            $this->checkStr($input, $offset, "0128A");
-            /* field  3 */
-            $type = $this->getStr($input, $offset, 2);
-            /* field  4 */
-            $Asender_blz = $this->getNum($input, $offset, 8);
-            /* field  5 */
-            $this->checkStr($input, $offset, "00000000");
-            /* field  6 */
-            $Asender_name = rtrim($this->getStr($input, $offset, 27));
-            /* field  7 */
-            $Adate = $this->getNum($input, $offset, 6);
-            /* field  8 */
-            $this->checkStr($input, $offset, "    ");
-            /* field  9 */
-            $Asender_account = $this->getNum($input, $offset, 10);
-            /* field 10 */
-            $this->checkStr($input, $offset, "0000000000");
-            /* field 11a */
-            $this->checkStr($input, $offset, str_repeat(" ", 15));
-            /* field 11b
-             * this may hold an optional execution date.
-             * DTA does not fill the field and parse() ignores its content.
-             */
-            $this->getStr($input, $offset, 8);
-            /* field 11c */
-            $this->checkStr($input, $offset, str_repeat(" ", 24));
-            /* field 12 */
-            $this->checkStr($input, $offset, "1");
-
-            /* the first char G/L indicates credit and debit exchanges
-             * the second char K/B indicates a customer or bank file
-             * (I do not know if bank files should be treated different)
-             */
-            if ($type === "GK" || $type === "GB") {
-                $this->type = DTA_CREDIT;
-            } elseif ($type === "LK" || $type === "LB") {
-                $this->type = DTA_DEBIT;
-            } else {
-                throw new Payment_DTA_FatalParseException(
-                    "Invalid type indicator: '$type', expected ".
-                    "either 'GK'/'GB' or 'LK'/'LB' (@offset 6).");
-            }
-
-            $rc = $this->setAccountFileSender(
-                array(
-                    "name"            => $Asender_name,
-                    "bank_code"       => $Asender_blz,
-                    "account_number"  => $Asender_account,
-                    "additional_name" => '',
-                )
-            );
-            if (!$rc) {
-                // should never happen
-                throw new Payment_DTA_FatalParseException(
-                    "Cannot setAccountFileSender()");
-            }
-            // TODO: set $Adate or $Aexec_date
+            $this->_parseArecord($input, $offset);
         } catch (Payment_DTA_Exception $e) {
             throw new Payment_DTA_FatalParseException("Exception in A record", $e);
         }
 
-        while (1) {
-            try {
-                /* field 1 */
-                $record_length = $this->getNum($input, $offset, 4);
-                /* field 2 */
-                $record_type = $this->getStr($input, $offset, 1);
-            } catch (Payment_DTA_Exception $e) {
-                throw new Payment_DTA_ParseException(
-                    "Non-numerical record length", $e);
-            }
-
-            // determine if C or E record
-            if ($record_type == 'E') {
-                if ($record_length != 128) {
-                    throw new Payment_DTA_ParseException("Invalid E record length ".
-                        "$record_length != 128 at offset ".($offset-5));
-                }
-                break;
-            } elseif ($record_type != 'C') {
-                throw new Payment_DTA_ParseException("Invalid record type ".
-                    "$record_type at offset ".($offset-1));
-            }
-
+        // do not consume input by using getStr() in control structures
+        while ($input[$offset + 4] == 'C') {
             /* C record */
             try {
-                // check the record length
-                if (($record_length-187)%29) {
-                    throw new Payment_DTA_ParseException('invalid C record length');
-                }
-                $extensions_length = ($record_length-187)/29;
-
-                /* field  3 */
-                $Cbank_blz = $this->getNum($input, $offset, 8); // usually 0, ignored
-                /* field  4 */
-                $Creceiver_blz = $this->getNum($input, $offset, 8);
-                /* field  5 */
-                $Creceiver_account = $this->getNum($input, $offset, 10);
-                /* field  6 */
-                $this->checkStr($input, $offset, "0");
-                // either 0s or aninternal customer number:
-                $this->getNum($input, $offset, 11);
-                $this->checkStr($input, $offset, "0");
-                /* field  7 */
-                // kind of payment, has form '5x000'
-                $this->checkStr($input, $offset, "5");
-                $this->getStr($input, $offset, 1); // ignored
-                $this->checkStr($input, $offset, "000");
-                /* field  8 */
-                $this->checkStr($input, $offset, " ");
-                /* field  9 */
-                $this->checkStr($input, $offset, "00000000000");
-                /* field 10 */
-                $Csender_blz = $this->getNum($input, $offset, 8);
-                /* field 11 */
-                $Csender_account = $this->getNum($input, $offset, 10);
-                /* field 12 */
-                $Camount = $this->getNum($input, $offset, 11);
-                /* field 13 */
-                $this->checkStr($input, $offset, "   ");
-                /* field 14a */
-                $Creceiver_name = rtrim($this->getStr($input, $offset, 27));
-                /* field 14b */
-                $this->checkStr($input, $offset, "        ");
-                // end 1st part of C record
-                assert($offset % 128 === 0);
-                /* field 15 */
-                $Csender_name = rtrim($this->getStr($input, $offset, 27));
-                /* field 16 */
-                $Cpurpose = array(rtrim($this->getStr($input, $offset, 27)));
-                /* field 17a */
-                $this->checkStr($input, $offset, "1");
-                /* field 17b */
-                $this->checkStr($input, $offset, "  ");
-                /* field 18 */
-                $extensions = $this->getNum($input, $offset, 2);
-                if ($extensions != $extensions_length) {
-                    throw new Payment_DTA_ParseException('number of extensions '.
-                        'does not match record length in transaction number '.
-                        strval($this->count()+1));
-                }
-
-                // extensions to C record, read into array & processed later
-                $extensions_read = array();
-
-                // first handle the up to 2 extensions inside the 2nd part
-                if ($extensions == 0) { // only padding
-                    $this->checkStr($input, $offset, str_repeat(" ", 69));
-                } elseif ($extensions == 1) {
-                    /* field 19 */
-                    $ext_type = $this->getNum($input, $offset, 2);
-                    /* field 20 */
-                    $ext_content = $this->getStr($input, $offset, 27);
-                    array_push($extensions_read, array($ext_type, $ext_content));
-                    /* fields 21,22,23 */
-                    $this->checkStr($input, $offset, str_repeat(" ", 2+27+11));
-                } else {
-                    /* field 19 */
-                    $ext_type = $this->getNum($input, $offset, 2);
-                    /* field 20 */
-                    $ext_content = $this->getStr($input, $offset, 27);
-                    array_push($extensions_read, array($ext_type, $ext_content));
-                    /* field 21 */
-                    $ext_type = $this->getNum($input, $offset, 2);
-                    /* field 22 */
-                    $ext_content = $this->getStr($input, $offset, 27);
-                    array_push($extensions_read, array($ext_type, $ext_content));
-                    /* fields 23 */
-                    $this->checkStr($input, $offset, str_repeat(" ", 11));
-                }
-                // end 2nd part of C record
-                assert($offset % 128 === 0);
-
-                // up to 4 more parts, each with 128 bytes & up to 4 extensions
-                while (count($extensions_read) < $extensions) {
-                    $ext_in_part = $extensions - count($extensions_read);
-                    // one switch to read the content
-                    switch($ext_in_part) {
-                    default: // =4
-                    case 4: /* fallthrough */
-                        $ext_type = $this->getNum($input, $offset, 2);
-                        $ext_content = $this->getStr($input, $offset, 27);
-                        array_push($extensions_read, array($ext_type, $ext_content));
-                    case 3: /* fallthrough */
-                        $ext_type = $this->getNum($input, $offset, 2);
-                        $ext_content = $this->getStr($input, $offset, 27);
-                        array_push($extensions_read, array($ext_type, $ext_content));
-                    case 2: /* fallthrough */
-                        $ext_type = $this->getNum($input, $offset, 2);
-                        $ext_content = $this->getStr($input, $offset, 27);
-                        array_push($extensions_read, array($ext_type, $ext_content));
-                    case 1: /* fallthrough */
-                        $ext_type = $this->getNum($input, $offset, 2);
-                        $ext_content = $this->getStr($input, $offset, 27);
-                        array_push($extensions_read, array($ext_type, $ext_content));
-                        break;
-                    case 0:
-                        // should never happen
-                        throw new Payment_DTA_ParseException('confused about '.
-                            'number of extensions in transaction number '.
-                            strval($this->count()+1));
-                    }
-
-                    // and one switch for the padding
-                    switch($ext_in_part) {
-                    case 1:
-                        $this->checkStr($input, $offset, str_repeat(" ", 29));
-                    case 2: /* fallthrough */
-                        $this->checkStr($input, $offset, str_repeat(" ", 29));
-                    case 3: /* fallthrough */
-                        $this->checkStr($input, $offset, str_repeat(" ", 29));
-                    case 4: /* fallthrough */
-                    default: /* fallthrough */
-                        $this->checkStr($input, $offset, str_repeat(" ", 12));
-                        break;
-                    }
-                    // end n-th part of C record
-                    assert($offset % 128 === 0);
-                }
-
-                // process read extension content
-                foreach ($extensions_read as $ext) {
-                    $ext_type = $ext[0];
-                    $ext_content = $ext[1];
-
-                    switch($ext_type) {
-                    case 1:
-                        if (!empty($Creceiver_name2)) {
-                            throw new Payment_DTA_ParseException('multiple '.
-                                'receiver name extensions in transaction number '.
-                                strval($this->count()+1));
-                        } else {
-                            $Creceiver_name2 = $ext_content;
-                        }
-                        break;
-                    case 2:
-                        if (count($Cpurpose) >= 14) {
-                            // allowed: 1 line in fixed part + 13 in extensions
-                            throw new Payment_DTA_ParseException('too many '.
-                                'purpose extensions in transaction number '.
-                                strval($this->count()+1));
-                        } else {
-                            array_push($Cpurpose, $ext_content);
-                        }
-                        break;
-                    case 3:
-                        if (!empty($Csender_name2)) {
-                            throw new Payment_DTA_ParseException('multiple '.
-                                'receiver name extensions in transaction number '.
-                                strval($this->count()+1));
-                        } else {
-                            $Csender_name2 = $ext_content;
-                        }
-                        break;
-                    default:
-                        throw new Payment_DTA_ParseException('invalid '.
-                            'extension type in transaction number '.
-                            strval($this->count()+1));
-                    }
-                }
+                $this->_parseCrecord($input, $offset, $checks);
             } catch (Payment_DTA_ParseException $e) {
                 // TODO: try to skip record and continue with next one
                 throw new Payment_DTA_ParseException("Error in C record, ".
                     "in transaction number ".strval($this->count()+1), $e);
             }
-
-            if (!isset($Csender_name2)) {
-                $Csender_name2 = "";
-            }
-            if (!isset($Creceiver_name2)) {
-                $Creceiver_name2 = "";
-            }
-
-            $rc = $this->addExchange(
-                array(
-                    'name' => $Creceiver_name,
-                    'bank_code' => $Creceiver_blz,
-                    'account_number' => $Creceiver_account,
-                    'additional_name' => $Creceiver_name2
-                ),
-                $Camount/100.0,
-                $Cpurpose,
-                array(
-                    'name' => $Csender_name,
-                    'bank_code' => $Csender_blz,
-                    'account_number' => $Csender_account,
-                    'additional_name' => $Csender_name2
-                )
-            );
-            if (!$rc) {
-                // should never happen
-                throw new Payment_DTA_ParseException("Cannot addExchange() ".
-                    "for transaction number ".strval($this->count()+1), $e);
-            }
-            $checksum_account += $Creceiver_account;
-            $checksum_blz     += $Creceiver_blz;
-            $checksum_amount  += $Camount;
-        } // while(1)
+        } // while
 
         /* E record */
         try {
-            /* already read field 1 & 2 */
-            /* field 3 */
-            $this->checkStr($input, $offset, "     ");
-            /* field 4 */
-            $E_check_count = $this->getNum($input, $offset, 7);
-            /* field 5 */
-            $this->checkStr($input, $offset, str_repeat("0", 13));
-            /* field 6 */
-            $E_check_account = $this->getNum($input, $offset, 17);
-            /* field 7 */
-            $E_check_blz = $this->getNum($input, $offset, 17);
-            /* field 8 */
-            $E_check_amount = $this->getNum($input, $offset, 13);
-            /* field 9 */
-            $this->checkStr($input, $offset, str_repeat(" ", 51));
-            // end of E record
-            assert($offset % 128 === 0);
-
-            // check checksums
-            if ($E_check_count != $this->count()) {
-                        throw new Payment_DTA_ChecksumException(
-                            "E record checksum mismatch for transaction count: ".
-                            "reads $E_check_count, expected ".$this->count());
-            }
-            if ($E_check_account != $checksum_account) {
-                        throw new Payment_DTA_ChecksumException(
-                            "E record checksum mismatch for account numbers: ".
-                            "reads $E_check_account, expected $checksum_account");
-            }
-            if ($E_check_blz != $checksum_blz) {
-                        throw new Payment_DTA_ChecksumException(
-                            "E record checksum mismatch for bank codes: ".
-                            "reads $E_check_blz, expected $checksum_blz");
-            }
-            if ($E_check_amount != $checksum_amount) {
-                        throw new Payment_DTA_ChecksumException(
-                            "E record checksum mismatch for transfer amount: ".
-                            "reads $E_check_amount, expected $checksum_amount");
-            }
+            $this->_parseErecord($input, $offset, $checks);
         } catch (Payment_DTA_ChecksumException $e) {
             throw $e;
         } catch (Payment_DTA_Exception $e) {
