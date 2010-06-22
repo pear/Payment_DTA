@@ -40,7 +40,10 @@
       <parameter>$newmax</parameter>
      </term>
      <listitem>
-      <para>New maximum allowed amount in Euro or 0 to disable check.</para>
+      <para>
+       New maximum allowed amount in Euro                         or 0 to disable
+       check.
+</para>
      </listitem>
     </varlistentry>
    </variablelist>
@@ -50,10 +53,7 @@
   &title.see;
   <para>
    <emphasis>see</emphasis>
-   <ulink url="http://www.bundesbank.de/meldewesen/mw_aussenwirtschaft.en.php">
-    http://www.bundesbank.de/meldewesen/mw_aussenwirtschaft.en.php
-    info on notification requirements
-</ulink>
+   <ulink url="http://www.bundesbank.de/meldewesen/mw_aussenwirtschaft.en.php">info on notification requirements</ulink>
   </para>
  </refsect1>
  <refsect1 id="package.payment.payment-dta.dtazv.setmaxamount.throws">

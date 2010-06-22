@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<package packagerversion="1.8.1" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
+<package packagerversion="1.9.1" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
  <name>Payment_DTA</name>
  <channel>pear.php.net</channel>
  <summary>Creates DTA and DTAZV files containing money transaction data (Germany).</summary>
@@ -16,30 +16,33 @@
   <email>hs@web-gear.com</email>
   <active>no</active>
  </lead>
- <date>2009-06-10</date>
- <time>01:40:06</time>
+ <date>2010-06-22</date>
+ <time>02:25:06</time>
  <version>
-  <release>1.3.2</release>
-  <api>1.3.2</api>
+  <release>1.4.0a1</release>
+  <api>1.4.0a1</api>
  </version>
  <stability>
-  <release>stable</release>
-  <api>stable</api>
+  <release>alpha</release>
+  <api>alpha</api>
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
  <notes>
-[-] fixed numeric input for account numbers (#16285, thanks to Christian Stoller)
-[-] added input validation for $account_sender in DTAZV-&gt;addExchange()
-[*] add DTAZV-&gt;setMaxAmount() (#16164, thanks to Daniel Wilhelm)
+[!] PHP5 only
+[+] add parser to read DTA files (with unstable API, feedback is welcome)
+[+] add Iterator interface
 ( [+] Added   [-] Fixed   [*] Improved   [!] Note )
  </notes>
  <contents>
   <dir baseinstalldir="Payment" name="/">
    <file baseinstalldir="Payment" md5sum="953f27d82cb27ddd1d89d8db37b28ac6" name="docs/payment.xml" role="doc" />
-   <file baseinstalldir="Payment" md5sum="cb21d4e81cfa805ec6b8a524db61733f" name="docs/examples/example_begleitzettel.php" role="doc" />
-   <file baseinstalldir="Payment" md5sum="a9be7d4207d893a4459e36f6825ab7d6" name="docs/examples/example_credit.php" role="doc" />
-   <file baseinstalldir="Payment" md5sum="4e2a5ec1c7f19a637e0ea4b1a2768aa9" name="docs/examples/example_debit.php" role="doc" />
-   <file baseinstalldir="Payment" md5sum="3aa6cec9a635e0eea35fe1fa214576a5" name="docs/payment/payment-dta.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="59d5c86207ee6b80ad9292fec4e56477" name="docs/examples/example_begleitzettel.php" role="doc" />
+   <file baseinstalldir="Payment" md5sum="efc3455156c3ee7318d079c75a0f2c77" name="docs/examples/example_credit.php" role="doc" />
+   <file baseinstalldir="Payment" md5sum="d81d64ce27bb1dace65112099fffc39c" name="docs/examples/example_debit.php" role="doc" />
+   <file baseinstalldir="Payment" md5sum="a009d15bd59356a9e524dea04ab76d38" name="docs/examples/example_download.php" role="doc" />
+   <file baseinstalldir="Payment" md5sum="7c2960a4c5df099c574a1af9e3bffdc0" name="docs/examples/example_dtazv.php" role="doc" />
+   <file baseinstalldir="Payment" md5sum="7859235bb6f072688fa574349dde304c" name="docs/examples/show_dta.php" role="doc" />
+   <file baseinstalldir="Payment" md5sum="594017aaa518093eb8c64184c22fbbb1" name="docs/payment/payment-dta.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="f30b96494cdbd1386858a4adc96703a9" name="docs/payment/payment-dta/constants.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="76bc0c444f8d7d0a3361591a1727c19d" name="docs/payment/payment-dta/dta/addexchange.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="77d5a778f9800d941c15b0ac5a61c70e" name="docs/payment/payment-dta/dta/count.xml" role="doc" />
@@ -60,19 +63,19 @@
    <file baseinstalldir="Payment" md5sum="9d4af761b8cdaad88ac0782b16280f7d" name="docs/payment/payment-dta/dtazv/dtazv.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="6c2b1f46875a2e12588285f745df37c8" name="docs/payment/payment-dta/dtazv/getfilecontent.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="06903a6471a7127e64f72dd04f25b441" name="docs/payment/payment-dta/dtazv/setaccountfilesender.xml" role="doc" />
-   <file baseinstalldir="Payment" md5sum="33054df9570f4a7c8ced7b4d6f0b5fb0" name="docs/payment/payment-dta/dtazv/setmaxamount.xml" role="doc" />
-   <file baseinstalldir="Payment" md5sum="fae0f9695859a8b44e0ae3eefa70e75b" name="tests/AllTests.php" role="test" />
-   <file baseinstalldir="Payment" md5sum="757a4b1cca9dd2f953480b87ee5dd5f7" name="tests/DTATest.php" role="test" />
-   <file baseinstalldir="Payment" md5sum="5ed123269cd0be1ab218556a66f32aa9" name="tests/DTAZVTest.php" role="test" />
-   <file baseinstalldir="Payment" md5sum="c74981bd745566e9134cef107a9e57a0" name="DTA.php" role="php" />
-   <file baseinstalldir="Payment" md5sum="87a4ad2114499fcf43f3b4a52f580ded" name="DTABase.php" role="php" />
-   <file baseinstalldir="Payment" md5sum="dcfc07718b9c083078bef49787487b3a" name="DTAZV.php" role="php" />
+   <file baseinstalldir="Payment" md5sum="6a5853199343247b6578d863f18b8f17" name="docs/payment/payment-dta/dtazv/setmaxamount.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="7cbbf7094d9d8d9cc728bc769349e981" name="tests/AllTests.php" role="test" />
+   <file baseinstalldir="Payment" md5sum="1108c8548d34f0a326a333dc6e52a22c" name="tests/DTATest.php" role="test" />
+   <file baseinstalldir="Payment" md5sum="c034915eacda9199fe25498703c96b45" name="tests/DTAZVTest.php" role="test" />
+   <file baseinstalldir="Payment" md5sum="a89a8e4eae715b54d3935bd953d06008" name="DTA.php" role="php" />
+   <file baseinstalldir="Payment" md5sum="6ee1178c8e6b6f189a8bffc7ce3ef0e0" name="DTABase.php" role="php" />
+   <file baseinstalldir="Payment" md5sum="28831f8c2cc837d7c36560a09aacaba5" name="DTAZV.php" role="php" />
   </dir>
  </contents>
  <dependencies>
   <required>
    <php>
-    <min>4.0.6</min>
+    <min>5.0.0</min>
    </php>
    <pearinstaller>
     <min>1.4.0b1</min>
@@ -344,6 +347,24 @@ First release.
 [-] fixed numeric input for account numbers (#16285, thanks to Christian Stoller)
 [-] added input validation for $account_sender in DTAZV-&gt;addExchange()
 [*] add DTAZV-&gt;setMaxAmount() (#16164, thanks to Daniel Wilhelm)
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.4.0a1</release>
+    <api>1.4.0a1</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2010-06-22</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
+   <notes>
+[!] PHP5 only
+[+] add parser to read DTA files (with unstable API, feedback is welcome)
+[+] add Iterator interface
 ( [+] Added   [-] Fixed   [*] Improved   [!] Note )
    </notes>
   </release>

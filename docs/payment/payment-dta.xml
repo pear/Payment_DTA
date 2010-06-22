@@ -80,11 +80,35 @@
        <row>
         <entry>
          Constructor
-         <link linkend="package.payment.payment-dta.dtabase.dtabase">
-          <function>DTABase::DTABase</function>
+         <link linkend="package.payment.payment-dta.dtabase.--construct">
+          <function>DTABase::__construct</function>
          </link>
         </entry>
         <entry>Constructor.</entry>
+       </row>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.dtabase.addexchange">
+          <function>DTABase::addExchange</function>
+         </link>
+        </entry>
+        <entry>Adds an exchange. First the account data for the receiver of the exchange is  set. In the case the DTA file contains credits, this is the payment receiver.</entry>
+       </row>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.dtabase.asjson">
+          <function>DTABase::asJSON</function>
+         </link>
+        </entry>
+        <entry>Returns the exchanges in JSON format.</entry>
+       </row>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.dtabase.checkstr">
+          <function>DTABase::checkStr</function>
+         </link>
+        </entry>
+        <entry>Checks if string $input contains the expected value at an offset.</entry>
        </row>
        <row>
         <entry>
@@ -96,11 +120,51 @@
        </row>
        <row>
         <entry>
+         <link linkend="package.payment.payment-dta.dtabase.current">
+          <function>DTABase::current</function>
+         </link>
+        </entry>
+        <entry>&notdocumented;</entry>
+       </row>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.dtabase.getfilecontent">
+          <function>DTABase::getFileContent</function>
+         </link>
+        </entry>
+        <entry>Returns the full content of the generated file.</entry>
+       </row>
+       <row>
+        <entry>
          <link linkend="package.payment.payment-dta.dtabase.getmetadata">
           <function>DTABase::getMetaData</function>
          </link>
         </entry>
         <entry>Returns an array with information about the transactions.</entry>
+       </row>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.dtabase.getnum">
+          <function>DTABase::getNum</function>
+         </link>
+        </entry>
+        <entry>Read integer number of given length from input at offset.</entry>
+       </row>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.dtabase.getstr">
+          <function>DTABase::getStr</function>
+         </link>
+        </entry>
+        <entry>Read string of given length from input at offset.</entry>
+       </row>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.dtabase.key">
+          <function>DTABase::key</function>
+         </link>
+        </entry>
+        <entry>&notdocumented;</entry>
        </row>
        <row>
         <entry>
@@ -112,11 +176,43 @@
        </row>
        <row>
         <entry>
+         <link linkend="package.payment.payment-dta.dtabase.next">
+          <function>DTABase::next</function>
+         </link>
+        </entry>
+        <entry>&notdocumented;</entry>
+       </row>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.dtabase.rewind">
+          <function>DTABase::rewind</function>
+         </link>
+        </entry>
+        <entry>&notdocumented;</entry>
+       </row>
+       <row>
+        <entry>
          <link linkend="package.payment.payment-dta.dtabase.savefile">
           <function>DTABase::saveFile</function>
          </link>
         </entry>
         <entry>Writes the DTA file.</entry>
+       </row>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.dtabase.setaccountfilesender">
+          <function>DTABase::setAccountFileSender</function>
+         </link>
+        </entry>
+        <entry>Set the sender of the file.</entry>
+       </row>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.dtabase.valid">
+          <function>DTABase::valid</function>
+         </link>
+        </entry>
+        <entry>&notdocumented;</entry>
        </row>
        <row>
         <entry>
@@ -132,10 +228,12 @@
    </para>
   </refsect1>
  </refentry>
- &package.payment.payment-dta.dta.dta;
+ &package.payment.payment-dta.dta.--construct;
 &package.payment.payment-dta.dta.addexchange;
 &package.payment.payment-dta.dta.getfilecontent;
 &package.payment.payment-dta.dta.getmetadata;
+&package.payment.payment-dta.dta.getparsingerror;
+&package.payment.payment-dta.dta.parse;
 &package.payment.payment-dta.dta.setaccountfilesender;
  <refentry id="package.payment.payment-dta.dtabase-summary">
   <refnamediv>
@@ -193,11 +291,23 @@
    </para>
   </refsect1>
  </refentry>
- &package.payment.payment-dta.dtabase.dtabase;
+ &package.payment.payment-dta.dtabase.--construct;
+&package.payment.payment-dta.dtabase.addexchange;
+&package.payment.payment-dta.dtabase.asjson;
+&package.payment.payment-dta.dtabase.checkstr;
 &package.payment.payment-dta.dtabase.count;
+&package.payment.payment-dta.dtabase.current;
+&package.payment.payment-dta.dtabase.getfilecontent;
 &package.payment.payment-dta.dtabase.getmetadata;
+&package.payment.payment-dta.dtabase.getnum;
+&package.payment.payment-dta.dtabase.getstr;
+&package.payment.payment-dta.dtabase.key;
 &package.payment.payment-dta.dtabase.makevalidstring;
+&package.payment.payment-dta.dtabase.next;
+&package.payment.payment-dta.dtabase.rewind;
 &package.payment.payment-dta.dtabase.savefile;
+&package.payment.payment-dta.dtabase.setaccountfilesender;
+&package.payment.payment-dta.dtabase.valid;
 &package.payment.payment-dta.dtabase.validstring;
  <refentry id="package.payment.payment-dta.dtazv-summary">
   <refnamediv>
@@ -263,11 +373,35 @@
        <row>
         <entry>
          Constructor
-         <link linkend="package.payment.payment-dta.dtabase.dtabase">
-          <function>DTABase::DTABase</function>
+         <link linkend="package.payment.payment-dta.dtabase.--construct">
+          <function>DTABase::__construct</function>
          </link>
         </entry>
         <entry>Constructor.</entry>
+       </row>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.dtabase.addexchange">
+          <function>DTABase::addExchange</function>
+         </link>
+        </entry>
+        <entry>Adds an exchange. First the account data for the receiver of the exchange is  set. In the case the DTA file contains credits, this is the payment receiver.</entry>
+       </row>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.dtabase.asjson">
+          <function>DTABase::asJSON</function>
+         </link>
+        </entry>
+        <entry>Returns the exchanges in JSON format.</entry>
+       </row>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.dtabase.checkstr">
+          <function>DTABase::checkStr</function>
+         </link>
+        </entry>
+        <entry>Checks if string $input contains the expected value at an offset.</entry>
        </row>
        <row>
         <entry>
@@ -279,11 +413,51 @@
        </row>
        <row>
         <entry>
+         <link linkend="package.payment.payment-dta.dtabase.current">
+          <function>DTABase::current</function>
+         </link>
+        </entry>
+        <entry>&notdocumented;</entry>
+       </row>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.dtabase.getfilecontent">
+          <function>DTABase::getFileContent</function>
+         </link>
+        </entry>
+        <entry>Returns the full content of the generated file.</entry>
+       </row>
+       <row>
+        <entry>
          <link linkend="package.payment.payment-dta.dtabase.getmetadata">
           <function>DTABase::getMetaData</function>
          </link>
         </entry>
         <entry>Returns an array with information about the transactions.</entry>
+       </row>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.dtabase.getnum">
+          <function>DTABase::getNum</function>
+         </link>
+        </entry>
+        <entry>Read integer number of given length from input at offset.</entry>
+       </row>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.dtabase.getstr">
+          <function>DTABase::getStr</function>
+         </link>
+        </entry>
+        <entry>Read string of given length from input at offset.</entry>
+       </row>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.dtabase.key">
+          <function>DTABase::key</function>
+         </link>
+        </entry>
+        <entry>&notdocumented;</entry>
        </row>
        <row>
         <entry>
@@ -295,11 +469,43 @@
        </row>
        <row>
         <entry>
+         <link linkend="package.payment.payment-dta.dtabase.next">
+          <function>DTABase::next</function>
+         </link>
+        </entry>
+        <entry>&notdocumented;</entry>
+       </row>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.dtabase.rewind">
+          <function>DTABase::rewind</function>
+         </link>
+        </entry>
+        <entry>&notdocumented;</entry>
+       </row>
+       <row>
+        <entry>
          <link linkend="package.payment.payment-dta.dtabase.savefile">
           <function>DTABase::saveFile</function>
          </link>
         </entry>
         <entry>Writes the DTA file.</entry>
+       </row>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.dtabase.setaccountfilesender">
+          <function>DTABase::setAccountFileSender</function>
+         </link>
+        </entry>
+        <entry>Set the sender of the file.</entry>
+       </row>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.dtabase.valid">
+          <function>DTABase::valid</function>
+         </link>
+        </entry>
+        <entry>&notdocumented;</entry>
        </row>
        <row>
         <entry>
@@ -315,10 +521,238 @@
    </para>
   </refsect1>
  </refentry>
- &package.payment.payment-dta.dtazv.dtazv;
+ &package.payment.payment-dta.dtazv.--construct;
 &package.payment.payment-dta.dtazv.addexchange;
 &package.payment.payment-dta.dtazv.getfilecontent;
 &package.payment.payment-dta.dtazv.setaccountfilesender;
 &package.payment.payment-dta.dtazv.setmaxamount;
-&package.payment.payment-dta.constants;
+ <refentry id="package.payment.payment-dta.payment-dta-checksumexception-summary">
+  <refnamediv>
+   <refname>
+    Class Summary
+    <classname>Payment_DTA_ChecksumException</classname>
+   </refname>
+   <refpurpose>Payment_DTA_ChecksumException indicates a wrong checksum in a DTA file.</refpurpose>
+  </refnamediv>
+  <refsect1>
+   <title>Payment_DTA_ChecksumException indicates a wrong checksum in a DTA file.</title>
+   &notdocumented;
+  </refsect1>
+  <refsect1>
+   <title>
+    Class Trees for
+    <classname>Payment_DTA_ChecksumException</classname>
+   </title>
+   <para>
+    <itemizedlist>
+     <listitem>
+      <para>
+       PEAR_Exception
+       <itemizedlist>
+        <listitem>
+         <para>
+          <link linkend="package.payment.payment-dta.payment-dta-exception-summary">
+           <classname>Payment_DTA_Exception</classname>
+          </link>
+          <itemizedlist>
+           <listitem>
+            <para>Payment_DTA_ChecksumException</para>
+           </listitem>
+          </itemizedlist>
+         </para>
+        </listitem>
+       </itemizedlist>
+      </para>
+     </listitem>
+    </itemizedlist>
+   </para>
+  </refsect1>
+ </refentry>
+ <refentry id="package.payment.payment-dta.payment-dta-exception-summary">
+  <refnamediv>
+   <refname>
+    Class Summary
+    <classname>Payment_DTA_Exception</classname>
+   </refname>
+   <refpurpose>Payment_DTA_Exception is this packages&apos; basic exception class.</refpurpose>
+  </refnamediv>
+  <refsect1>
+   <title>Payment_DTA_Exception is this packages&apos; basic exception class.</title>
+   &notdocumented;
+  </refsect1>
+  <refsect1>
+   <title>
+    Class Trees for
+    <classname>Payment_DTA_Exception</classname>
+   </title>
+   <para>
+    <itemizedlist>
+     <listitem>
+      <para>
+       PEAR_Exception
+       <itemizedlist>
+        <listitem>
+         <para>Payment_DTA_Exception</para>
+        </listitem>
+       </itemizedlist>
+      </para>
+     </listitem>
+    </itemizedlist>
+   </para>
+   <para>
+    <table>
+     <title>
+      Classes that extend
+      <classname>Payment_DTA_Exception</classname>
+     </title>
+     <tgroup cols="2">
+      <thead>
+       <row>
+        <entry>Class</entry>
+        <entry>Summary</entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.payment-dta-parseexception-summary">Payment_DTA_ParseException</link>
+        </entry>
+        <entry>Payment_DTA_ParseException indicates parsing problems.</entry>
+       </row>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.payment-dta-checksumexception-summary">Payment_DTA_ChecksumException</link>
+        </entry>
+        <entry>Payment_DTA_ChecksumException indicates a wrong checksum in a DTA file.</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </table>
+   </para>
+  </refsect1>
+ </refentry>
+ <refentry id="package.payment.payment-dta.payment-dta-fatalparseexception-summary">
+  <refnamediv>
+   <refname>
+    Class Summary
+    <classname>Payment_DTA_FatalParseException</classname>
+   </refname>
+   <refpurpose>
+    Payment_DTA_FatalParseException indicates a non-recoverable parsing
+    problem,  that makes it impossible to build a usable object.
+</refpurpose>
+  </refnamediv>
+  <refsect1>
+   <title>
+    Payment_DTA_FatalParseException indicates a non-recoverable parsing
+    problem,  that makes it impossible to build a usable object.
+</title>
+   &notdocumented;
+  </refsect1>
+  <refsect1>
+   <title>
+    Class Trees for
+    <classname>Payment_DTA_FatalParseException</classname>
+   </title>
+   <para>
+    <itemizedlist>
+     <listitem>
+      <para>
+       PEAR_Exception
+       <itemizedlist>
+        <listitem>
+         <para>
+          <link linkend="package.payment.payment-dta.payment-dta-exception-summary">
+           <classname>Payment_DTA_Exception</classname>
+          </link>
+          <itemizedlist>
+           <listitem>
+            <para>
+             <link linkend="package.payment.payment-dta.payment-dta-parseexception-summary">
+              <classname>Payment_DTA_ParseException</classname>
+             </link>
+             <itemizedlist>
+              <listitem>
+               <para>Payment_DTA_FatalParseException</para>
+              </listitem>
+             </itemizedlist>
+            </para>
+           </listitem>
+          </itemizedlist>
+         </para>
+        </listitem>
+       </itemizedlist>
+      </para>
+     </listitem>
+    </itemizedlist>
+   </para>
+  </refsect1>
+ </refentry>
+ <refentry id="package.payment.payment-dta.payment-dta-parseexception-summary">
+  <refnamediv>
+   <refname>
+    Class Summary
+    <classname>Payment_DTA_ParseException</classname>
+   </refname>
+   <refpurpose>Payment_DTA_ParseException indicates parsing problems.</refpurpose>
+  </refnamediv>
+  <refsect1>
+   <title>Payment_DTA_ParseException indicates parsing problems.</title>
+   &notdocumented;
+  </refsect1>
+  <refsect1>
+   <title>
+    Class Trees for
+    <classname>Payment_DTA_ParseException</classname>
+   </title>
+   <para>
+    <itemizedlist>
+     <listitem>
+      <para>
+       PEAR_Exception
+       <itemizedlist>
+        <listitem>
+         <para>
+          <link linkend="package.payment.payment-dta.payment-dta-exception-summary">
+           <classname>Payment_DTA_Exception</classname>
+          </link>
+          <itemizedlist>
+           <listitem>
+            <para>Payment_DTA_ParseException</para>
+           </listitem>
+          </itemizedlist>
+         </para>
+        </listitem>
+       </itemizedlist>
+      </para>
+     </listitem>
+    </itemizedlist>
+   </para>
+   <para>
+    <table>
+     <title>
+      Classes that extend
+      <classname>Payment_DTA_ParseException</classname>
+     </title>
+     <tgroup cols="2">
+      <thead>
+       <row>
+        <entry>Class</entry>
+        <entry>Summary</entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.payment-dta-fatalparseexception-summary">Payment_DTA_FatalParseException</link>
+        </entry>
+        <entry>Payment_DTA_FatalParseException indicates a non-recoverable parsing problem,  that makes it impossible to build a usable object.</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </table>
+   </para>
+  </refsect1>
+ </refentry>
+ &package.payment.payment-dta.constants;
 </sect1>

@@ -1,0 +1,65 @@
+<refentry id="package.payment.payment-dta.dta.getparsingerror">
+ <refnamediv>
+  <refname>
+   <function>DTA::getParsingError</function>
+  </refname>
+  <refpurpose>Get parsing error.</refpurpose>
+ </refnamediv>
+ <refsynopsisdiv>
+  <funcsynopsis>
+   <funcsynopsisinfo>require_once &apos;/DTA.php&apos;;</funcsynopsisinfo>
+   <funcprototype>
+    <funcdef>
+     <replaceable>
+      <link linkend="package.payment.payment-dta.payment-dta-exception-summary">
+       <classname>Payment_DTA_Exception</classname>
+      </link>
+      |boolean
+     </replaceable>
+     <function>DTA::getParsingError</function>
+    </funcdef>
+    <paramdef />
+   </funcprototype>
+  </funcsynopsis>
+ </refsynopsisdiv>
+ <refsect1 id="package.payment.payment-dta.dta.getparsingerror.desc">
+  &title.desc;
+  <para>
+   Returns the last exception thrown when parsing DTA data; either
+   <itemizedlist>
+    <listitem>
+     <para>false: no error occured, valid DTA file was read into the object,</para>
+    </listitem>
+    <listitem>
+     <para>
+      Payment_DTA_ChecksumException indicates that the complete DTA file
+      was read into the object but the file&apos;s internal checksums were incorrect,
+</para>
+    </listitem>
+    <listitem>
+     <para>
+      Payment_DTA_ParseException indicates an error in the input, but all
+      transactions up to the unexpected field were read into the new object,
+</para>
+    </listitem>
+    <listitem>
+     <para>
+      Payment_DTA_FatalParseException indicates a fatal error, thus the
+      constructed object is empty.
+</para>
+    </listitem>
+   </itemizedlist>
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dta.getparsingerror.throws">
+  &title.throws;
+  <para>
+   <emphasis>throws</emphasis>
+   no exceptions thrown
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dta.getparsingerror.note">
+  &title.note;
+  &note.notstatic;
+</refsect1>
+</refentry>

@@ -1,0 +1,91 @@
+<refentry id="package.payment.payment-dta.dtabase.checkstr">
+ <refnamediv>
+  <refname>
+   <function>DTABase::checkStr</function>
+  </refname>
+  <refpurpose>Checks if string $input contains the expected value at an offset.</refpurpose>
+ </refnamediv>
+ <refsynopsisdiv>
+  <funcsynopsis>
+   <funcsynopsisinfo>require_once &apos;/DTABase.php&apos;;</funcsynopsisinfo>
+   <funcprototype>
+    <funcdef>
+     boolean
+     <function>DTABase::checkStr</function>
+    </funcdef>
+    <paramdef>
+     string
+     <parameter>$input</parameter>
+    </paramdef>
+    <paramdef>
+     integer
+     <parameter>&amp;$offset</parameter>
+    </paramdef>
+    <paramdef>
+     string
+     <parameter>$expected</parameter>
+    </paramdef>
+   </funcprototype>
+  </funcsynopsis>
+ </refsynopsisdiv>
+ <refsect1 id="package.payment.payment-dta.dtabase.checkstr.desc">
+  &title.desc;
+  <para>After the check the offset is increased.</para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.checkstr.param">
+  &title.param;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term>
+      &type.string;
+      <parameter>$input</parameter>
+     </term>
+     <listitem>
+      <para>string to check</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <variablelist>
+    <varlistentry>
+     <term>
+      &type.int;
+      <parameter>&amp;$offset</parameter>
+     </term>
+     <listitem>
+      <para>current offset into input</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <variablelist>
+    <varlistentry>
+     <term>
+      &type.string;
+      <parameter>$expected</parameter>
+     </term>
+     <listitem>
+      <para>expected string at the offset</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.checkstr.returns">
+  &title.returns;
+  <para>
+   <emphasis>returns</emphasis>
+   true if input is as expected, otherwise an exception is thrown
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.checkstr.throws">
+  &title.throws;
+  <para>
+   <emphasis>throws</emphasis>
+   Payment_DTA_Exception if input differs from expected string
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.checkstr.note">
+  &title.note;
+  &note.notstatic;
+</refsect1>
+</refentry>
