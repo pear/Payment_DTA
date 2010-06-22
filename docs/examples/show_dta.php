@@ -17,7 +17,6 @@
  */
 
 require_once "Payment/DTA.php";
-date_default_timezone_set('Europe/Berlin');
 
 $dtafilestring =
     '0128AGK1605000000000000SENDERS NAME               300110    3503'.

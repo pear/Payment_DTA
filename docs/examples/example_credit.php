@@ -4,7 +4,7 @@
  * Payment_DTA example:
  * Example of creating a DTA credit file with one transaction.
  *
- * PHP version 5
+ * PHP version 4 and 5
  *
  * Copyright (c) 2003-2005 Hermann Stainer, Web-Gear
  * http://www.web-gear.com/
@@ -20,7 +20,7 @@
  */
 
 require_once "Payment/DTA.php";
-date_default_timezone_set('Europe/Berlin');
+
 
 /**
 * Initialize new DTA file.

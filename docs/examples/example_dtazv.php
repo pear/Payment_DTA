@@ -4,7 +4,7 @@
  * Payment_DTA example:
  * Example of creating a DTAZV credit file with one transaction.
  *
- * PHP version 5
+ * PHP version 4 and 5
  *
  * @category  Payment
  * @package   Payment_DTA
@@ -16,7 +16,7 @@
  */
 
 require_once "Payment/DTAZV.php";
-date_default_timezone_set('Europe/Berlin');
+
 
 /**
 * Initialize new DTAZV file.

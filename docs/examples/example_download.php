@@ -4,7 +4,7 @@
  * Payment_DTA example:
  * Example how to offer a DTA file for download.
  *
- * PHP version 5
+ * PHP version 4 and 5
  *
  * Copyright (c) 2008-2010 Martin Schütte
  * All rights reserved.
@@ -19,7 +19,6 @@
  */
 
 require_once "Payment/DTA.php";
-date_default_timezone_set('Europe/Berlin');
 
 /**
 * Create a simple DTA credit file, see example_credit.php for detailed comments.

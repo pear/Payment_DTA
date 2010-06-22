@@ -4,7 +4,7 @@
  * Example how to use the meta data to create a "Begleitzettel",
  * a document to accompany and summarize a DTA disk.
  *
- * PHP version 5
+ * PHP version 4 and 5
  *
  * @category  Payment
  * @package   Payment_DTA
@@ -16,7 +16,6 @@
  */
 
 require_once 'Payment_DTA/DTA.php';
-date_default_timezone_set('Europe/Berlin');
 
 $dtaus = new DTA(DTA_CREDIT);
 $DTA_test_account = array(
