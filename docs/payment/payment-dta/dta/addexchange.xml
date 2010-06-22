@@ -1,0 +1,113 @@
+<refentry id="package.payment.payment-dta.dta.addexchange">
+ <refnamediv>
+  <refname>
+   <function>DTA::addExchange</function>
+  </refname>
+  <refpurpose>
+   Adds an exchange. First the account data for the receiver of the exchange
+   is  set. In the case the DTA file contains credits, this is the payment
+   receiver.
+</refpurpose>
+ </refnamediv>
+ <refsynopsisdiv>
+  <funcsynopsis>
+   <funcsynopsisinfo>require_once &apos;/DTA.php&apos;;</funcsynopsisinfo>
+   <funcprototype>
+    <funcdef>
+     boolean
+     <function>DTA::addExchange</function>
+    </funcdef>
+    <paramdef>
+     array
+     <parameter>$account_receiver</parameter>
+    </paramdef>
+    <paramdef>
+     double
+     <parameter>$amount</parameter>
+    </paramdef>
+    <paramdef>
+     array
+     <parameter>$purposes</parameter>
+    </paramdef>
+    <paramdef>
+     array
+     <parameter>
+      <optional>$account_sender = array()</optional>
+     </parameter>
+    </paramdef>
+   </funcprototype>
+  </funcsynopsis>
+ </refsynopsisdiv>
+ <refsect1 id="package.payment.payment-dta.dta.addexchange.desc">
+  &title.desc;
+  <para>In the other case (the DTA file contains debits), this is the account, from  which money is taken away. If the sender is not specified, values of the  file sender are used by default.</para>
+  <para>Account data for receiver and sender contain   name            Name. Maximally 27 chars are allowed.   bank_code       Bank code.   account_number  Account number.   additional_name If necessary, additional line for name (maximally 27 chars).</para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dta.addexchange.param">
+  &title.param;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term>
+      &type.array;
+      <parameter>$account_receiver</parameter>
+     </term>
+     <listitem>
+      <para>Receiver&apos;s account data.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <variablelist>
+    <varlistentry>
+     <term>
+      <type>double</type>
+      <parameter>$amount</parameter>
+     </term>
+     <listitem>
+      <para>
+       Amount of money in this exchange.
+       Currency: EURO
+</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <variablelist>
+    <varlistentry>
+     <term>
+      &type.array;
+      <parameter>$purposes</parameter>
+     </term>
+     <listitem>
+      <para>
+       Array of up to 14 lines                                  (maximally 27
+       chars each) for                                  description of the
+       exchange.                                  A string is accepted as well.
+</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <variablelist>
+    <varlistentry>
+     <term>
+      &type.array;
+      <parameter>$account_sender</parameter>
+     </term>
+     <listitem>
+      <para>Sender&apos;s account data.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dta.addexchange.throws">
+  &title.throws;
+  <para>
+   <emphasis>throws</emphasis>
+   no exceptions thrown
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dta.addexchange.note">
+  &title.note;
+  &note.notstatic;
+</refsect1>
+</refentry>
