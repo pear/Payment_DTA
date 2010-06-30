@@ -212,22 +212,31 @@ abstract class DTABase implements Countable, Iterator
     /**
     * Read string of given length from input at offset.
     * Afterwards the offset is increased.
+    * By default only a subset of ASCII is allowed (as specified by DTA),
+    * with $liberal = true apply makeValidString() first in order to accept
+    * some 8-bit chars. (NB: in this case the returned string may have a
+    * length of up to 2 * $length.)
     *
     * @param string  $input   string to check
     * @param integer &$offset current offset into input
     * @param integer $length  chars to read
+    * @param bool    $liberal allow 8-bit chars
     *
     * @return string the read string of length $length
     * @throws Payment_DTA_Exception if input is too short or contains invalid chars
     * @access protected
     */
-    protected function getStr($input, &$offset, $length)
+    protected function getStr($input, &$offset, $length, $liberal = false)
     {
         $rc = substr($input, $offset, $length);
         if (!$rc) {
             throw new Payment_DTA_Exception("input string not long enough to ".
                 "read $length bytes at position $offset");
-        } elseif (!$this->validString($rc)) {
+        }
+        if ($liberal) {
+            $rc = $this->makeValidString($rc);
+        }
+        if (!$this->validString($rc)) {
             throw new Payment_DTA_Exception("invalid String '$rc' ".
                 "at position $offset");
         } else {

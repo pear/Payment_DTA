@@ -668,7 +668,7 @@ class DTA extends DTABase
         /* field  5 */
         $this->checkStr($input, $offset, "00000000");
         /* field  6 */
-        $Asender_name = rtrim($this->getStr($input, $offset, 27));
+        $Asender_name = rtrim($this->getStr($input, $offset, 27, true));
         /* field  7 */
         $Adate = $this->getNum($input, $offset, 6);
         /* field  8 */
@@ -716,7 +716,8 @@ class DTA extends DTABase
             throw new Payment_DTA_FatalParseException(
                 "Cannot setAccountFileSender()");
         }
-        // TODO: set $Adate or $Aexec_date
+        // currently not a TODO:
+        // does anyone have to preserve the creation date or execution date?
     }
 
     /**
@@ -772,15 +773,15 @@ class DTA extends DTABase
         /* field 13 */
         $this->checkStr($input, $offset, "   ");
         /* field 14a */
-        $Creceiver_name = rtrim($this->getStr($input, $offset, 27));
+        $Creceiver_name = rtrim($this->getStr($input, $offset, 27, true));
         /* field 14b */
         $this->checkStr($input, $offset, "        ");
         // end 1st part of C record
         assert($offset % 128 === 0);
         /* field 15 */
-        $Csender_name = rtrim($this->getStr($input, $offset, 27));
+        $Csender_name = rtrim($this->getStr($input, $offset, 27, true));
         /* field 16 */
-        $Cpurpose = array(rtrim($this->getStr($input, $offset, 27)));
+        $Cpurpose = array(rtrim($this->getStr($input, $offset, 27, true)));
         /* field 17a */
         $this->checkStr($input, $offset, "1");
         /* field 17b */
@@ -803,7 +804,7 @@ class DTA extends DTABase
             /* field 19 */
             $ext_type = $this->getNum($input, $offset, 2);
             /* field 20 */
-            $ext_content = $this->getStr($input, $offset, 27);
+            $ext_content = $this->getStr($input, $offset, 27, true);
             array_push($extensions_read, array($ext_type, $ext_content));
             /* fields 21,22,23 */
             $this->checkStr($input, $offset, str_repeat(" ", 2+27+11));
@@ -811,12 +812,12 @@ class DTA extends DTABase
             /* field 19 */
             $ext_type = $this->getNum($input, $offset, 2);
             /* field 20 */
-            $ext_content = $this->getStr($input, $offset, 27);
+            $ext_content = $this->getStr($input, $offset, 27, true);
             array_push($extensions_read, array($ext_type, $ext_content));
             /* field 21 */
             $ext_type = $this->getNum($input, $offset, 2);
             /* field 22 */
-            $ext_content = $this->getStr($input, $offset, 27);
+            $ext_content = $this->getStr($input, $offset, 27, true);
             array_push($extensions_read, array($ext_type, $ext_content));
             /* fields 23 */
             $this->checkStr($input, $offset, str_repeat(" ", 11));
@@ -832,19 +833,19 @@ class DTA extends DTABase
             default: // =4
             case 4: /* fallthrough */
                 $ext_type = $this->getNum($input, $offset, 2);
-                $ext_content = $this->getStr($input, $offset, 27);
+                $ext_content = $this->getStr($input, $offset, 27, true);
                 array_push($extensions_read, array($ext_type, $ext_content));
             case 3: /* fallthrough */
                 $ext_type = $this->getNum($input, $offset, 2);
-                $ext_content = $this->getStr($input, $offset, 27);
+                $ext_content = $this->getStr($input, $offset, 27, true);
                 array_push($extensions_read, array($ext_type, $ext_content));
             case 2: /* fallthrough */
                 $ext_type = $this->getNum($input, $offset, 2);
-                $ext_content = $this->getStr($input, $offset, 27);
+                $ext_content = $this->getStr($input, $offset, 27, true);
                 array_push($extensions_read, array($ext_type, $ext_content));
             case 1: /* fallthrough */
                 $ext_type = $this->getNum($input, $offset, 2);
-                $ext_content = $this->getStr($input, $offset, 27);
+                $ext_content = $this->getStr($input, $offset, 27, true);
                 array_push($extensions_read, array($ext_type, $ext_content));
                 break;
             case 0:
