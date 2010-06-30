@@ -214,15 +214,15 @@ abstract class DTABase implements Countable, Iterator
     * Afterwards the offset is increased.
     * By default only a subset of ASCII is allowed (as specified by DTA),
     * with $liberal = true apply makeValidString() first in order to accept
-    * some 8-bit chars. (NB: in this case the returned string may have a
-    * length of up to 2 * $length.)
+    * lower case and some 8-bit chars.
+    * (NB: in this case the returned string may be up to twice as long.)
     *
     * @param string  $input   string to check
     * @param integer &$offset current offset into input
     * @param integer $length  chars to read
     * @param bool    $liberal allow 8-bit chars
     *
-    * @return string the read string of length $length
+    * @return string the read string
     * @throws Payment_DTA_Exception if input is too short or contains invalid chars
     * @access protected
     */
