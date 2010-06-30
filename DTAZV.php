@@ -83,7 +83,7 @@ require_once 'DTABase.php';
  * @author    Hermann Stainer <hs@web-gear.com>
  * @copyright 2008 Martin Schütte
  * @license   http://www.debian.org/misc/bsd.license  BSD License (3 Clause)
- * @version   Release: @package_version@
+ * @version   SVN: $Id$
  * @link      http://pear.php.net/package/Payment_DTA
  */
 class DTAZV extends DTABase

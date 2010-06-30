@@ -91,7 +91,7 @@ define("DTA_DEBIT", 1);
 * @package  Payment_DTA
 * @author   Hermann Stainer <hs@web-gear.com>
 * @license  http://www.debian.org/misc/bsd.license  BSD License (3 Clause)
-* @version  Release: @package_version@
+* @version  SVN: $Id$
 * @link     http://pear.php.net/package/Payment_DTA
 */
 class DTA extends DTABase
