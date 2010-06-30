@@ -714,7 +714,7 @@ class DTA extends DTABase
         if (!$rc) {
             // should never happen
             throw new Payment_DTA_FatalParseException(
-                "Cannot setAccountFileSender()");
+                "Cannot setAccountFileSender(), please file a bug report");
         }
         // currently not a TODO:
         // does anyone have to preserve the creation date or execution date?
@@ -852,7 +852,7 @@ class DTA extends DTABase
                 // should never happen
                 throw new Payment_DTA_ParseException('confused about '.
                     'number of extensions in transaction number '.
-                    strval($this->count()+1));
+                    strval($this->count()+1) .', please file a bug report');
             }
 
             // and one switch for the padding
@@ -940,7 +940,8 @@ class DTA extends DTABase
         if (!$rc) {
             // should never happen
             throw new Payment_DTA_ParseException("Cannot addExchange() ".
-                "for transaction number ".strval($this->count()+1), $e);
+                "for transaction number ".strval($this->count()+1).
+                ", please file a bug report", $e);
         }
         $checks['account'] += $Creceiver_account;
         $checks['blz']     += $Creceiver_blz;

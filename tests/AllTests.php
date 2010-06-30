@@ -5,6 +5,7 @@ if (!defined('PHPUnit_MAIN_METHOD')) {
 
 require_once 'PHPUnit/TextUI/TestRunner.php';
 
+require_once 'DTABaseTest.php';
 require_once 'DTATest.php';
 require_once 'DTAZVTest.php';
 
@@ -20,6 +21,7 @@ class Payment_DTA_AllTests
     {
         $suite = new PHPUnit_Framework_TestSuite('Payment_DTA Tests');
 
+        $suite->addTestSuite('DTABaseTest');
         $suite->addTestSuite('DTATest');
         $suite->addTestSuite('DTAZVTest');
 
