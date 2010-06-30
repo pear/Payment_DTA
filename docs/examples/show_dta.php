@@ -18,10 +18,26 @@
 
 require_once "Payment/DTA.php";
 
+// correct file
 $dtafilestring =
     '0128AGK1605000000000000SENDERS NAME               300110    3503'.
     '0077670000000000                                               1'.
     '0187C16050000333344440013579000000000000000051000 00000000000160'.
+    '50000350300776700000123456   FRANZ MUELLER                      '.
+    'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
+    '                                                                '.
+    '0187C16050000333344440013579000000000000000051000 00000000000160'.
+    '50000350300776700000032190   FRANZ MUELLER                      '.
+    'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
+    '                                                                '.
+    '0128E     000000200000000000000000000002715800000000000066668888'.
+    '0000000155646                                                   ';
+
+// incorrect file to check error handling/reporting
+$dtafilestring =
+    '0128AGK1605000000000000SENDERS NAME               300110    3503'.
+    '0077670000000000                                               1'.
+    '0188C16050000333344440013579000000000000000051000 00000000000160'.
     '50000350300776700000123456   FRANZ MUELLER                      '.
     'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
     '                                                                '.
@@ -50,11 +66,13 @@ $dtafilestring =
         font-size: smaller;
         font-family: monospace;
     }
-    p.status {
+    .status {
         font-size: x-small;
-        margin: 0;
     }
-    ol li {
+    .error {
+        color: red;
+    }
+    li.transaction {
         padding: 1em;
     }
 </style>
@@ -86,18 +104,27 @@ if (empty($dtafilestring) && (empty($_FILES) || empty($_FILES["userfile"]))) {
 
     $dta = new DTA($dtafilestring);
 
-    $e = $dta->getParsingError();
-    if ($e) {
-        if (get_class($e) == "Payment_DTA_FatalParseException") {
-            print "<p class='status'>Schwerer Fehler: $e</p></body></html>";
-            die();
-        } elseif (get_class($e) == "Payment_DTA_ParseException") {
-            print "<p class='status'>Fehler: $e</p>";
-        } elseif (get_class($e) == "Payment_DTA_ChecksumException") {
-            print "<p class='status'>Datei enthält falsche Prüfsumme: $e</p>";
-        } else {
-            print "<p class='status'>Unerwarteter Fehler: $e</p>";
+    $errors = $dta->getParsingErrors();
+    if (count($errors)) {
+        print "<h2>Fehler</h2>";
+        print "<ol>";
+        foreach ($errors as $e) {
+            if (get_class($e) == "Payment_DTA_FatalParseException") {
+                print "<li class='status error'>Schwerer Fehler: ".
+                    $e->getMessage()."</li></ol></body></html>";
+                die();
+            } elseif (get_class($e) == "Payment_DTA_ParseException") {
+                print "<li class='status error'>Fehler: ".
+                    $e->getMessage()."</li>";
+            } elseif (get_class($e) == "Payment_DTA_ChecksumException") {
+                print "<li class='status error'>Datei enthält falsche Prüfsumme: ".
+                    $e->getMessage()."</li>";
+            } else {
+                print "<li class='status error'>Unerwarteter Fehler: ".
+                    $e->getMessage()."</li>";
+            }
         }
+        print "</ol>";
     }
     $meta = $dta->getMetaData();
     ?>
@@ -164,7 +191,7 @@ if (empty($dtafilestring) && (empty($_FILES) || empty($_FILES["userfile"]))) {
     <?php
     foreach ($dta as $transaction) {
         ?>
-        <li>
+        <li class="transaction">
             <table>
                 <tr>
                     <td class="label">Zahlungssender:</td>

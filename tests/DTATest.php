@@ -1121,7 +1121,7 @@ class DTATest extends PHPUnit_Framework_TestCase
         $dta = new DTA($teststring);
         $this->assertSame(0, $dta->count());
         $this->assertEquals('Payment_DTA_FatalParseException',
-            get_class($dta->getParsingError()));
+            get_class(array_pop($dta->getParsingErrors())));
     }
 
     public function testParserBasicInvalidString()
@@ -1143,7 +1143,7 @@ class DTATest extends PHPUnit_Framework_TestCase
         $dta = new DTA($teststring);
         $this->assertSame(0, $dta->count());
         $this->assertEquals('Payment_DTA_FatalParseException',
-            get_class($dta->getParsingError()));
+            get_class(array_pop($dta->getParsingErrors())));
     }
 
     public function testParserWrongLength()
@@ -1164,7 +1164,7 @@ class DTATest extends PHPUnit_Framework_TestCase
         $dta = new DTA($teststring);
         $this->assertSame(0, $dta->count());
         $this->assertEquals('Payment_DTA_FatalParseException',
-            get_class($dta->getParsingError()));
+            get_class(array_pop($dta->getParsingErrors())));
     }
 
     public function testParserSkipInvalidCRecord()
@@ -1184,6 +1184,15 @@ class DTATest extends PHPUnit_Framework_TestCase
             '0000000155646                                                   ';
         $dta = new DTA($teststring);
         $this->assertSame(1, $dta->count());
+
+        $errors = $dta->getParsingErrors();
+
+        // first error for skipped C record, second error for checksum
+        $this->assertEquals('Payment_DTA_ParseException',
+            get_class($errors[0]));
+        $this->assertEquals('Payment_DTA_ChecksumException',
+            get_class($errors[1]));
+
     }
 
     public function testParserWrongCType()
@@ -1204,7 +1213,7 @@ class DTATest extends PHPUnit_Framework_TestCase
         $dta = new DTA($teststring);
         $this->assertSame(1, $dta->count());
         $this->assertEquals('Payment_DTA_ParseException',
-            get_class($dta->getParsingError()));
+            get_class(array_pop($dta->getParsingErrors())));
     }
     public function testParserWrongCLength()
     {
@@ -1224,7 +1233,7 @@ class DTATest extends PHPUnit_Framework_TestCase
         $dta = new DTA($teststring);
         $this->assertSame(1, $dta->count());
         $this->assertEquals('Payment_DTA_ChecksumException',
-            get_class($dta->getParsingError()));
+            get_class(array_pop($dta->getParsingErrors())));
     }
     public function testParserWrongCheckCount()
     {
@@ -1244,7 +1253,7 @@ class DTATest extends PHPUnit_Framework_TestCase
         $dta = new DTA($teststring);
         $this->assertSame(2, $dta->count());
         $this->assertEquals('Payment_DTA_ChecksumException',
-            get_class($dta->getParsingError()));
+            get_class(array_pop($dta->getParsingErrors())));
 
     }
     public function testParserWrongCheckAccounts()
@@ -1265,7 +1274,7 @@ class DTATest extends PHPUnit_Framework_TestCase
         $dta = new DTA($teststring);
         $this->assertSame(2, $dta->count());
         $this->assertEquals('Payment_DTA_ChecksumException',
-            get_class($dta->getParsingError()));
+            get_class(array_pop($dta->getParsingErrors())));
     }
     public function testParserWrongCheckBLZs()
     {
@@ -1285,7 +1294,7 @@ class DTATest extends PHPUnit_Framework_TestCase
         $dta = new DTA($teststring);
         $this->assertSame(2, $dta->count());
         $this->assertEquals('Payment_DTA_ChecksumException',
-            get_class($dta->getParsingError()));
+            get_class(array_pop($dta->getParsingErrors())));
     }
 
     public function testParserWrongCheckAmounts()
@@ -1306,7 +1315,7 @@ class DTATest extends PHPUnit_Framework_TestCase
         $dta = new DTA($teststring);
         $this->assertSame(2, $dta->count());
         $this->assertEquals('Payment_DTA_ChecksumException',
-            get_class($dta->getParsingError()));
+            get_class(array_pop($dta->getParsingErrors())));
     }
 
     public function testParserCExtensions_0()
@@ -1790,7 +1799,7 @@ class DTATest extends PHPUnit_Framework_TestCase
         $dta = new DTA($teststring);
         $this->assertSame(0, $dta->count());
         $this->assertEquals('Payment_DTA_ParseException',
-            get_class($dta->getParsingError()));
+            get_class(array_pop($dta->getParsingErrors())));
     }
 
     public function testParserCExtensions_purpose_Fail()
@@ -1815,7 +1824,7 @@ class DTATest extends PHPUnit_Framework_TestCase
         $dta = new DTA($teststring);
         $this->assertSame(0, $dta->count());
         $this->assertEquals('Payment_DTA_ParseException',
-            get_class($dta->getParsingError()));
+            get_class(array_pop($dta->getParsingErrors())));
     }
 
     public function testParserCExtensions_sender_Fail()
@@ -1840,7 +1849,7 @@ class DTATest extends PHPUnit_Framework_TestCase
         $dta = new DTA($teststring);
         $this->assertSame(0, $dta->count());
         $this->assertEquals('Payment_DTA_ParseException',
-            get_class($dta->getParsingError()));
+            get_class(array_pop($dta->getParsingErrors())));
     }
 
     public function testParserCExtensions_receiver_Fail()
@@ -1865,7 +1874,7 @@ class DTATest extends PHPUnit_Framework_TestCase
         $dta = new DTA($teststring);
         $this->assertSame(0, $dta->count());
         $this->assertEquals('Payment_DTA_ParseException',
-            get_class($dta->getParsingError()));
+            get_class(array_pop($dta->getParsingErrors())));
     }
 
     public function testParserInvalidRecordLengthC()
@@ -1890,7 +1899,7 @@ class DTATest extends PHPUnit_Framework_TestCase
         $dta = new DTA($teststring);
         $this->assertSame(0, $dta->count());
         $this->assertEquals('Payment_DTA_ParseException',
-            get_class($dta->getParsingError()));
+            get_class(array_pop($dta->getParsingErrors())));
     }
 
     public function testParserInvalidRecordLengthE()
@@ -1915,7 +1924,7 @@ class DTATest extends PHPUnit_Framework_TestCase
         $dta = new DTA($teststring);
         $this->assertSame(1, $dta->count());
         $this->assertEquals('Payment_DTA_ParseException',
-            get_class($dta->getParsingError()));
+            get_class(array_pop($dta->getParsingErrors())));
     }
 
     public function testParserInvalidRecordLengthNonNumeric()
@@ -1940,7 +1949,7 @@ class DTATest extends PHPUnit_Framework_TestCase
         $dta = new DTA($teststring);
         $this->assertSame(1, $dta->count());
         $this->assertEquals('Payment_DTA_ParseException',
-            get_class($dta->getParsingError()));
+            get_class(array_pop($dta->getParsingErrors())));
     }
 
     public function testParserInvalidExtensionType()
@@ -1965,7 +1974,7 @@ class DTATest extends PHPUnit_Framework_TestCase
         $dta = new DTA($teststring);
         $this->assertSame(0, $dta->count());
         $this->assertEquals('Payment_DTA_ParseException',
-            get_class($dta->getParsingError()));
+            get_class(array_pop($dta->getParsingErrors())));
     }
 
     public function testParserInvalidERecord()
@@ -1991,7 +2000,7 @@ class DTATest extends PHPUnit_Framework_TestCase
         $dta = new DTA($teststring);
         $this->assertSame(1, $dta->count());
         $this->assertEquals('Payment_DTA_ParseException',
-            get_class($dta->getParsingError()));
+            get_class(array_pop($dta->getParsingErrors())));
     }
 
     /*

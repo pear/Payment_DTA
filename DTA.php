@@ -118,11 +118,11 @@ class DTA extends DTABase
     protected $sum_accounts;
 
     /**
-    * Last parsing exception or false.
+    * Array of all parsing problems.
     *
-    * @var Payment_DTA_Exception|boolean $lastexception
+    * @var array $allerrors
     */
-    protected $lastexception;
+    protected $allerrors;
 
     /**
     * Constructor. Creates an empty DTA object or imports one.
@@ -148,7 +148,7 @@ class DTA extends DTABase
         parent::__construct();
         $this->sum_bankcodes = 0;
         $this->sum_accounts  = 0;
-        $this->lastexception = false;
+        $this->allerrors = array();
 
         if (is_int($type)) {
             $this->type = $type;
@@ -161,19 +161,20 @@ class DTA extends DTABase
                 $this->sum_bankcodes = 0;
                 $this->sum_accounts  = 0;
                 $this->type = DTA_CREDIT;
-                $this->lastexception = $e;
+                $this->allerrors[] = $e;
             } catch (Payment_DTA_Exception $e) {
                 // object is valid, but save the error
-                $this->lastexception = $e;
+                $this->allerrors[] = $e;
             }
         }
     }
 
     /**
-    * Get parsing error.
+    * Get parsing errors.
     *
-    * Returns the last exception thrown when parsing DTA data; either
-    * - false: no error occured, valid DTA file was read into the object,
+    * Returns an array with all exceptions thrown when parsing DTA data;
+    * possible elements are:
+    * - None: if no errors occured this array is empty,
     * - Payment_DTA_ChecksumException indicates that the complete DTA file
     *   was read into the object but the file's internal checksums were incorrect,
     * - Payment_DTA_ParseException indicates an error in the input, but all
@@ -182,11 +183,11 @@ class DTA extends DTABase
     *   constructed object is empty.
     *
     * @access public
-    * @return Payment_DTA_Exception|boolean
+    * @return array
     */
-    function getParsingError()
+    function getParsingErrors()
     {
-        return $this->lastexception;
+        return $this->allerrors;
     }
 
     /**
@@ -978,6 +979,12 @@ class DTA extends DTABase
         assert($offset % 128 === 0);
 
         // check checksums
+
+        /*
+         * NB: because errors are indicated by exceptions, the user/caller never
+         * sees more than one checksum error. Only the first mismatch is reported,
+         * the other checks are skipped by throwing the exception.
+         */
         if ($E_check_count != $this->count()) {
                     throw new Payment_DTA_ChecksumException(
                         "E record checksum mismatch for transaction count: ".
@@ -1062,12 +1069,10 @@ class DTA extends DTABase
             try {
                 $this->_parseCrecord($input, $offset, $checks);
             } catch (Payment_DTA_Exception $e) {
-                // TODO: this is the place to either throw the Exception
-                //       or ignore the error and continue with the next
-                //       C record.
-                //throw new Payment_DTA_ParseException("Error in C record, ".
-                //    "in transaction number ".strval($this->count()+1), $e);
-
+                // preserve error
+                $this->allerrors[] = new Payment_DTA_ParseException(
+                    "Error in C record, in transaction number ".
+                    strval($this->count()+1), $e);
                 // skip to next 128-byte aligned record
                 $offset = $c_start + 128 * (1 + intval($c_length/128));
             }
