@@ -1,0 +1,77 @@
+<refentry id="package.payment.payment-dta.dtazv.setmaxamount">
+ <refnamediv>
+  <refname>
+   <function>DTAZV::setMaxAmount</function>
+  </refname>
+  <refpurpose>Set the maximum allowed amount per transfer.</refpurpose>
+ </refnamediv>
+ <refsynopsisdiv>
+  <funcsynopsis>
+   <funcsynopsisinfo>require_once &apos;/DTAZV.php&apos;;</funcsynopsisinfo>
+   <funcprototype>
+    <funcdef>
+     void
+     <function>DTAZV::setMaxAmount</function>
+    </funcdef>
+    <paramdef>
+     integer
+     <parameter>$newmax</parameter>
+    </paramdef>
+   </funcprototype>
+  </funcsynopsis>
+ </refsynopsisdiv>
+ <refsect1 id="package.payment.payment-dta.dtazv.setmaxamount.desc">
+  &title.desc;
+  <para>Pass 0 to disable the check (will set to maximum integer value).</para>
+  <para>
+   <emphasis>Warning</emphasis>
+   : Use at your own risk.
+  </para>
+  <para>Amounts &gt; 12500 Euro usually have notification requirements.</para>
+  <para>Amounts &gt; 50000 Euro are not allowed in a &quot;EU-Standard&Atilde;&frac14;berweisung&quot;,    thus yielding a malformed DTAZV.</para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtazv.setmaxamount.param">
+  &title.param;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term>
+      &type.int;
+      <parameter>$newmax</parameter>
+     </term>
+     <listitem>
+      <para>
+       New maximum allowed amount in Euro                         or 0 to disable
+       check.
+</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtazv.setmaxamount.see">
+  &title.see;
+  <para>
+   <emphasis>see</emphasis>
+   <ulink url="http://www.bundesbank.de/meldewesen/mw_aussenwirtschaft.en.php">info on notification requirements</ulink>
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtazv.setmaxamount.throws">
+  &title.throws;
+  <para>
+   <emphasis>throws</emphasis>
+   no exceptions thrown
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtazv.setmaxamount.since">
+  &title.since;
+  <para>
+   <emphasis>since</emphasis>
+   1.3.2
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtazv.setmaxamount.note">
+  &title.note;
+  &note.notstatic;
+</refsect1>
+</refentry>

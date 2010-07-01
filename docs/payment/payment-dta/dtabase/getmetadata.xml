@@ -1,0 +1,42 @@
+<refentry id="package.payment.payment-dta.dtabase.getmetadata">
+ <refnamediv>
+  <refname>
+   <function>DTABase::getMetaData</function>
+  </refname>
+  <refpurpose>Returns an array with information about the transactions.</refpurpose>
+ </refnamediv>
+ <refsynopsisdiv>
+  <funcsynopsis>
+   <funcsynopsisinfo>require_once &apos;/DTABase.php&apos;;</funcsynopsisinfo>
+   <funcprototype>
+    <funcdef>
+     array
+     <function>DTABase::getMetaData</function>
+    </funcdef>
+    <paramdef />
+   </funcprototype>
+  </funcsynopsis>
+ </refsynopsisdiv>
+ <refsect1 id="package.payment.payment-dta.dtabase.getmetadata.desc">
+  &title.desc;
+  <para>Can be used to print an accompanying document (Begleitzettel) for disks.</para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.getmetadata.returns">
+  &title.returns;
+  <para>
+   <emphasis>returns</emphasis>
+   Returns an array with keys: &quot;sender_name&quot;,    &quot;sender_bank_code&quot;, &quot;sender_account&quot;, &quot;sum_amounts&quot;,    &quot;count&quot;, &quot;date&quot;
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.getmetadata.throws">
+  &title.throws;
+  <para>
+   <emphasis>throws</emphasis>
+   no exceptions thrown
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.getmetadata.note">
+  &title.note;
+  &note.notstatic;
+</refsect1>
+</refentry>

@@ -1,0 +1,54 @@
+<refentry id="package.payment.payment-dta.dta.makevalidstring">
+ <refnamediv>
+  <refname>
+   <function>DTA::makeValidString</function>
+  </refname>
+  <refpurpose>Makes the given string valid for DTA files.</refpurpose>
+ </refnamediv>
+ <refsynopsisdiv>
+  <funcsynopsis>
+   <funcsynopsisinfo>require_once &apos;/DTA.php&apos;;</funcsynopsisinfo>
+   <funcprototype>
+    <funcdef>
+     string
+     <function>DTA::makeValidString</function>
+    </funcdef>
+    <paramdef>
+     string
+     <parameter>$string</parameter>
+    </paramdef>
+   </funcprototype>
+  </funcsynopsis>
+ </refsynopsisdiv>
+ <refsect1 id="package.payment.payment-dta.dta.makevalidstring.desc">
+  &title.desc;
+  <para>Some diacritics, especially German umlauts become uppercase,  all other chars not allowed are replaced with space.</para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dta.makevalidstring.param">
+  &title.param;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term>
+      &type.string;
+      <parameter>$string</parameter>
+     </term>
+     <listitem>
+      <para>String that should made valid.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dta.makevalidstring.throws">
+  &title.throws;
+  <para>
+   <emphasis>throws</emphasis>
+   no exceptions thrown
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dta.makevalidstring.note">
+  &title.note;
+  &note.notstatic;
+</refsect1>
+</refentry>
