@@ -25,12 +25,18 @@
      integer
      <parameter>$length</parameter>
     </paramdef>
+    <paramdef>
+     bool
+     <parameter>
+      <optional>$liberal = &false;</optional>
+     </parameter>
+    </paramdef>
    </funcprototype>
   </funcsynopsis>
  </refsynopsisdiv>
  <refsect1 id="package.payment.payment-dta.dtabase.getstr.desc">
   &title.desc;
-  <para>Afterwards the offset is increased.</para>
+  <para>Afterwards the offset is increased.  By default only a subset of ASCII is allowed (as specified by DTA),  with $liberal = true apply makeValidString() first in order to accept  lower case and some 8-bit chars.  (NB: in this case the returned string may be up to twice as long.)</para>
  </refsect1>
  <refsect1 id="package.payment.payment-dta.dtabase.getstr.param">
   &title.param;
@@ -68,13 +74,24 @@
      </listitem>
     </varlistentry>
    </variablelist>
+   <variablelist>
+    <varlistentry>
+     <term>
+      &type.bool;
+      <parameter>$liberal</parameter>
+     </term>
+     <listitem>
+      <para>allow 8-bit chars</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
   </para>
  </refsect1>
  <refsect1 id="package.payment.payment-dta.dtabase.getstr.returns">
   &title.returns;
   <para>
    <emphasis>returns</emphasis>
-   the read string of length $length
+   the read string
   </para>
  </refsect1>
  <refsect1 id="package.payment.payment-dta.dtabase.getstr.throws">

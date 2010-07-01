@@ -1,34 +1,29 @@
-<refentry id="package.payment.payment-dta.dta.getparsingerror">
+<refentry id="package.payment.payment-dta.dta.getparsingerrors">
  <refnamediv>
   <refname>
-   <function>DTA::getParsingError</function>
+   <function>DTA::getParsingErrors</function>
   </refname>
-  <refpurpose>Get parsing error.</refpurpose>
+  <refpurpose>Get parsing errors.</refpurpose>
  </refnamediv>
  <refsynopsisdiv>
   <funcsynopsis>
    <funcsynopsisinfo>require_once &apos;/DTA.php&apos;;</funcsynopsisinfo>
    <funcprototype>
     <funcdef>
-     <replaceable>
-      <link linkend="package.payment.payment-dta.payment-dta-exception-summary">
-       <classname>Payment_DTA_Exception</classname>
-      </link>
-      |boolean
-     </replaceable>
-     <function>DTA::getParsingError</function>
+     array
+     <function>DTA::getParsingErrors</function>
     </funcdef>
     <paramdef />
    </funcprototype>
   </funcsynopsis>
  </refsynopsisdiv>
- <refsect1 id="package.payment.payment-dta.dta.getparsingerror.desc">
+ <refsect1 id="package.payment.payment-dta.dta.getparsingerrors.desc">
   &title.desc;
   <para>
-   Returns the last exception thrown when parsing DTA data; either
+   Returns an array with all exceptions thrown when parsing DTA data;  possible elements are:
    <itemizedlist>
     <listitem>
-     <para>false: no error occured, valid DTA file was read into the object,</para>
+     <para>None: if no errors occured this array is empty,</para>
     </listitem>
     <listitem>
      <para>
@@ -51,14 +46,14 @@
    </itemizedlist>
   </para>
  </refsect1>
- <refsect1 id="package.payment.payment-dta.dta.getparsingerror.throws">
+ <refsect1 id="package.payment.payment-dta.dta.getparsingerrors.throws">
   &title.throws;
   <para>
    <emphasis>throws</emphasis>
    no exceptions thrown
   </para>
  </refsect1>
- <refsect1 id="package.payment.payment-dta.dta.getparsingerror.note">
+ <refsect1 id="package.payment.payment-dta.dta.getparsingerrors.note">
   &title.note;
   &note.notstatic;
 </refsect1>

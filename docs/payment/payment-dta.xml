@@ -232,7 +232,7 @@
 &package.payment.payment-dta.dta.addexchange;
 &package.payment.payment-dta.dta.getfilecontent;
 &package.payment.payment-dta.dta.getmetadata;
-&package.payment.payment-dta.dta.getparsingerror;
+&package.payment.payment-dta.dta.getparsingerrors;
 &package.payment.payment-dta.dta.parse;
 &package.payment.payment-dta.dta.setaccountfilesender;
  <refentry id="package.payment.payment-dta.dtabase-summary">
