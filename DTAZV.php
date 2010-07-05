@@ -769,17 +769,16 @@ class DTAZV extends DTABase
         //do not consume input by using getStr()/getNum() here
         while ($input[$offset + 4] == 'T') {
             /* T record */
-            $c_start = $offset;
-            $c_length = intval(substr($input, $offset, 4));
+            $t_start = $offset;
             try {
                 $this->_parseTrecord($input, $offset, $checks);
             } catch (Payment_DTA_Exception $e) {
                 // preserve error
                 $this->allerrors[] = new Payment_DTA_ParseException(
-                    "Error in c record, in transaction number ".
+                    "Error in T record, in transaction number ".
                     strval($this->count()+1), $e);
-                // skip to next 128-byte aligned record
-                $offset = $c_start + 128 * (1 + intval($c_length/128));
+                // skip to next record
+                $offset = $t_start + 768;
             }
         } // while
 
