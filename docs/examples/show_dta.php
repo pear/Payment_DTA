@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Example how to use the DTA parser.
+ * Example how to use the DTA/DTAZV parser.
  *
  * $dtafilestring is for easy testing. Rename/Remove it to upload own files.
  *
@@ -17,6 +17,7 @@
  */
 
 require_once "Payment/DTA.php";
+require_once "Payment/DTAZV.php";
 
 // correct file
 $dtafilestring =
@@ -47,6 +48,41 @@ $dtafilestring =
     '                                                                '.
     '0128E     000000200000000000000000000002715800000000000066668888'.
     '0000000155646                                                   ';
+
+// correct DTAZV file
+$dtafilestring =
+    '0256Q160500003503007767SENDERS NAME                             '.
+    '                                                                '.
+    '                                   05071000050710N0000000000    '.
+    '                                                                '.
+    '0768T16050000EUR350300776700000000000000   0000000000RZTIAT22263'.
+    '                                                                '.
+    '                                                                '.
+    '               DE RECEIVERS NAME                                '.
+    '                                                                '.
+    '                                                                '.
+    '                                    /DE21700519950000007229     '.
+    '       EUR00000000000123450TEST-VERWENDUNGSZWECK                '.
+    '                                                                '.
+    '                                       00000000                 '.
+    '        0013                                                    '.
+    '          0                                                   00'.
+    '0768T16050000EUR350300776700000000000000   0000000000RZTIAT22263'.
+    '                                                                '.
+    '                                                                '.
+    '               DE SECOND RECEIVERS NAME                         '.
+    '                                                                '.
+    '                                                                '.
+    '                                    /DE21700519950000007229     '.
+    '       EUR00000000000234560TEST2                                '.
+    '                                                                '.
+    '                                       00000000                 '.
+    '        0013                                                    '.
+    '          0                                                   00'.
+    '0256Z000000000000357000000000000002                             '.
+    '                                                                '.
+    '                                                                '.
+    '                                                                ';
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -100,9 +136,15 @@ if (empty($dtafilestring) && (empty($_FILES) || empty($_FILES["userfile"]))) {
         die();
     }
 
-    print "<p class='status'>Lese DTA-Datei ...</p>";
-
-    $dta = new DTA($dtafilestring);
+    // determine if DTA or DTAZV
+    if ("0256Q" == substr($dtafilestring, 0, 5)) {
+        print "<p class='status'>Lese DTAZV-Datei ...</p>";
+        $dta = new DTAZV($dtafilestring);
+    } else {
+        // assume DTA, errors are catched later
+        print "<p class='status'>Lese DTA-Datei ...</p>";
+        $dta = new DTA($dtafilestring);
+    }
 
     $errors = $dta->getParsingErrors();
     if (count($errors)) {
@@ -155,12 +197,18 @@ if (empty($dtafilestring) && (empty($_FILES) || empty($_FILES["userfile"]))) {
 
     <tr>
     <td class="label">Kontrollsumme Kontonummern:</td>
-    <td class="value"><?php print $meta["sum_accounts"]; ?></td>
+    <td class="value"><?php 
+        // this value is only set for DTA, not for DTAZV
+        print isset($meta["sum_accounts"]) ? $meta["sum_accounts"] : "n/a";
+        ?></td>
     </tr>
 
     <tr>
     <td class="label">Kontrollsumme Bankleitzahlen:</td>
-    <td class="value"><?php print $meta["sum_bankcodes"]; ?></td>
+    <td class="value"><?php
+        // this value is only set for DTA, not for DTAZV
+        print isset($meta["sum_bankcodes"]) ? $meta["sum_bankcodes"] : "n/a";
+        ?></td>
     </tr>
 
     <tr> <td colspan="2">&nbsp;</td> </tr>
