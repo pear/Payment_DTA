@@ -103,12 +103,28 @@ class DTAZV extends DTABase
     /**
     * Constructor.
     *
+    * @param string $input Optional, a string with DTAZV data to import.
+    *
     * @access public
     */
-    function __construct()
+    function __construct($input = null)
     {
         parent::__construct();
         $this->max_amount = 12500*100;
+
+        if (is_string($input)) {
+            try {
+                $this->parse($input);
+            } catch (Payment_DTA_FatalParseException $e) {
+                // cannot construct this object, reset everything
+                parent::__construct();
+                $this->max_amount = 12500*100;
+                $this->allerrors[] = $e;
+            } catch (Payment_DTA_Exception $e) {
+                // object is valid, but save the error
+                $this->allerrors[] = $e;
+            }
+        }
     }
 
     /**
@@ -540,4 +556,241 @@ class DTAZV extends DTABase
             $this->max_amount = (int)(round($newmax * 100));
         }
     }
+
+    /**
+    * Auxillary parser to consume Q records.
+    *
+    * @param string  $input   content of DTAZV file
+    * @param integer &$offset read offset into $input
+    *
+    * @throws Payment_DTA_Exception on unrecognized input
+    * @access private
+    * @return void
+    */
+    private function _parseQrecord($input, &$offset)
+    {
+        $Q = array();
+
+        /* field Q01+Q02 record length and type */
+        $this->checkStr($input, $offset, "0256Q");
+        /* field Q03 BLZ receiving this file */
+        $Q['bank_code']       = $this->getNum($input, $offset, 8);
+        /* field Q04 customer number */
+        $Q['account_number']  = $this->getNum($input, $offset, 10);
+        /* field Q05 sender's address */
+        $Q['name']            = rtrim($this->getStr($input, $offset, 35, true));
+        $Q['additional_name'] = rtrim($this->getStr($input, $offset, 35, true));
+        $Q['street']          = rtrim($this->getStr($input, $offset, 35, true));
+        $Q['city']            = rtrim($this->getStr($input, $offset, 35, true));
+        /* field Q06 date of file creation -- ignored */
+        $this->getNum($input, $offset, 6);
+        /* field Q07 daily counter -- ignored */
+        $this->getNum($input, $offset, 2);
+        /* field Q08 execution date -- ignored */
+        $this->getNum($input, $offset, 6);
+        /* field Q09 notification to federal bank */
+        $this->checkStr($input, $offset, "N");
+        /* field Q10 notification data */
+        $this->checkStr($input, $offset, "00");
+        /* field Q11 notification BLZ */
+        $this->checkStr($input, $offset, str_repeat("0", 8));
+        /* field Q12 reserve */
+        $this->checkStr($input, $offset, str_repeat(" ", 68));
+
+        $rc = $this->setAccountFileSender(
+            array(
+            "name"            => $Q['name'],
+            "bank_code"       => $Q['bank_code'],
+            "account_number"  => $Q['account_number'],
+            "additional_name" => $Q['additional_name'],
+            )
+        );
+
+        $rc = $this->setAccountFileSender($Q);
+        if (!$rc) {
+            // should never happen
+            throw new Payment_DTA_FatalParseException(
+                "Cannot setAccountFileSender(), please file a bug report");
+        }
+    }
+
+    /**
+    * Auxillary parser to consume T records.
+    *
+    * @param string  $input   content of DTAZV file
+    * @param integer &$offset read offset into $input
+    *
+    * @throws Payment_DTA_Exception on unrecognized input
+    * @access private
+    * @return void
+    */
+    private function _parseTrecord($input, &$offset, &$checks)
+    {
+        $Tsend = array();
+        $Trecv = array();
+
+        /* field T01+02 record length and type */
+        $this->checkStr($input, $offset, "0768T");
+        /* field T03 sender's bank */
+        $Tsend['bank_code'] = $this->getNum($input, $offset, 8);
+        /* field T04a currency */
+        $this->checkStr($input, $offset, "EUR");
+        /* field T04b sender's account */
+        $Tsend['account_number'] = $this->getNum($input, $offset, 10);
+        /* field T05 execution date -- ignored */
+        $this->getNum($input, $offset, 6);
+        /* field T06+T07a+T07b empty for Standardüberweisung */
+        $this->checkStr($input, $offset, str_repeat("0", 8));
+        $this->checkStr($input, $offset, str_repeat(" ", 3));
+        $this->checkStr($input, $offset, str_repeat("0", 10));
+        /* field T08 receiver's BIC */
+        $Trecv['bank_code'] = $this->getStr($input, $offset, 11);
+        /* field T09a+T09b empty for Standardüberweisung */
+        $this->checkStr($input, $offset, str_repeat(" ", 3+4*35));
+        /* field T10a receiver's country code -- ignored */
+        $this->getStr($input, $offset, 3);
+        /* field T10b receiver's address */
+        $Trecv['name']            = $this->getStr($input, $offset, 35);
+        $Trecv['additional_name'] = $this->getStr($input, $offset, 35);
+        $Trecv['street']          = $this->getStr($input, $offset, 35);
+        $Trecv['city']            = $this->getStr($input, $offset, 35);
+        /* field T11 empty for Standardüberweisung */
+        $this->checkStr($input, $offset, str_repeat(" ", 2*35));
+        /* field T12 receiver's IBAN */
+        $this->checkStr($input, $offset, '/');
+        $Trecv['account_number'] = $this->getStr($input, $offset, 34);
+        /* field T13 currency */
+        $this->checkStr($input, $offset, "EUR");
+        /* field T14a amount (integer) */
+        $amount_int = $this->getNum($input, $offset, 14);
+        /* field T14b amount (decimal places) */
+        $amount_dec = $this->getNum($input, $offset, 3);
+        $amount = $amount_int + $amount_dec/1000.0;
+        /* field T15 purpose */
+        $purposes = array();
+        $purposes[0] = $this->getStr($input, $offset, 35);
+        $purposes[1] = $this->getStr($input, $offset, 35);
+        $purposes[2] = $this->getStr($input, $offset, 35);
+        $purposes[3] = $this->getStr($input, $offset, 35);
+        /* field T16--T20 instruction code, empty for Standardüberweisung */
+        $this->checkStr($input, $offset, str_repeat("0", 4*2));
+        $this->checkStr($input, $offset, str_repeat(" ", 25));
+        /* field T21 fees */
+        $this->checkStr($input, $offset, "00");
+        /* field T22 payment type */
+        $this->checkStr($input, $offset, "13");
+        /* field T23 free text for accounting -- ignored */
+        $this->getStr($input, $offset, 27);
+        /* field T24 contact details -- ignored */
+        $this->getStr($input, $offset, 35);
+        /* field T25 reporting key */
+        $this->checkStr($input, $offset, "0");
+        /* field T26 reserve */
+        $this->checkStr($input, $offset, str_repeat(" ", 51));
+        /* field T26 following report extension */
+        $this->checkStr($input, $offset, "00");
+
+        /* we read the fields, now add an exchange */
+        $rc = $this->addExchange(
+            $Trecv,
+            $amount,
+            $purposes,
+            $Tsend
+        );
+        if (!$rc) {
+            // should never happen
+            throw new Payment_DTA_ParseException("Cannot addExchange() ".
+                "for transaction number ".strval($this->count()+1).
+                ", please file a bug report", $e);
+        }
+        $checks['amount'] += $amount_int;
+    }
+
+    /**
+    * Auxillary parser to consume Z records.
+    *
+    * @param string  $input   content of DTAZV file
+    * @param integer &$offset read offset into $input
+    *
+    * @throws Payment_DTA_Exception on unrecognized input
+    * @access private
+    * @return void
+    */
+    private function _parseZrecord($input, &$offset, &$checks)
+    {
+        $Z = array();
+
+        /* field Z01+Z02 record length and type */
+        $this->checkStr($input, $offset, "0256Z");
+        /* field Z03 sum of amounts (integer parts in T14a) */
+        $Z_check_amount = $this->getNum($input, $offset, 15);
+        /* field Z04 number of records type T */
+        $Z_check_count = $this->getNum($input, $offset, 15);
+        /* field Z05 reserve */
+        $this->checkStr($input, $offset, str_repeat(" ", 221));
+
+        if ($Z_check_count != $this->count()) {
+                    throw new Payment_DTA_ChecksumException(
+                        "Z record checksum mismatch for transaction count: ".
+                        "reads $Z_check_count, expected ".$this->count());
+        }
+        if ($Z_check_amount != $checks['amount']) {
+                    throw new Payment_DTA_ChecksumException(
+                        "Z record checksum mismatch for transfer amount: ".
+                        "reads $Z_check_amount, expected ".$checks['amount']);
+        }
+    }
+
+    /**
+    * Parser. Read data from an existing DTAZV file content.
+    *
+    * @param string $input content of DTAZV file
+    *
+    * @throws Payment_DTA_Exception on unrecognized input
+    * @access protected
+    * @return void
+    */
+    protected function parse($input)
+    {
+        if (strlen($input) % 128) {
+            throw new Payment_DTA_FatalParseException("invalid length");
+        }
+
+        $checks = array('amount' => 0);
+        $offset = 0;
+
+        /* Q record */
+        try {
+            $this->_parseQrecord($input, $offset);
+        } catch (Payment_DTA_Exception $e) {
+            throw new Payment_DTA_FatalParseException("Exception in Q record", $e);
+        }
+
+        //do not consume input by using getStr()/getNum() here
+        while ($input[$offset + 4] == 'T') {
+            /* T record */
+            $c_start = $offset;
+            $c_length = intval(substr($input, $offset, 4));
+            try {
+                $this->_parseTrecord($input, $offset, $checks);
+            } catch (Payment_DTA_Exception $e) {
+                // preserve error
+                $this->allerrors[] = new Payment_DTA_ParseException(
+                    "Error in c record, in transaction number ".
+                    strval($this->count()+1), $e);
+                // skip to next 128-byte aligned record
+                $offset = $c_start + 128 * (1 + intval($c_length/128));
+            }
+        } // while
+
+        /* Z record */
+        try {
+            $this->_parseZrecord($input, $offset, $checks);
+        } catch (Payment_DTA_ChecksumException $e) {
+            throw $e;
+        } catch (Payment_DTA_Exception $e) {
+            throw new Payment_DTA_ParseException("Error in Z record", $e);
+        }
+    }
+
 }

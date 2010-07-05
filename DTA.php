@@ -118,13 +118,6 @@ class DTA extends DTABase
     protected $sum_accounts;
 
     /**
-    * Array of all parsing problems.
-    *
-    * @var array $allerrors
-    */
-    protected $allerrors;
-
-    /**
     * Constructor. Creates an empty DTA object or imports one.
     *
     * If the parameter is a string, then it is expected to be in DTA format
@@ -148,7 +141,6 @@ class DTA extends DTABase
         parent::__construct();
         $this->sum_bankcodes = 0;
         $this->sum_accounts  = 0;
-        $this->allerrors = array();
 
         if (is_int($type)) {
             $this->type = $type;
@@ -167,27 +159,6 @@ class DTA extends DTABase
                 $this->allerrors[] = $e;
             }
         }
-    }
-
-    /**
-    * Get parsing errors.
-    *
-    * Returns an array with all exceptions thrown when parsing DTA data;
-    * possible elements are:
-    * - None: if no errors occured this array is empty,
-    * - Payment_DTA_ChecksumException indicates that the complete DTA file
-    *   was read into the object but the file's internal checksums were incorrect,
-    * - Payment_DTA_ParseException indicates an error in the input, but all
-    *   transactions up to the unexpected field were read into the new object,
-    * - Payment_DTA_FatalParseException indicates a fatal error, thus the
-    *   constructed object is empty.
-    *
-    * @access public
-    * @return array
-    */
-    function getParsingErrors()
-    {
-        return $this->allerrors;
     }
 
     /**

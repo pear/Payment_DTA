@@ -161,6 +161,13 @@ abstract class DTABase implements Countable, Iterator
     protected $sum_amounts;
 
     /**
+    * Array of all parsing problems.
+    *
+    * @var array $allerrors
+    */
+    protected $allerrors;
+
+    /**
     * Return number of exchanges
     *
     * @access public
@@ -181,6 +188,28 @@ abstract class DTABase implements Countable, Iterator
         $this->exchanges            = array();
         $this->timestamp            = time();
         $this->sum_amounts          = 0;
+        $this->allerrors            = array();
+    }
+
+    /**
+    * Get parsing errors.
+    *
+    * Returns an array with all exceptions thrown when parsing DTA data;
+    * possible elements are:
+    * - None: if no errors occured this array is empty,
+    * - Payment_DTA_ChecksumException indicates that the complete DTA file
+    *   was read into the object but the file's internal checksums were incorrect,
+    * - Payment_DTA_ParseException indicates an error in the input, but all
+    *   transactions up to the unexpected field were read into the new object,
+    * - Payment_DTA_FatalParseException indicates a fatal error, thus the
+    *   constructed object is empty.
+    *
+    * @access public
+    * @return array
+    */
+    function getParsingErrors()
+    {
+        return $this->allerrors;
     }
 
     /**
