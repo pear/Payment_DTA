@@ -762,4 +762,219 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
             strftime("%d%m%y", $meta["date"]));
     }
 
+    public function testParserWrongCheckCount()
+    {
+        $dates = strftime("%d%m%y00%d%m%y", time());
+        $teststring = // same as in testContent() but Z record indicates 3 T records
+            '0256Q160500003503007767SENDERS NAME                             '.
+            '                                                                '.
+            '                                   '.$dates.'N0000000000    '.
+            '                                                                '.
+            '0768T16050000EUR350300776700000000000000   0000000000RZTIAT22263'.
+            '                                                                '.
+            '                                                                '.
+            '               DE RECEIVERS NAME                                '.
+            '                                                                '.
+            '                                                                '.
+            '                                    /DE21700519950000007229     '.
+            '       EUR00000000000123450TEST-VERWENDUNGSZWECK                '.
+            '                                                                '.
+            '                                       00000000                 '.
+            '        0013                                                    '.
+            '          0                                                   00'.
+            '0768T16050000EUR350300776700000000000000   0000000000RZTIAT22263'.
+            '                                                                '.
+            '                                                                '.
+            '               DE SECOND RECEIVERS NAME                         '.
+            '                                                                '.
+            '                                                                '.
+            '                                    /DE21700519950000007229     '.
+            '       EUR00000000000234560TEST2                                '.
+            '                                                                '.
+            '                                       00000000                 '.
+            '        0013                                                    '.
+            '          0                                                   00'.
+            '0256Z000000000000357000000000000003                             '.
+            '                                                                '.
+            '                                                                '.
+            '                                                                ';
+        $dtazv = new DTAZV($teststring);
+        $this->assertSame(2, $dtazv->count());
+        $this->assertEquals('Payment_DTA_ChecksumException',
+            get_class(array_pop($dtazv->getParsingErrors())));
+    }
+
+    public function testParserWrongCheckAmounts()
+    {
+        $dates = strftime("%d%m%y00%d%m%y", time());
+        $teststring = // same as in testContent() but Z record has wrong amount sum
+            '0256Q160500003503007767SENDERS NAME                             '.
+            '                                                                '.
+            '                                   '.$dates.'N0000000000    '.
+            '                                                                '.
+            '0768T16050000EUR350300776700000000000000   0000000000RZTIAT22263'.
+            '                                                                '.
+            '                                                                '.
+            '               DE RECEIVERS NAME                                '.
+            '                                                                '.
+            '                                                                '.
+            '                                    /DE21700519950000007229     '.
+            '       EUR00000000000123450TEST-VERWENDUNGSZWECK                '.
+            '                                                                '.
+            '                                       00000000                 '.
+            '        0013                                                    '.
+            '          0                                                   00'.
+            '0768T16050000EUR350300776700000000000000   0000000000RZTIAT22263'.
+            '                                                                '.
+            '                                                                '.
+            '               DE SECOND RECEIVERS NAME                         '.
+            '                                                                '.
+            '                                                                '.
+            '                                    /DE21700519950000007229     '.
+            '       EUR00000000000234560TEST2                                '.
+            '                                                                '.
+            '                                       00000000                 '.
+            '        0013                                                    '.
+            '          0                                                   00'.
+            '0256Z000000000000358000000000000002                             '.
+            '                                                                '.
+            '                                                                '.
+            '                                                                ';
+        $dtazv = new DTAZV($teststring);
+        $this->assertSame(2, $dtazv->count());
+        $this->assertEquals('Payment_DTA_ChecksumException',
+            get_class(array_pop($dtazv->getParsingErrors())));
+    }
+
+    public function testParserWrongLength()
+    {
+        $dates = strftime("%d%m%y00%d%m%y", time());
+        $teststring = // same as in testContent() but 1 char longer
+            '0256Q160500003503007767SENDERS NAME                             '.
+            '                                                                '.
+            '                                   '.$dates.'N0000000000    '.
+            '                                                                '.
+            '0768T16050000EUR350300776700000000000000   0000000000RZTIAT22263'.
+            '                                                                '.
+            '                                                                '.
+            '               DE RECEIVERS NAME                                '.
+            '                                                                '.
+            '                                                                '.
+            '                                    /DE21700519950000007229     '.
+            '       EUR00000000000123450TEST-VERWENDUNGSZWECK                '.
+            '                                                                '.
+            '                                       00000000                 '.
+            '        0013                                                    '.
+            '          0                                                   00'.
+            '0768T16050000EUR350300776700000000000000   0000000000RZTIAT22263'.
+            '                                                                '.
+            '                                                                '.
+            '               DE SECOND RECEIVERS NAME                         '.
+            '                                                                '.
+            '                                                                '.
+            '                                    /DE21700519950000007229     '.
+            '       EUR00000000000234560TEST2                                '.
+            '                                                                '.
+            '                                       00000000                 '.
+            '        0013                                                    '.
+            '          0                                                   00'.
+            '0256Z000000000000357000000000000002                             '.
+            '                                                                '.
+            '                                                                '.
+            '                                                                 ';
+        $dtazv = new DTAZV($teststring);
+        $this->assertSame(0, $dtazv->count());
+        $this->assertEquals('Payment_DTA_FatalParseException',
+            get_class(array_pop($dtazv->getParsingErrors())));
+    }
+
+    public function testParserInvalidQRecord()
+    {
+        $dates = strftime("%d%m%y00%d%m%y", time());
+        $teststring = // same as in testContent() but error in Q record
+            '0256Q160500003503007767SENDERS NAME                             '.
+            '                                                                '.
+            '                                   '.$dates.'N0000000001    '.
+            '                                                                '.
+            '0768T16050000EUR350300776700000000000000   0000000000RZTIAT22263'.
+            '                                                                '.
+            '                                                                '.
+            '               DE RECEIVERS NAME                                '.
+            '                                                                '.
+            '                                                                '.
+            '                                    /DE21700519950000007229     '.
+            '       EUR00000000000123450TEST-VERWENDUNGSZWECK                '.
+            '                                                                '.
+            '                                       00000000                 '.
+            '        0013                                                    '.
+            '          0                                                   00'.
+            '0768T16050000EUR350300776700000000000000   0000000000RZTIAT22263'.
+            '                                                                '.
+            '                                                                '.
+            '               DE SECOND RECEIVERS NAME                         '.
+            '                                                                '.
+            '                                                                '.
+            '                                    /DE21700519950000007229     '.
+            '       EUR00000000000234560TEST2                                '.
+            '                                                                '.
+            '                                       00000000                 '.
+            '        0013                                                    '.
+            '          0                                                   00'.
+            '0256Z000000000000357000000000000002                             '.
+            '                                                                '.
+            '                                                                '.
+            '                                                                ';
+        $dtazv = new DTAZV($teststring);
+        $this->assertSame(0, $dtazv->count());
+        $this->assertEquals('Payment_DTA_FatalParseException',
+            get_class(array_pop($dtazv->getParsingErrors())));
+    }
+
+    public function testParserSkipInvalidTRecord()
+    {
+        $dates = strftime("%d%m%y00%d%m%y", time());
+        $teststring = // same as in testContent() but error in length in 1st T record
+            '0256Q160500003503007767SENDERS NAME                             '.
+            '                                                                '.
+            '                                   '.$dates.'N0000000000    '.
+            '                                                                '.
+            '0769T16050000EUR350300776700000000000000   0000000000RZTIAT22263'.
+            '                                                                '.
+            '                                                                '.
+            '               DE RECEIVERS NAME                                '.
+            '                                                                '.
+            '                                                                '.
+            '                                    /DE21700519950000007229     '.
+            '       EUR00000000000123450TEST-VERWENDUNGSZWECK                '.
+            '                                                                '.
+            '                                       00000000                 '.
+            '        0013                                                    '.
+            '          0                                                   00'.
+            '0768T16050000EUR350300776700000000000000   0000000000RZTIAT22263'.
+            '                                                                '.
+            '                                                                '.
+            '               DE SECOND RECEIVERS NAME                         '.
+            '                                                                '.
+            '                                                                '.
+            '                                    /DE21700519950000007229     '.
+            '       EUR00000000000234560TEST2                                '.
+            '                                                                '.
+            '                                       00000000                 '.
+            '        0013                                                    '.
+            '          0                                                   00'.
+            '0256Z000000000000357000000000000002                             '.
+            '                                                                '.
+            '                                                                '.
+            '                                                                ';
+        $dtazv = new DTAZV($teststring);
+        $this->assertSame(1, $dtazv->count());
+        $errors = $dtazv->getParsingErrors();
+
+        // first error for skipped C record, second error for checksum
+        $this->assertEquals('Payment_DTA_ParseException',
+            get_class($errors[0]));
+        $this->assertEquals('Payment_DTA_ChecksumException',
+            get_class($errors[1]));
+    }
+
 }
