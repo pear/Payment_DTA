@@ -619,6 +619,7 @@ class DTAZV extends DTABase
     *
     * @param string  $input   content of DTAZV file
     * @param integer &$offset read offset into $input
+    * @param array   &$checks holds checksums for validation in Z record
     *
     * @throws Payment_DTA_Exception on unrecognized input
     * @access private
@@ -711,12 +712,13 @@ class DTAZV extends DTABase
     *
     * @param string  $input   content of DTAZV file
     * @param integer &$offset read offset into $input
+    * @param array   $checks  holds checksums for validation
     *
     * @throws Payment_DTA_Exception on unrecognized input
     * @access private
     * @return void
     */
-    private function _parseZrecord($input, &$offset, &$checks)
+    private function _parseZrecord($input, &$offset, $checks)
     {
         $Z = array();
 
