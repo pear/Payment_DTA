@@ -1,23 +1,23 @@
-<refentry id="package.payment.payment-dta.dta.getparsingerrors">
+<refentry id="package.payment.payment-dta.dtabase.getparsingerrors">
  <refnamediv>
   <refname>
-   <function>DTA::getParsingErrors</function>
+   <function>DTABase::getParsingErrors</function>
   </refname>
   <refpurpose>Get parsing errors.</refpurpose>
  </refnamediv>
  <refsynopsisdiv>
   <funcsynopsis>
-   <funcsynopsisinfo>require_once &apos;/DTA.php&apos;;</funcsynopsisinfo>
+   <funcsynopsisinfo>require_once &apos;/DTABase.php&apos;;</funcsynopsisinfo>
    <funcprototype>
     <funcdef>
      array
-     <function>DTA::getParsingErrors</function>
+     <function>DTABase::getParsingErrors</function>
     </funcdef>
     <paramdef />
    </funcprototype>
   </funcsynopsis>
  </refsynopsisdiv>
- <refsect1 id="package.payment.payment-dta.dta.getparsingerrors.desc">
+ <refsect1 id="package.payment.payment-dta.dtabase.getparsingerrors.desc">
   &title.desc;
   <para>
    Returns an array with all exceptions thrown when parsing DTA data;  possible elements are:
@@ -46,14 +46,14 @@
    </itemizedlist>
   </para>
  </refsect1>
- <refsect1 id="package.payment.payment-dta.dta.getparsingerrors.throws">
+ <refsect1 id="package.payment.payment-dta.dtabase.getparsingerrors.throws">
   &title.throws;
   <para>
    <emphasis>throws</emphasis>
    no exceptions thrown
   </para>
  </refsect1>
- <refsect1 id="package.payment.payment-dta.dta.getparsingerrors.note">
+ <refsect1 id="package.payment.payment-dta.dtabase.getparsingerrors.note">
   &title.note;
   &note.notstatic;
 </refsect1>

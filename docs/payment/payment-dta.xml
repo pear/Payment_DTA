@@ -152,6 +152,14 @@
        </row>
        <row>
         <entry>
+         <link linkend="package.payment.payment-dta.dtabase.getparsingerrors">
+          <function>DTABase::getParsingErrors</function>
+         </link>
+        </entry>
+        <entry>Get parsing errors.</entry>
+       </row>
+       <row>
+        <entry>
          <link linkend="package.payment.payment-dta.dtabase.getstr">
           <function>DTABase::getStr</function>
          </link>
@@ -232,7 +240,6 @@
 &package.payment.payment-dta.dta.addexchange;
 &package.payment.payment-dta.dta.getfilecontent;
 &package.payment.payment-dta.dta.getmetadata;
-&package.payment.payment-dta.dta.getparsingerrors;
 &package.payment.payment-dta.dta.parse;
 &package.payment.payment-dta.dta.setaccountfilesender;
  <refentry id="package.payment.payment-dta.dtabase-summary">
@@ -300,6 +307,7 @@
 &package.payment.payment-dta.dtabase.getfilecontent;
 &package.payment.payment-dta.dtabase.getmetadata;
 &package.payment.payment-dta.dtabase.getnum;
+&package.payment.payment-dta.dtabase.getparsingerrors;
 &package.payment.payment-dta.dtabase.getstr;
 &package.payment.payment-dta.dtabase.key;
 &package.payment.payment-dta.dtabase.makevalidstring;
@@ -445,6 +453,14 @@
        </row>
        <row>
         <entry>
+         <link linkend="package.payment.payment-dta.dtabase.getparsingerrors">
+          <function>DTABase::getParsingErrors</function>
+         </link>
+        </entry>
+        <entry>Get parsing errors.</entry>
+       </row>
+       <row>
+        <entry>
          <link linkend="package.payment.payment-dta.dtabase.getstr">
           <function>DTABase::getStr</function>
          </link>
@@ -524,6 +540,7 @@
  &package.payment.payment-dta.dtazv.--construct;
 &package.payment.payment-dta.dtazv.addexchange;
 &package.payment.payment-dta.dtazv.getfilecontent;
+&package.payment.payment-dta.dtazv.parse;
 &package.payment.payment-dta.dtazv.setaccountfilesender;
 &package.payment.payment-dta.dtazv.setmaxamount;
  <refentry id="package.payment.payment-dta.payment-dta-checksumexception-summary">

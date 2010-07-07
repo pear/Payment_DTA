@@ -2,8 +2,8 @@
 <package packagerversion="1.9.1" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
  <name>Payment_DTA</name>
  <channel>pear.php.net</channel>
- <summary>Creates DTA and DTAZV files containing money transaction data (Germany).</summary>
- <description>Payment_DTA provides functions to create DTA and DTAZV files used in Germany to exchange informations about money transactions with banks or online banking programs.</description>
+ <summary>Creates and reads DTA and DTAZV files containing money transaction data (Germany).</summary>
+ <description>Payment_DTA provides functions to create and read DTA and DTAZV files used in Germany to exchange informations about money transactions with banks or online banking programs.</description>
  <lead>
   <name>Martin Schütte</name>
   <user>mschuett</user>
@@ -16,11 +16,11 @@
   <email>hs@web-gear.com</email>
   <active>no</active>
  </lead>
- <date>2010-07-01</date>
- <time>02:10:13</time>
+ <date>2010-07-07</date>
+ <time>18:56:41</time>
  <version>
-  <release>1.4.0a2</release>
-  <api>1.4.0a2</api>
+  <release>1.4.0a3</release>
+  <api>1.4.0a3</api>
  </version>
  <stability>
   <release>alpha</release>
@@ -28,8 +28,7 @@
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
  <notes>
-[*] now able to parse DTA files with incorrect characters (latin1 and lowercase)
-[*] change parsing error reporting
+[+] parse DTAZV files
 ( [+] Added   [-] Fixed   [*] Improved   [!] Note )
  </notes>
  <contents>
@@ -40,8 +39,8 @@
    <file baseinstalldir="Payment" md5sum="d81d64ce27bb1dace65112099fffc39c" name="docs/examples/example_debit.php" role="doc" />
    <file baseinstalldir="Payment" md5sum="a009d15bd59356a9e524dea04ab76d38" name="docs/examples/example_download.php" role="doc" />
    <file baseinstalldir="Payment" md5sum="7c2960a4c5df099c574a1af9e3bffdc0" name="docs/examples/example_dtazv.php" role="doc" />
-   <file baseinstalldir="Payment" md5sum="33ba2a5f0f42667072fe7be57a7ee3ee" name="docs/examples/show_dta.php" role="doc" />
-   <file baseinstalldir="Payment" md5sum="e3a2814fb629ebad3ae2a545a7c5b33e" name="docs/payment/payment-dta.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="49c896db5a0f1701a5649b4a8a73a0a4" name="docs/examples/show_dta.php" role="doc" />
+   <file baseinstalldir="Payment" md5sum="b2179ff1f247177097aadab70b13f357" name="docs/payment/payment-dta.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="f30b96494cdbd1386858a4adc96703a9" name="docs/payment/payment-dta/constants.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="88a1a071a6bca6167455fbe0ee627cc7" name="docs/payment/payment-dta/dta/--construct.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="76bc0c444f8d7d0a3361591a1727c19d" name="docs/payment/payment-dta/dta/addexchange.xml" role="doc" />
@@ -49,7 +48,6 @@
    <file baseinstalldir="Payment" md5sum="21ab7b8238670fa8812b17dc93c002ff" name="docs/payment/payment-dta/dta/dta.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="35ad7fc1abebb499e0dbc4bab0f803d1" name="docs/payment/payment-dta/dta/getfilecontent.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="7afc9fcd88f7c28f705bf07d5327abc6" name="docs/payment/payment-dta/dta/getmetadata.xml" role="doc" />
-   <file baseinstalldir="Payment" md5sum="68fcf3c6de50636d95abf06177450e7f" name="docs/payment/payment-dta/dta/getparsingerrors.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="995b8368cc409ac748eae6ecdfee752d" name="docs/payment/payment-dta/dta/makevalidstring.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="52ce479b451c8d1bd3c0c2cb6ba8a1c1" name="docs/payment/payment-dta/dta/parse.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="c9fa535ae2f377369c99023737b139ae" name="docs/payment/payment-dta/dta/savefile.xml" role="doc" />
@@ -74,7 +72,7 @@
    <file baseinstalldir="Payment" md5sum="7ef05976d1c4ed5938952b38e2a5667d" name="docs/payment/payment-dta/dtabase/setaccountfilesender.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="30f4f5a80fe460041d267ceb09cca9d9" name="docs/payment/payment-dta/dtabase/valid.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="755cef1cbc0d67d29ed08d6bc0f845c1" name="docs/payment/payment-dta/dtabase/validstring.xml" role="doc" />
-   <file baseinstalldir="Payment" md5sum="73b56d78d3620a7aa55e6d830baf5780" name="docs/payment/payment-dta/dtazv/--construct.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="e6b085f636a7f92eb7f05e805046d5db" name="docs/payment/payment-dta/dtazv/--construct.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="011e48ea380d3350235ac6ac5e6779b5" name="docs/payment/payment-dta/dtazv/addexchange.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="9d4af761b8cdaad88ac0782b16280f7d" name="docs/payment/payment-dta/dtazv/dtazv.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="6c2b1f46875a2e12588285f745df37c8" name="docs/payment/payment-dta/dtazv/getfilecontent.xml" role="doc" />
@@ -83,10 +81,10 @@
    <file baseinstalldir="Payment" md5sum="d398a65a789851b1bacff2d2d94fdf42" name="tests/AllTests.php" role="test" />
    <file baseinstalldir="Payment" md5sum="8181fc7a6404c7db18a6f0b3c5ac0e8a" name="tests/DTABaseTest.php" role="test" />
    <file baseinstalldir="Payment" md5sum="95b7b8695c4238ed6a38333ef8a3912e" name="tests/DTATest.php" role="test" />
-   <file baseinstalldir="Payment" md5sum="a67c36669ff1f67b6fe5489b8bbff7b9" name="tests/DTAZVTest.php" role="test" />
-   <file baseinstalldir="Payment" md5sum="dc9f8538de70804106c689af5931658a" name="DTA.php" role="php" />
-   <file baseinstalldir="Payment" md5sum="76ec5f3f08fb4c2a546b364e6e7d9b2f" name="DTABase.php" role="php" />
-   <file baseinstalldir="Payment" md5sum="b4d330db6c23c32f0e99c95c9ba0cbf5" name="DTAZV.php" role="php" />
+   <file baseinstalldir="Payment" md5sum="fece27fc50d94b00c713b3710aae7018" name="tests/DTAZVTest.php" role="test" />
+   <file baseinstalldir="Payment" md5sum="28ae25483601c3d9441b18543dd93332" name="DTA.php" role="php" />
+   <file baseinstalldir="Payment" md5sum="c88979ab8b567858ee8883daf2074c0f" name="DTABase.php" role="php" />
+   <file baseinstalldir="Payment" md5sum="ee6d32fa2ad951d6d11765091bbe4c63" name="DTAZV.php" role="php" />
   </dir>
  </contents>
  <dependencies>
@@ -399,6 +397,22 @@ First release.
    <notes>
 [*] now able to parse DTA files with incorrect characters (latin1 and lowercase)
 [*] change parsing error reporting
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.4.0a3</release>
+    <api>1.4.0a3</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2010-07-07</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
+   <notes>
+[+] parse DTAZV files
 ( [+] Added   [-] Fixed   [*] Improved   [!] Note )
    </notes>
   </release>

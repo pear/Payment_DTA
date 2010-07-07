@@ -1,33 +1,30 @@
-<refentry id="package.payment.payment-dta.dtazv.--construct">
+<refentry id="package.payment.payment-dta.dtazv.parse">
  <refnamediv>
   <refname>
-   constructor
-   <function>DTAZV::__construct</function>
+   <function>DTAZV::parse</function>
   </refname>
-  <refpurpose>Constructor.</refpurpose>
+  <refpurpose>Parser. Read data from an existing DTAZV file content.</refpurpose>
  </refnamediv>
  <refsynopsisdiv>
   <funcsynopsis>
    <funcsynopsisinfo>require_once &apos;/DTAZV.php&apos;;</funcsynopsisinfo>
    <funcprototype>
     <funcdef>
-     void      constructor
-     <function>DTAZV::__construct</function>
+     void
+     <function>DTAZV::parse</function>
     </funcdef>
     <paramdef>
      string
-     <parameter>
-      <optional>$input = &null;</optional>
-     </parameter>
+     <parameter>$input</parameter>
     </paramdef>
    </funcprototype>
   </funcsynopsis>
  </refsynopsisdiv>
- <refsect1 id="package.payment.payment-dta.dtazv.--construct.desc">
+ <refsect1 id="package.payment.payment-dta.dtazv.parse.desc">
   &title.desc;
   &notdocumented;
 </refsect1>
- <refsect1 id="package.payment.payment-dta.dtazv.--construct.param">
+ <refsect1 id="package.payment.payment-dta.dtazv.parse.param">
   &title.param;
   <para>
    <variablelist>
@@ -37,20 +34,20 @@
       <parameter>$input</parameter>
      </term>
      <listitem>
-      <para>Optional, a string with DTAZV data to import.</para>
+      <para>content of DTAZV file</para>
      </listitem>
     </varlistentry>
    </variablelist>
   </para>
  </refsect1>
- <refsect1 id="package.payment.payment-dta.dtazv.--construct.throws">
+ <refsect1 id="package.payment.payment-dta.dtazv.parse.throws">
   &title.throws;
   <para>
    <emphasis>throws</emphasis>
-   no exceptions thrown
+   Payment_DTA_Exception on unrecognized input
   </para>
  </refsect1>
- <refsect1 id="package.payment.payment-dta.dtazv.--construct.note">
+ <refsect1 id="package.payment.payment-dta.dtazv.parse.note">
   &title.note;
   &note.notstatic;
 </refsect1>
