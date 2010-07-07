@@ -19,6 +19,19 @@
 require_once "Payment/DTA.php";
 require_once "Payment/DTAZV.php";
 
+/* Determine DTA or DTAZV file format by first bytes of file.
+ * Returns either "DTA", "DTAZV", or "UNKNOWN".
+ */
+function get_format($dtafilestring) {
+    if ("0256Q" == substr($dtafilestring, 0, 5)) {
+        return "DTAZV";
+    } elseif ("0128A" == substr($dtafilestring, 0, 5)) {
+        return "DTA";
+    } else {
+        return "UNKNOWN";
+    }
+}
+
 // correct file
 $dtafilestring =
     '0128AGK1605000000000000SENDERS NAME               300110    3503'.
@@ -120,15 +133,15 @@ $dtafilestring =
 if (empty($dtafilestring) && (empty($_FILES) || empty($_FILES["userfile"]))) {
     ?>
     <form enctype="multipart/form-data" action="<?php
-        print 'http://'.$_SERVER["HTTP_HOST"].'/'.$_SERVER["SCRIPT_NAME"];
+        print 'http://'.$_SERVER["HTTP_HOST"].$_SERVER["SCRIPT_NAME"];
         ?>" method="POST">
-        <input type="hidden" name="MAX_FILE_SIZE" value="10000" />
+        <input type="hidden" name="MAX_FILE_SIZE" value="1048576" />
         Send this file: <input name="userfile" type="file" />
         <input type="submit" value="Send File" />
     </form>
     <?php
 } else {
-    $dtafilestring = $dtafilestring ? $dtafilestring
+    $dtafilestring = isset($dtafilestring) ? $dtafilestring
         : file_get_contents($_FILES["userfile"]["tmp_name"]);
     if (!$dtafilestring) {
         print "<p class='status'>Fehler: Kann DTA-Datei nicht lesen...</p>".
@@ -136,14 +149,18 @@ if (empty($dtafilestring) && (empty($_FILES) || empty($_FILES["userfile"]))) {
         die();
     }
 
-    // determine if DTA or DTAZV
-    if ("0256Q" == substr($dtafilestring, 0, 5)) {
-        print "<p class='status'>Lese DTAZV-Datei ...</p>";
-        $dta = new DTAZV($dtafilestring);
-    } else {
-        // assume DTA, errors are catched later
-        print "<p class='status'>Lese DTA-Datei ...</p>";
-        $dta = new DTA($dtafilestring);
+    switch (get_format($dtafilestring)) {
+        case "DTAZV":
+            print "<p class='status'>Lese DTAZV-Datei ...</p>";
+            $dta = new DTAZV($dtafilestring);
+            break;
+        case "DTA":
+            print "<p class='status'>Lese DTA-Datei ...</p>";
+            $dta = new DTA($dtafilestring);
+            break;
+        default:
+            print "<p class='error'>Datei nicht in DTA oder DTAZV-Format ...</p></body></html>";
+            die();
     }
 
     $errors = $dta->getParsingErrors();
@@ -192,7 +209,7 @@ if (empty($dtafilestring) && (empty($_FILES) || empty($_FILES["userfile"]))) {
 
     <tr>
     <td class="label">Summe der Beträge in EUR:</td>
-    <td class="value"><?php print $meta["sum_amounts"]; ?></td>
+    <td class="value"><?php print number_format($meta["sum_amounts"], 2, ",", ""); ?></td>
     </tr>
 
     <tr>
@@ -214,22 +231,12 @@ if (empty($dtafilestring) && (empty($_FILES) || empty($_FILES["userfile"]))) {
     <tr> <td colspan="2">&nbsp;</td> </tr>
 
     <tr>
-    <td class="label">Auftraggeber:</td>
-    <td class="value">Michael Mustermann</td>
-    </tr>
-
-    <tr>
-    <td class="label">Beauftragtes Bankinstitut:</td>
-    <td class="value">Kreissparkasse Musterhausen</td>
-    </tr>
-
-    <tr>
-    <td class="label">Bankleitzahl:</td>
+    <td class="label">Auftraggeber Bankleitzahl:</td>
     <td class="value"><?php print $meta["sender_bank_code"]; ?></td>
     </tr>
 
     <tr>
-    <td class="label">Kontonummer:</td>
+    <td class="label">Auftraggeber Kontonummer:</td>
     <td class="value"><?php print $meta["sender_account"]; ?></td>
     </tr>
     </table>
@@ -286,7 +293,8 @@ if (empty($dtafilestring) && (empty($_FILES) || empty($_FILES["userfile"]))) {
                 <tr>
                     <td class="label">Betrag:</td>
                     <td class="value"><?php
-                        print number_format($transaction["amount"], 2, ',', '.'); ?>
+                        // be careful with this amount; it is given in cents
+                        print number_format($transaction["amount"]/100, 2, ',', ''); ?>
                     </td>
                 </tr>
                 <tr>
