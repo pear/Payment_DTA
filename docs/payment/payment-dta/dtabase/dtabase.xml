@@ -1,0 +1,36 @@
+<refentry id="package.payment.payment-dta.dtabase.dtabase">
+ <refnamediv>
+  <refname>
+   constructor
+   <function>DTABase::DTABase</function>
+  </refname>
+  <refpurpose>Constructor.</refpurpose>
+ </refnamediv>
+ <refsynopsisdiv>
+  <funcsynopsis>
+   <funcsynopsisinfo>require_once &apos;/DTABase.php&apos;;</funcsynopsisinfo>
+   <funcprototype>
+    <funcdef>
+     void      constructor
+     <function>DTABase::DTABase</function>
+    </funcdef>
+    <paramdef />
+   </funcprototype>
+  </funcsynopsis>
+ </refsynopsisdiv>
+ <refsect1 id="package.payment.payment-dta.dtabase.dtabase.desc">
+  &title.desc;
+  &notdocumented;
+</refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.dtabase.throws">
+  &title.throws;
+  <para>
+   <emphasis>throws</emphasis>
+   no exceptions thrown
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.dtabase.note">
+  &title.note;
+  &note.notstatic;
+</refsect1>
+</refentry>

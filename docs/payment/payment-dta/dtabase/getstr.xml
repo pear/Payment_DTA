@@ -1,0 +1,108 @@
+<refentry id="package.payment.payment-dta.dtabase.getstr">
+ <refnamediv>
+  <refname>
+   <function>DTABase::getStr</function>
+  </refname>
+  <refpurpose>Read string of given length from input at offset.</refpurpose>
+ </refnamediv>
+ <refsynopsisdiv>
+  <funcsynopsis>
+   <funcsynopsisinfo>require_once &apos;/DTABase.php&apos;;</funcsynopsisinfo>
+   <funcprototype>
+    <funcdef>
+     string
+     <function>DTABase::getStr</function>
+    </funcdef>
+    <paramdef>
+     string
+     <parameter>$input</parameter>
+    </paramdef>
+    <paramdef>
+     integer
+     <parameter>&amp;$offset</parameter>
+    </paramdef>
+    <paramdef>
+     integer
+     <parameter>$length</parameter>
+    </paramdef>
+    <paramdef>
+     bool
+     <parameter>
+      <optional>$liberal = &false;</optional>
+     </parameter>
+    </paramdef>
+   </funcprototype>
+  </funcsynopsis>
+ </refsynopsisdiv>
+ <refsect1 id="package.payment.payment-dta.dtabase.getstr.desc">
+  &title.desc;
+  <para>Afterwards the offset is increased.  By default only a subset of ASCII is allowed (as specified by DTA),  with $liberal = true apply makeValidString() first in order to accept  lower case and some 8-bit chars.  (NB: in this case the returned string may be up to twice as long.)</para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.getstr.param">
+  &title.param;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term>
+      &type.string;
+      <parameter>$input</parameter>
+     </term>
+     <listitem>
+      <para>string to check</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <variablelist>
+    <varlistentry>
+     <term>
+      &type.int;
+      <parameter>&amp;$offset</parameter>
+     </term>
+     <listitem>
+      <para>current offset into input</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <variablelist>
+    <varlistentry>
+     <term>
+      &type.int;
+      <parameter>$length</parameter>
+     </term>
+     <listitem>
+      <para>chars to read</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <variablelist>
+    <varlistentry>
+     <term>
+      &type.bool;
+      <parameter>$liberal</parameter>
+     </term>
+     <listitem>
+      <para>allow 8-bit chars</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.getstr.returns">
+  &title.returns;
+  <para>
+   <emphasis>returns</emphasis>
+   the read string
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.getstr.throws">
+  &title.throws;
+  <para>
+   <emphasis>throws</emphasis>
+   Payment_DTA_Exception if input is too short or contains invalid chars
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.getstr.note">
+  &title.note;
+  &note.notstatic;
+</refsect1>
+</refentry>

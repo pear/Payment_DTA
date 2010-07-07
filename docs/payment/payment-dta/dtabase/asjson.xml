@@ -1,0 +1,42 @@
+<refentry id="package.payment.payment-dta.dtabase.asjson">
+ <refnamediv>
+  <refname>
+   <function>DTABase::asJSON</function>
+  </refname>
+  <refpurpose>Returns the exchanges in JSON format.</refpurpose>
+ </refnamediv>
+ <refsynopsisdiv>
+  <funcsynopsis>
+   <funcsynopsisinfo>require_once &apos;/DTABase.php&apos;;</funcsynopsisinfo>
+   <funcprototype>
+    <funcdef>
+     string
+     <function>DTABase::asJSON</function>
+    </funcdef>
+    <paramdef />
+   </funcprototype>
+  </funcsynopsis>
+ </refsynopsisdiv>
+ <refsect1 id="package.payment.payment-dta.dtabase.asjson.desc">
+  &title.desc;
+  &notdocumented;
+</refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.asjson.returns">
+  &title.returns;
+  <para>
+   <emphasis>returns</emphasis>
+   JSON representation of all exchanges
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.asjson.throws">
+  &title.throws;
+  <para>
+   <emphasis>throws</emphasis>
+   no exceptions thrown
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.asjson.note">
+  &title.note;
+  &note.notstatic;
+</refsect1>
+</refentry>

@@ -1,0 +1,61 @@
+<refentry id="package.payment.payment-dta.dtabase.setaccountfilesender">
+ <refnamediv>
+  <refname>
+   <function>DTABase::setAccountFileSender</function>
+  </refname>
+  <refpurpose>Set the sender of the file.</refpurpose>
+ </refnamediv>
+ <refsynopsisdiv>
+  <funcsynopsis>
+   <funcsynopsisinfo>require_once &apos;/DTABase.php&apos;;</funcsynopsisinfo>
+   <funcprototype>
+    <funcdef>
+     boolean
+     <function>DTABase::setAccountFileSender</function>
+    </funcdef>
+    <paramdef>
+     array
+     <parameter>$account</parameter>
+    </paramdef>
+   </funcprototype>
+  </funcsynopsis>
+ </refsynopsisdiv>
+ <refsect1 id="package.payment.payment-dta.dtabase.setaccountfilesender.desc">
+  &title.desc;
+  <para>The given account data is also used as default sender&apos;s account.</para>
+  <para>Account data contains   name            Sender&apos;s name.   additional_name Sender&apos;s additional name.   bank_code       Sender&apos;s bank code.   account_number  Sender&apos;s account number.</para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.setaccountfilesender.param">
+  &title.param;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term>
+      &type.array;
+      <parameter>$account</parameter>
+     </term>
+     <listitem>
+      <para>Account data for file sender.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.setaccountfilesender.abstract">
+  &title.abstract;
+  <para>
+   <emphasis>abstract</emphasis>
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.setaccountfilesender.throws">
+  &title.throws;
+  <para>
+   <emphasis>throws</emphasis>
+   no exceptions thrown
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.setaccountfilesender.note">
+  &title.note;
+  &note.notstatic;
+</refsect1>
+</refentry>

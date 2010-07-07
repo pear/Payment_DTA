@@ -1,0 +1,118 @@
+<refentry id="package.payment.payment-dta.dtabase.addexchange">
+ <refnamediv>
+  <refname>
+   <function>DTABase::addExchange</function>
+  </refname>
+  <refpurpose>
+   Adds an exchange. First the account data for the receiver of the exchange
+   is  set. In the case the DTA file contains credits, this is the payment
+   receiver.
+</refpurpose>
+ </refnamediv>
+ <refsynopsisdiv>
+  <funcsynopsis>
+   <funcsynopsisinfo>require_once &apos;/DTABase.php&apos;;</funcsynopsisinfo>
+   <funcprototype>
+    <funcdef>
+     boolean
+     <function>DTABase::addExchange</function>
+    </funcdef>
+    <paramdef>
+     array
+     <parameter>$account_receiver</parameter>
+    </paramdef>
+    <paramdef>
+     double
+     <parameter>$amount</parameter>
+    </paramdef>
+    <paramdef>
+     array
+     <parameter>$purposes</parameter>
+    </paramdef>
+    <paramdef>
+     array
+     <parameter>
+      <optional>$account_sender = array()</optional>
+     </parameter>
+    </paramdef>
+   </funcprototype>
+  </funcsynopsis>
+ </refsynopsisdiv>
+ <refsect1 id="package.payment.payment-dta.dtabase.addexchange.desc">
+  &title.desc;
+  <para>If the sender is not specified, values of the file sender are used by default.</para>
+  <para>Account data for receiver and sender contain the following fields:   name            Name.   bank_code       Bank code.   account_number  Account number.   additional_name If necessary, additional line for name.</para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.addexchange.param">
+  &title.param;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term>
+      &type.array;
+      <parameter>$account_receiver</parameter>
+     </term>
+     <listitem>
+      <para>Receiver&apos;s account data.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <variablelist>
+    <varlistentry>
+     <term>
+      <type>double</type>
+      <parameter>$amount</parameter>
+     </term>
+     <listitem>
+      <para>
+       Amount of money in this exchange.
+       Currency: EURO
+</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <variablelist>
+    <varlistentry>
+     <term>
+      &type.array;
+      <parameter>$purposes</parameter>
+     </term>
+     <listitem>
+      <para>
+       An Array of lines or a string for
+       description of the exchange.
+</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <variablelist>
+    <varlistentry>
+     <term>
+      &type.array;
+      <parameter>$account_sender</parameter>
+     </term>
+     <listitem>
+      <para>Sender&apos;s account data.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.addexchange.abstract">
+  &title.abstract;
+  <para>
+   <emphasis>abstract</emphasis>
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.addexchange.throws">
+  &title.throws;
+  <para>
+   <emphasis>throws</emphasis>
+   no exceptions thrown
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.addexchange.note">
+  &title.note;
+  &note.notstatic;
+</refsect1>
+</refentry>

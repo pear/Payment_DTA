@@ -1,0 +1,35 @@
+<refentry id="package.payment.payment-dta.dta.getfilecontent">
+ <refnamediv>
+  <refname>
+   <function>DTA::getFileContent</function>
+  </refname>
+  <refpurpose>Returns the full content of the generated DTA file.</refpurpose>
+ </refnamediv>
+ <refsynopsisdiv>
+  <funcsynopsis>
+   <funcsynopsisinfo>require_once &apos;/DTA.php&apos;;</funcsynopsisinfo>
+   <funcprototype>
+    <funcdef>
+     string
+     <function>DTA::getFileContent</function>
+    </funcdef>
+    <paramdef />
+   </funcprototype>
+  </funcsynopsis>
+ </refsynopsisdiv>
+ <refsect1 id="package.payment.payment-dta.dta.getfilecontent.desc">
+  &title.desc;
+  <para>All added exchanges are processed.</para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dta.getfilecontent.throws">
+  &title.throws;
+  <para>
+   <emphasis>throws</emphasis>
+   no exceptions thrown
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dta.getfilecontent.note">
+  &title.note;
+  &note.notstatic;
+</refsect1>
+</refentry>
