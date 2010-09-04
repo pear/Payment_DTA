@@ -800,8 +800,9 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
             '                                                                ';
         $dtazv = new DTAZV($teststring);
         $this->assertSame(2, $dtazv->count());
+        $errors = $dtazv->getParsingErrors();
         $this->assertEquals('Payment_DTA_ChecksumException',
-            get_class(array_pop($dtazv->getParsingErrors())));
+            get_class(array_pop($errors)));
     }
 
     public function testParserWrongCheckAmounts()
@@ -842,8 +843,9 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
             '                                                                ';
         $dtazv = new DTAZV($teststring);
         $this->assertSame(2, $dtazv->count());
+        $errors = $dtazv->getParsingErrors();
         $this->assertEquals('Payment_DTA_ChecksumException',
-            get_class(array_pop($dtazv->getParsingErrors())));
+            get_class(array_pop($errors)));
     }
 
     public function testParserWrongLength()
@@ -884,8 +886,9 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
             '                                                                 ';
         $dtazv = new DTAZV($teststring);
         $this->assertSame(0, $dtazv->count());
+        $errors = $dtazv->getParsingErrors();
         $this->assertEquals('Payment_DTA_FatalParseException',
-            get_class(array_pop($dtazv->getParsingErrors())));
+            get_class(array_pop($errors)));
     }
 
     public function testParserInvalidQRecord()
@@ -926,8 +929,9 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
             '                                                                ';
         $dtazv = new DTAZV($teststring);
         $this->assertSame(0, $dtazv->count());
+        $errors = $dtazv->getParsingErrors();
         $this->assertEquals('Payment_DTA_FatalParseException',
-            get_class(array_pop($dtazv->getParsingErrors())));
+            get_class(array_pop($errors)));
     }
 
     public function testParserSkipInvalidTRecord()
