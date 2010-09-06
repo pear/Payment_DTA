@@ -711,6 +711,9 @@ class DTA extends DTABase
     */
     private function _parseCrecord($input, &$offset, &$checks)
     {
+        // save for possible exceptions
+        $c_start = $offset;
+
         /* field 1 */
         $record_length = $this->getNum($input, $offset, 4);
         /* field 2 */
@@ -743,8 +746,8 @@ class DTA extends DTABase
                 '(' . $Ctype . ') '.
                 'does not match A record type indicator '.
                 '(' . (($this->type == DTA_CREDIT) ? "CREDIT" : "DEBIT") . ') '.
-                'in transaction number '.
-                strval($this->count()+1));
+                'in transaction number '. strval($this->count()+1) .
+                ' @ offset '. strval($c_start));
         }
         /* field  8 */
         $this->checkStr($input, $offset, " ");
@@ -777,7 +780,7 @@ class DTA extends DTABase
         if ($extensions != $extensions_length) {
             throw new Payment_DTA_ParseException('number of extensions '.
                 'does not match record length in transaction number '.
-                strval($this->count()+1));
+                strval($this->count()+1) .' @ offset '. strval($c_start));
         }
 
         // extensions to C record, read into array & processed later
@@ -838,7 +841,8 @@ class DTA extends DTABase
                 // should never happen
                 throw new Payment_DTA_ParseException('confused about '.
                     'number of extensions in transaction number '.
-                    strval($this->count()+1) .', please file a bug report');
+                    strval($this->count()+1) .' @ offset '. strval($c_start) .
+                    ', please file a bug report');
             }
 
             // and one switch for the padding
@@ -868,7 +872,7 @@ class DTA extends DTABase
                 if (!empty($Creceiver_name2)) {
                     throw new Payment_DTA_ParseException('multiple '.
                         'receiver name extensions in transaction number '.
-                        strval($this->count()+1));
+                        strval($this->count()+1) .' @ offset '. strval($c_start));
                 } else {
                     $Creceiver_name2 = $ext_content;
                 }
@@ -878,7 +882,7 @@ class DTA extends DTABase
                     // allowed: 1 line in fixed part + 13 in extensions
                     throw new Payment_DTA_ParseException('too many '.
                         'purpose extensions in transaction number '.
-                        strval($this->count()+1));
+                        strval($this->count()+1) .' @ offset '. strval($c_start));
                 } else {
                     array_push($Cpurpose, $ext_content);
                 }
@@ -887,7 +891,7 @@ class DTA extends DTABase
                 if (!empty($Csender_name2)) {
                     throw new Payment_DTA_ParseException('multiple '.
                         'receiver name extensions in transaction number '.
-                        strval($this->count()+1));
+                        strval($this->count()+1) .' @ offset '. strval($c_start));
                 } else {
                     $Csender_name2 = $ext_content;
                 }
@@ -895,7 +899,7 @@ class DTA extends DTABase
             default:
                 throw new Payment_DTA_ParseException('invalid '.
                     'extension type in transaction number '.
-                    strval($this->count()+1));
+                    strval($this->count()+1) .' @ offset '. strval($c_start));
             }
         }
 
@@ -925,9 +929,9 @@ class DTA extends DTABase
         );
         if (!$rc) {
             // should never happen
-            throw new Payment_DTA_ParseException("Cannot addExchange() ".
-                "for transaction number ".strval($this->count()+1).
-                ", please file a bug report", $e);
+            throw new Payment_DTA_ParseException('Cannot addExchange() '.
+                'for transaction number '.strval($this->count()+1) .
+                ' @ offset '. strval($c_start). ', please file a bug report', $e);
         }
         $checks['account'] += $Creceiver_account;
         $checks['blz']     += $Creceiver_blz;
@@ -1060,7 +1064,7 @@ class DTA extends DTABase
                 // preserve error
                 $this->allerrors[] = new Payment_DTA_ParseException(
                     "Error in C record, in transaction number ".
-                    strval($this->count()+1), $e);
+                    strval($this->count()+1) ." @ offset ". strval($c_start), $e);
                 // skip to next 128-byte aligned record
                 $offset = $c_start + 128 * (1 + intval($c_length/128));
             }
