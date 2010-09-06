@@ -964,14 +964,14 @@ class DTATest extends PHPUnit_Framework_TestCase
         ));
 
         $meta = $dta->getMetaData();
+        $this->assertEquals("DEBIT", $meta["type"]);
+        $this->assertEquals("1", $meta["count"]);
         $this->assertEquals("SENDERS NAME", $meta["sender_name"]);
         $this->assertEquals("16050000", $meta["sender_bank_code"]);
         $this->assertEquals("3503007767", $meta["sender_account"]);
         $this->assertEquals(1234.56, $meta["sum_amounts"]);
         $this->assertEquals(16050000, $meta["sum_bankcodes"]);
         $this->assertEquals(3503007767, $meta["sum_accounts"]);
-        $this->assertEquals("1", $meta["count"]);
-        $this->assertEquals("DEBIT", $meta["type"]);
         $this->assertEquals(strftime("%d%m%y", time()),
             strftime("%d%m%y", $meta["date"]));
     }
@@ -1117,14 +1117,14 @@ class DTATest extends PHPUnit_Framework_TestCase
 
     public function testParserBasicDebit()
     {
-        $teststring = // same as in testContent() but type LK
+        $teststring = // same as in testContent() but type LK and fields C7 = 04000
             '0128ALK1605000000000000SENDERS NAME               '.strftime("%d%m%y", time()).'    3503'.
             '0077670000000000                                               1'.
-            '0187C16050000333344440013579000000000000000051000 00000000000160'.
+            '0187C16050000333344440013579000000000000000004000 00000000000160'.
             '50000350300776700000123456   FRANZ MUELLER                      '.
             'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
             '                                                                '.
-            '0187C16050000333344440013579000000000000000051000 00000000000160'.
+            '0187C16050000333344440013579000000000000000004000 00000000000160'.
             '50000350300776700000032190   FRANZ MUELLER                      '.
             'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
             '                                                                '.
@@ -1132,21 +1132,51 @@ class DTATest extends PHPUnit_Framework_TestCase
             '0000000155646                                                   ';
         $dta = new DTA($teststring);
         $meta = $dta->getMetaData();
+        $this->assertEquals("DEBIT", $meta["type"]);
+        $this->assertEquals("2", $meta["count"]);
         $this->assertEquals("SENDERS NAME", $meta["sender_name"]);
         $this->assertEquals("16050000", $meta["sender_bank_code"]);
         $this->assertEquals("3503007767", $meta["sender_account"]);
         $this->assertEquals("1556.46", $meta["sum_amounts"]);
         $this->assertEquals(2*33334444, $meta["sum_bankcodes"]);
         $this->assertEquals(2*13579000, $meta["sum_accounts"]);
-        $this->assertEquals("2", $meta["count"]);
         $this->assertEquals(strftime("%d%m%y", time()),
             strftime("%d%m%y", $meta["date"]));
     }
 
     public function testParserBasicDebitBankFile()
     {
-        $teststring = // same as in testContent() but type LB
+        $teststring = // same as in testContent() but type LB and fields C7 = 05000
             '0128ALB1605000000000000SENDERS NAME               '.strftime("%d%m%y", time()).'    3503'.
+            '0077670000000000                                               1'.
+            '0187C16050000333344440013579000000000000000005000 00000000000160'.
+            '50000350300776700000123456   FRANZ MUELLER                      '.
+            'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
+            '                                                                '.
+            '0187C16050000333344440013579000000000000000005000 00000000000160'.
+            '50000350300776700000032190   FRANZ MUELLER                      '.
+            'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
+            '                                                                '.
+            '0128E     000000200000000000000000000002715800000000000066668888'.
+            '0000000155646                                                   ';
+        $dta = new DTA($teststring);
+        $meta = $dta->getMetaData();
+        $this->assertEquals("DEBIT", $meta["type"]);
+        $this->assertEquals("2", $meta["count"]);
+        $this->assertEquals("SENDERS NAME", $meta["sender_name"]);
+        $this->assertEquals("16050000", $meta["sender_bank_code"]);
+        $this->assertEquals("3503007767", $meta["sender_account"]);
+        $this->assertEquals("1556.46", $meta["sum_amounts"]);
+        $this->assertEquals(2*33334444, $meta["sum_bankcodes"]);
+        $this->assertEquals(2*13579000, $meta["sum_accounts"]);
+        $this->assertEquals(strftime("%d%m%y", time()),
+            strftime("%d%m%y", $meta["date"]));
+    }
+
+    public function testParserInvalidDebitTransactions()
+    {
+        $teststring = // same as in testContent() with type LK but wrong fields C7 = 51000
+            '0128ALK1605000000000000SENDERS NAME               060910    3503'.
             '0077670000000000                                               1'.
             '0187C16050000333344440013579000000000000000051000 00000000000160'.
             '50000350300776700000123456   FRANZ MUELLER                      '.
@@ -1159,16 +1189,42 @@ class DTATest extends PHPUnit_Framework_TestCase
             '0128E     000000200000000000000000000002715800000000000066668888'.
             '0000000155646                                                   ';
         $dta = new DTA($teststring);
-        $meta = $dta->getMetaData();
-        $this->assertEquals("SENDERS NAME", $meta["sender_name"]);
-        $this->assertEquals("16050000", $meta["sender_bank_code"]);
-        $this->assertEquals("3503007767", $meta["sender_account"]);
-        $this->assertEquals("1556.46", $meta["sum_amounts"]);
-        $this->assertEquals(2*33334444, $meta["sum_bankcodes"]);
-        $this->assertEquals(2*13579000, $meta["sum_accounts"]);
-        $this->assertEquals("2", $meta["count"]);
-        $this->assertEquals(strftime("%d%m%y", time()),
-            strftime("%d%m%y", $meta["date"]));
+        $this->assertSame(0, $dta->count());
+        $errors = $dta->getParsingErrors();
+        // two errors for C records, third error for checksum
+        $this->assertEquals('Payment_DTA_ParseException',
+            get_class($errors[0]));
+        $this->assertEquals('Payment_DTA_ParseException',
+            get_class($errors[1]));
+        $this->assertEquals('Payment_DTA_ChecksumException',
+            get_class($errors[2]));
+    }
+
+    public function testParserInvalidCreditTransactions()
+    {
+        $teststring = // same as in testContent() but wrong fields C7 = 04000
+            '0128AGK1605000000000000SENDERS NAME               060910    3503'.
+            '0077670000000000                                               1'.
+            '0187C16050000333344440013579000000000000000004000 00000000000160'.
+            '50000350300776700000123456   FRANZ MUELLER                      '.
+            'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
+            '                                                                '.
+            '0187C16050000333344440013579000000000000000005000 00000000000160'.
+            '50000350300776700000032190   FRANZ MUELLER                      '.
+            'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
+            '                                                                '.
+            '0128E     000000200000000000000000000002715800000000000066668888'.
+            '0000000155646                                                   ';
+        $dta = new DTA($teststring);
+        $this->assertSame(0, $dta->count());
+        $errors = $dta->getParsingErrors();
+        // two errors for C records, third error for checksum
+        $this->assertEquals('Payment_DTA_ParseException',
+            get_class($errors[0]));
+        $this->assertEquals('Payment_DTA_ParseException',
+            get_class($errors[1]));
+        $this->assertEquals('Payment_DTA_ChecksumException',
+            get_class($errors[2]));
     }
 
     public function testParserBasicInvalidType()

@@ -645,8 +645,10 @@ class DTA extends DTABase
         $Adate_day   = $this->getNum($input, $offset, 2);
         $Adate_month = $this->getNum($input, $offset, 2);
         $Adate_year  = $this->getNum($input, $offset, 2);
-        $this->timestamp = mktime(0,0,0,
-            intval($Adate_month),intval($Adate_day),intval($Adate_year));
+        $this->timestamp = mktime(
+            0, 0, 0,
+            intval($Adate_month), intval($Adate_day), intval($Adate_year)
+        );
         /* field  8 */
         $this->checkStr($input, $offset, "    ");
         /* field  9 */
@@ -732,10 +734,18 @@ class DTA extends DTABase
         $this->getNum($input, $offset, 11);
         $this->checkStr($input, $offset, "0");
         /* field  7 */
-        // kind of payment, has form '5x000'
-        $this->checkStr($input, $offset, "5");
-        $this->getStr($input, $offset, 1); // ignored
-        $this->checkStr($input, $offset, "000");
+        // may hold about a dozen values with details about the type of transaction
+        $Ctype = $this->getStr($input, $offset, 5);
+        if ( (($this->type == DTA_DEBIT) && (!preg_match('/^0[45]\d{3}$/', $Ctype)))
+            || (($this->type == DTA_CREDIT) && (!preg_match('/^5\d{4}$/', $Ctype)))
+        ) {
+            throw new Payment_DTA_ParseException('C record type of payment '.
+                '(' . $Ctype . ') '.
+                'does not match A record type indicator '.
+                '(' . (($this->type == DTA_CREDIT) ? "CREDIT" : "DEBIT") . ') '.
+                'in transaction number '.
+                strval($this->count()+1));
+        }
         /* field  8 */
         $this->checkStr($input, $offset, " ");
         /* field  9 */
