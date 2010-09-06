@@ -1,0 +1,35 @@
+<refentry id="package.payment.payment-dta.dtabase.rewind">
+ <refnamediv>
+  <refname>
+   <function>DTABase::rewind</function>
+  </refname>
+  <refpurpose>rewind</refpurpose>
+ </refnamediv>
+ <refsynopsisdiv>
+  <funcsynopsis>
+   <funcsynopsisinfo>require_once &apos;/DTABase.php&apos;;</funcsynopsisinfo>
+   <funcprototype>
+    <funcdef>
+     void
+     <function>DTABase::rewind</function>
+    </funcdef>
+    <paramdef />
+   </funcprototype>
+  </funcsynopsis>
+ </refsynopsisdiv>
+ <refsect1 id="package.payment.payment-dta.dtabase.rewind.desc">
+  &title.desc;
+  &notdocumented;
+</refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.rewind.throws">
+  &title.throws;
+  <para>
+   <emphasis>throws</emphasis>
+   no exceptions thrown
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.rewind.note">
+  &title.note;
+  &note.notstatic;
+</refsect1>
+</refentry>
