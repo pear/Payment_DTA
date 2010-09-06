@@ -3,7 +3,7 @@
 /**
  * Example how to use the DTA/DTAZV parser.
  *
- * $dtafilestring is for easy testing. Rename/Remove it to upload own files.
+ * Uncomment $dtafilestring for easy testing without uploading.
  *
  * PHP version 5
  * 
@@ -32,6 +32,9 @@ function get_format($dtafilestring) {
     }
 }
 
+/*
+ * Uncomment to test example files.
+
 // correct file
 $dtafilestring =
     '0128AGK1605000000000000SENDERS NAME               300110    3503'.
@@ -47,7 +50,7 @@ $dtafilestring =
     '0128E     000000200000000000000000000002715800000000000066668888'.
     '0000000155646                                                   ';
 
-// incorrect file to check error handling/reporting
+ // incorrect file to check error handling/reporting
 $dtafilestring =
     '0128AGK1605000000000000SENDERS NAME               300110    3503'.
     '0077670000000000                                               1'.
@@ -96,6 +99,7 @@ $dtafilestring =
     '                                                                '.
     '                                                                '.
     '                                                                ';
+*/
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -174,7 +178,8 @@ if (empty($dtafilestring) && (empty($_FILES) || empty($_FILES["userfile"]))) {
                 die();
             } elseif (get_class($e) == "Payment_DTA_ParseException") {
                 print "<li class='status error'>Fehler: ".
-                    $e->getMessage()."</li>";
+                    $e->getMessage()."<br/>Ursache: ".
+                    $e->getCause()->getMessage()."</li>";
             } elseif (get_class($e) == "Payment_DTA_ChecksumException") {
                 print "<li class='status error'>Datei enthält falsche Prüfsumme: ".
                     $e->getMessage()."</li>";
@@ -191,6 +196,13 @@ if (empty($dtafilestring) && (empty($_FILES) || empty($_FILES["userfile"]))) {
     <h2>Begleitdaten:</h2>
     <table>
     <tr>
+    <td class="label">Datei-Art:</td>
+    <td class="value"><?php
+        print ($meta["type"] == "DEBIT") ? "Lastschrift" : "Gutschrift/Überweisung";
+        ?></td>
+    </tr>
+
+    <tr>
     <td class="label">Erstellungsdatum:</td>
     <td class="value"><?php print strftime("%d.%m.%y", $meta["date"]); ?></td>
     </tr>
@@ -203,7 +215,7 @@ if (empty($dtafilestring) && (empty($_FILES) || empty($_FILES["userfile"]))) {
     <tr> <td colspan="2">&nbsp;</td> </tr>
 
     <tr>
-    <td class="label">Anzahl der Überweisungen:</td>
+    <td class="label">Anzahl der Transaktionen:</td>
     <td class="value"><?php print $meta["count"]; ?></td>
     </tr>
 
@@ -231,6 +243,11 @@ if (empty($dtafilestring) && (empty($_FILES) || empty($_FILES["userfile"]))) {
     <tr> <td colspan="2">&nbsp;</td> </tr>
 
     <tr>
+    <td class="label">Auftraggeber:</td>
+    <td class="value"><?php print $meta["sender_name"]; ?></td>
+    </tr>
+
+    <tr>
     <td class="label">Auftraggeber Bankleitzahl:</td>
     <td class="value"><?php print $meta["sender_bank_code"]; ?></td>
     </tr>
@@ -241,7 +258,7 @@ if (empty($dtafilestring) && (empty($_FILES) || empty($_FILES["userfile"]))) {
     </tr>
     </table>
 
-    <h2>Überweisungen:</h2>
+    <h2>Transaktionen:</h2>
     <ol>
     <?php
     foreach ($dta as $transaction) {
