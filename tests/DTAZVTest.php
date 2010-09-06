@@ -1028,4 +1028,48 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
             get_class($errors[0]));
     }
 
+    public function testParserTimestamp()
+    {
+        $date_creation  = '300810'; // 2010-08-30
+        $date_execution = '310810'; // 2010-08-31
+        $dates = $date_creation.'00'.$date_execution;
+        $teststring = // same as in testContent()
+            '0256Q160500003503007767SENDERS NAME                             '.
+            '                                                                '.
+            '                                   '.$dates.'N0000000000    '.
+            '                                                                '.
+            '0768T16050000EUR350300776700000000000000   0000000000RZTIAT22263'.
+            '                                                                '.
+            '                                                                '.
+            '               DE RECEIVERS NAME                                '.
+            '                                                                '.
+            '                                                                '.
+            '                                    /DE21700519950000007229     '.
+            '       EUR00000000000123450TEST-VERWENDUNGSZWECK                '.
+            '                                                                '.
+            '                                       00000000                 '.
+            '        0013                                                    '.
+            '          0                                                   00'.
+            '0768T16050000EUR350300776700000000000000   0000000000RZTIAT22263'.
+            '                                                                '.
+            '                                                                '.
+            '               DE SECOND RECEIVERS NAME                         '.
+            '                                                                '.
+            '                                                                '.
+            '                                    /DE21700519950000007229     '.
+            '       EUR00000000000234560TEST2                                '.
+            '                                                                '.
+            '                                       00000000                 '.
+            '        0013                                                    '.
+            '          0                                                   00'.
+            '0256Z000000000000357000000000000002                             '.
+            '                                                                '.
+            '                                                                '.
+            '                                                                ';
+        $dtazv = new DTAZV($teststring);
+        $meta = $dtazv->getMetaData();
+        $this->assertEquals("2", $meta["count"]);
+        $this->assertEquals("CREDIT", $meta["type"]);
+        $this->assertEquals($date_creation, strftime("%d%m%y", $meta["date"]));
+    }
 }

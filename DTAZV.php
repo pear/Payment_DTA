@@ -599,8 +599,14 @@ class DTAZV extends DTABase
         $Q['additional_name'] = rtrim($this->getStr($input, $offset, 35, true));
         $Q['street']          = rtrim($this->getStr($input, $offset, 35, true));
         $Q['city']            = rtrim($this->getStr($input, $offset, 35, true));
-        /* field Q06 date of file creation -- ignored */
-        $this->getNum($input, $offset, 6);
+        /* field Q06 date of file creation -- use to set timestamp */
+        $Qdate_day   = $this->getNum($input, $offset, 2);
+        $Qdate_month = $this->getNum($input, $offset, 2);
+        $Qdate_year  = $this->getNum($input, $offset, 2);
+        $this->timestamp = mktime(
+            0, 0, 0,
+            intval($Qdate_month), intval($Qdate_day), intval($Qdate_year)
+        );
         /* field Q07 daily counter -- ignored */
         $this->getNum($input, $offset, 2);
         /* field Q08 execution date -- ignored */
