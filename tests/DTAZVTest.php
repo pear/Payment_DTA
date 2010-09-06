@@ -620,6 +620,7 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($meta["sender_account"]   == "3503007767");
         $this->assertTrue($meta["sum_amounts"]      == "1234.56");
         $this->assertTrue($meta["count"]            == "1");
+        $this->assertTrue($meta["type"]             == "CREDIT");
         $this->assertTrue(strftime("%d%m%y", $meta["date"])
                             == strftime("%d%m%y", time()));
     }
@@ -657,6 +658,7 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($meta["sender_account"]   == "3503007767");
         $this->assertTrue($meta["sum_amounts"]      == 3*1234.56);
         $this->assertTrue($meta["count"]            == "3");
+        $this->assertTrue($meta["type"]             == "CREDIT");
         $this->assertTrue(strftime("%d%m%y", $meta["date"])
                             == strftime("%d%m%y", time()));
     }
@@ -758,6 +760,7 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
         $this->assertEquals("3503007767", $meta["sender_account"]);
         $this->assertEquals("358.01", $meta["sum_amounts"]);
         $this->assertEquals("2", $meta["count"]);
+        $this->assertEquals("CREDIT", $meta["type"]);
         $this->assertEquals(strftime("%d%m%y", time()),
             strftime("%d%m%y", $meta["date"]));
     }

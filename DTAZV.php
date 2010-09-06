@@ -558,6 +558,23 @@ class DTAZV extends DTABase
     }
 
     /**
+    * Returns an array with information about the transactions.
+    *
+    * @access public
+    * @return array Returns an array with keys: "sender_name",
+    *   "sender_bank_code", "sender_account", "sum_amounts",
+    *   "type", "sum_bankcodes", "sum_accounts", "count", "date"
+    */
+    function getMetaData()
+    {
+        $meta = parent::getMetaData();
+
+        $meta["type"] = "CREDIT";
+
+        return $meta;
+    }
+
+    /**
     * Auxillary parser to consume Q records.
     *
     * @param string  $input   content of DTAZV file
