@@ -540,6 +540,7 @@
  &package.payment.payment-dta.dtazv.--construct;
 &package.payment.payment-dta.dtazv.addexchange;
 &package.payment.payment-dta.dtazv.getfilecontent;
+&package.payment.payment-dta.dtazv.getmetadata;
 &package.payment.payment-dta.dtazv.parse;
 &package.payment.payment-dta.dtazv.setaccountfilesender;
 &package.payment.payment-dta.dtazv.setmaxamount;
