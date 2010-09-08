@@ -725,7 +725,7 @@ class DTAZV extends DTABase
             // should never happen
             throw new Payment_DTA_ParseException("Cannot addExchange() ".
                 "for transaction number ".strval($this->count()+1).
-                ", please file a bug report", $e);
+                ", please file a bug report");
         }
         $checks['amount'] += $amount_int;
     }
@@ -743,8 +743,6 @@ class DTAZV extends DTABase
     */
     private function _parseZrecord($input, &$offset, $checks)
     {
-        $Z = array();
-
         /* field Z01+Z02 record length and type */
         $this->checkStr($input, $offset, "0256Z");
         /* field Z03 sum of amounts (integer parts in T14a) */
