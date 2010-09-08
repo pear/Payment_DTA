@@ -1896,24 +1896,6 @@ class DTATest extends PHPUnit_Framework_TestCase
 
     public function testParserCExtensions_16_Fail()
     {
-        $teststring1 = // created with testParserCExtensions_15()
-            '0128AGK1605000000000000SENDERS NAME               020210    0350'.
-            '3007670000000000                                               1'.
-            '0622C16050000160500003503007767000000000000051000 00000000000160'.
-            '50000035030076700000123456   A RECEIVERS NAME                   '.
-            'SENDERS NAME               VERWENDUNGSZWECK ZEILE 1   1  1501ADD'.
-            'ITIONAL RECEIVERS NAME  02VERWENDUNGSZWECK ZEILE 2              '.
-            '02VERWENDUNGSZWECK ZEILE 3   02VERWENDUNGSZWECK ZEILE 4   02VERW'.
-            'ENDUNGSZWECK ZEILE 5   02VERWENDUNGSZWECK ZEILE 6               '.
-            '02VERWENDUNGSZWECK ZEILE 7   02VERWENDUNGSZWECK ZEILE 8   02VERW'.
-            'ENDUNGSZWECK ZEILE 9   02VERWENDUNGSZWECK ZEILE 10              '.
-            '02VERWENDUNGSZWECK ZEILE 11  02VERWENDUNGSZWECK ZEILE 12  02VERW'.
-            'ENDUNGSZWECK ZEILE 13  02VERWENDUNGSZWECK ZEILE 14              '.
-            '03ADDITIONAL SENDERS NAME                                       '.
-            '                                                                '.
-            '0128E     000000100000000000000000000350300776700000000016050000'.
-            '0000000123456                                                   ';
-
         $teststring = // invalid with 16 extensions in C record
             '0128AGK1605000000000000SENDERS NAME               020210    0350'.
             '3007670000000000                                               1'.
