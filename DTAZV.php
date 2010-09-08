@@ -186,6 +186,83 @@ class DTAZV extends DTABase
     }
 
     /**
+    * Auxillary method to fill and normalize the account sender array.
+    *
+    * @param array $account_sender Sender's account data.
+    *
+    * @access private
+    * @return array
+    */
+    private function _exchangeFillSender($account_sender)
+    {
+        if (empty($account_sender['name'])) {
+            $account_sender['name']
+                = $this->account_file_sender['name'];
+        }
+        if (empty($account_sender['additional_name'])) {
+            $account_sender['additional_name']
+                = $this->account_file_sender['additional_name'];
+        }
+        if (empty($account_sender['street'])) {
+            $account_sender['street']
+                = $this->account_file_sender['street'];
+        }
+        if (empty($account_sender['city'])) {
+            $account_sender['city']
+                = $this->account_file_sender['city'];
+        }
+        if (empty($account_sender['bank_code'])) {
+            $account_sender['bank_code']
+                = $this->account_file_sender['bank_code'];
+        }
+        if (empty($account_sender['account_number'])) {
+            $account_sender['account_number']
+                = $this->account_file_sender['account_number'];
+        }
+        $account_sender['account_number']
+            = strval($account_sender['account_number']);
+        $account_sender['bank_code']
+            = strval($account_sender['bank_code']);
+
+        return $account_sender;
+    }
+
+    /**
+    * Auxillary method to fill and normalize the account receiver array.
+    *
+    * @param array $account_receiver Receiver's account data.
+    *
+    * @access private
+    * @return array
+    */
+    private function _exchangeFillReceiver($account_receiver)
+    {
+        if (empty($account_receiver['additional_name'])) {
+            $account_receiver['additional_name'] = "";
+        }
+        if (empty($account_receiver['street'])) {
+            $account_receiver['street'] = "";
+        }
+        if (empty($account_receiver['city'])) {
+            $account_receiver['city'] = "";
+        }
+
+        if (strlen($account_receiver['bank_code']) == 8) {
+            if (is_numeric($account_receiver['bank_code'])) {
+                // german BLZ -> allowed with special format
+                $account_receiver['bank_code']
+                    = '///' . $account_receiver['bank_code'];
+            } else {
+                // short BIC -> fill to 11 chars
+                $account_receiver['bank_code']
+                    = $account_receiver['bank_code'] . 'XXX';
+            }
+        }
+
+        return $account_receiver;
+    }
+
+    /**
     * Adds an exchange.
     *
     * First the account data for the receiver of the exchange is set.
@@ -221,58 +298,8 @@ class DTAZV extends DTABase
     */
     function addExchange($account_receiver, $amount, $purposes, $account_sender = array())
     {
-        if (empty($account_receiver['additional_name'])) {
-            $account_receiver['additional_name'] = "";
-        }
-        if (empty($account_receiver['street'])) {
-            $account_receiver['street'] = "";
-        }
-        if (empty($account_receiver['city'])) {
-            $account_receiver['city'] = "";
-        }
-
-        if (empty($account_sender['name'])) {
-            $account_sender['name']
-                = $this->account_file_sender['name'];
-        }
-        if (empty($account_sender['additional_name'])) {
-            $account_sender['additional_name']
-                = $this->account_file_sender['additional_name'];
-        }
-        if (empty($account_sender['street'])) {
-            $account_sender['street']
-                = $this->account_file_sender['street'];
-        }
-        if (empty($account_sender['city'])) {
-            $account_sender['city']
-                = $this->account_file_sender['city'];
-        }
-        if (empty($account_sender['bank_code'])) {
-            $account_sender['bank_code']
-                = $this->account_file_sender['bank_code'];
-        }
-        if (empty($account_sender['account_number'])) {
-            $account_sender['account_number']
-                = $this->account_file_sender['account_number'];
-        }
-
-        // check arguments
-        if (strlen($account_receiver['bank_code']) == 8) {
-            if (is_numeric($account_receiver['bank_code'])) {
-                // german BLZ -> allowed with special format
-                $account_receiver['bank_code']
-                    = '///' . $account_receiver['bank_code'];
-            } else {
-                // short BIC -> fill to 11 chars
-                $account_receiver['bank_code']
-                    = $account_receiver['bank_code'] . 'XXX';
-            }
-        }
-
-        $account_sender['account_number']
-            = strval($account_sender['account_number']);
-        $account_sender['bank_code']
-            = strval($account_sender['bank_code']);
+        $account_receiver = $this->_exchangeFillReceiver($account_receiver);
+        $account_sender   = $this->_exchangeFillSender($account_sender);
 
         /*
          * notes for IBAN: currently only checked for length;

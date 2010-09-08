@@ -214,31 +214,15 @@ class DTA extends DTABase
     }
 
     /**
-    * Adds an exchange. First the account data for the receiver of the exchange is
-    * set. In the case the DTA file contains credits, this is the payment receiver.
-    * In the other case (the DTA file contains debits), this is the account, from
-    * which money is taken away. If the sender is not specified, values of the
-    * file sender are used by default.
+    * Auxillary method to fill and normalize the receiver and sender arrays.
     *
-    * Account data for receiver and sender contain
-    *  name            Name. Maximally 27 chars are allowed.
-    *  bank_code       Bank code.
-    *  account_number  Account number.
-    *  additional_name If necessary, additional line for name (maximally 27 chars).
+    * @param array $account_sender   Sender's account data.
+    * @param array $account_receiver Receiver's account data.
     *
-    * @param array  $account_receiver Receiver's account data.
-    * @param double $amount           Amount of money in this exchange.
-    *                                 Currency: EURO
-    * @param array  $purposes         Array of up to 14 lines
-    *                                 (maximally 27 chars each) for
-    *                                 description of the exchange.
-    *                                 A string is accepted as well.
-    * @param array  $account_sender   Sender's account data.
-    *
-    * @access public
-    * @return boolean
+    * @access private
+    * @return array
     */
-    function addExchange($account_receiver, $amount, $purposes, $account_sender = array())
+    private function _exchangeFillArrays($account_receiver, $account_sender)
     {
         if (empty($account_receiver['additional_name'])) {
             $account_receiver['additional_name'] = "";
@@ -266,6 +250,39 @@ class DTA extends DTABase
             = strval($account_sender['account_number']);
         $account_sender['bank_code']
             = strval($account_sender['bank_code']);
+
+        return array($account_receiver, $account_sender);
+    }
+
+    /**
+    * Adds an exchange. First the account data for the receiver of the exchange is
+    * set. In the case the DTA file contains credits, this is the payment receiver.
+    * In the other case (the DTA file contains debits), this is the account, from
+    * which money is taken away. If the sender is not specified, values of the
+    * file sender are used by default.
+    *
+    * Account data for receiver and sender contain
+    *  name            Name. Maximally 27 chars are allowed.
+    *  bank_code       Bank code.
+    *  account_number  Account number.
+    *  additional_name If necessary, additional line for name (maximally 27 chars).
+    *
+    * @param array  $account_receiver Receiver's account data.
+    * @param double $amount           Amount of money in this exchange.
+    *                                 Currency: EURO
+    * @param array  $purposes         Array of up to 14 lines
+    *                                 (maximally 27 chars each) for
+    *                                 description of the exchange.
+    *                                 A string is accepted as well.
+    * @param array  $account_sender   Sender's account data.
+    *
+    * @access public
+    * @return boolean
+    */
+    function addExchange($account_receiver, $amount, $purposes, $account_sender = array())
+    {
+        list($account_receiver, $account_sender)
+            = $this->_exchangeFillArrays($account_receiver, $account_sender);
 
         $cents = (int)(round($amount * 100));
         if (strlen($account_sender['name']) > 0
@@ -338,23 +355,14 @@ class DTA extends DTABase
     }
 
     /**
-    * Returns the full content of the generated DTA file.
-    * All added exchanges are processed.
+    * Auxillary method to write the A record.
     *
-    * @access public
+    * @access private
     * @return string
     */
-    function getFileContent()
+    private function _generateArecord()
     {
         $content = "";
-
-        $sum_account_numbers = 0;
-        $sum_bank_codes      = 0;
-        $sum_amounts         = 0;
-
-        /**
-         * data record A
-         */
 
         // (field numbers according to ebics-zka.de specification)
         // A1 record length (128 Bytes)
@@ -395,115 +403,141 @@ class DTA extends DTABase
         $content .= "1";
 
         assert(strlen($content) == 128);
+        return $content;
+    }
 
-        /**
-         * data record(s) C
+    /**
+    * Auxillary method to write C records.
+    *
+    * @param array $exchange The transaction to serialize.
+    *
+    * @access private
+    * @return string
+    */
+    private function _generateCrecord($exchange)
+    {
+        // preparation of additional parts for record extensions
+        $additional_parts    = array();
+        $additional_purposes = $exchange['purposes'];
+        $first_purpose       = array_shift($additional_purposes);
+
+        if (strlen($exchange['receiver_additional_name']) > 0) {
+            $additional_parts[] = array("type" => "01",
+                "content" => $exchange['receiver_additional_name']
+                );
+        }
+
+        foreach ($additional_purposes as $additional_purpose) {
+            $additional_parts[] = array("type" => "02",
+                "content" => $additional_purpose
+                );
+        }
+
+        if (strlen($exchange['sender_additional_name']) > 0) {
+            $additional_parts[] = array("type" => "03",
+                "content" => $exchange['sender_additional_name']
+                );
+        }
+        assert(count($additional_parts) <= 15);
+
+        $content = "";
+
+        // (field numbers according to ebics-zka.de specification)
+        // C1 record length (187 Bytes + 29 Bytes for each additional part)
+        $content .= str_pad(
+            187 + count($additional_parts) * 29, 4, "0", STR_PAD_LEFT
+        );
+        // C2 record type
+        $content .= "C";
+        // C3 first involved bank
+        $content .= str_pad(
+            $exchange['sender_bank_code'], 8, "0", STR_PAD_LEFT
+        );
+        // C4 receiver's bank code
+        $content .= str_pad(
+            $exchange['receiver_bank_code'], 8, "0", STR_PAD_LEFT
+        );
+        // C5 receiver's account number
+        $content .= str_pad(
+            $exchange['receiver_account_number'], 10, "0", STR_PAD_LEFT
+        );
+        // C6 internal customer number (11 chars) or NULL
+        $content .= "0" . str_repeat("0", 11) . "0";
+        // C7a payment mode (text key)
+        $content .= ($this->type == DTA_CREDIT) ? "51" : "05";
+        // C7b additional text key
+        $content .= "000";
+        // C8 bank internal
+        $content .= " ";
+        // C9 free (reserve)
+        $content .= str_repeat("0", 11);
+        // C10 sender's bank code
+        $content .= str_pad(
+            $exchange['sender_bank_code'], 8, "0", STR_PAD_LEFT
+        );
+        // C11 sender's account number
+        $content .= str_pad(
+            $exchange['sender_account_number'], 10, "0", STR_PAD_LEFT
+        );
+        // C12 amount
+        $content .= str_pad(
+            $exchange['amount'], 11, "0", STR_PAD_LEFT
+        );
+        // C13 free (reserve)
+        $content .= str_repeat(" ", 3);
+        // C14a receiver's name
+        $content .= str_pad(
+            $exchange['receiver_name'], 27, " ", STR_PAD_RIGHT
+        );
+        // C14b delimitation
+        $content .= str_repeat(" ", 8);
+        /* first part/128 chars full */
+        // C15 sender's name
+        $content .= str_pad(
+            $exchange['sender_name'], 27, " ", STR_PAD_RIGHT
+        );
+        // C16 first line of purposes
+        $content .= str_pad($first_purpose, 27, " ", STR_PAD_RIGHT);
+        // C17a currency (1 = Euro)
+        $content .= "1";
+        // C17b free (reserve)
+        $content .= str_repeat(" ", 2);
+        // C18 number of additional parts (00-15)
+        $content .= str_pad(count($additional_parts), 2, "0", STR_PAD_LEFT);
+
+        /*
+         * End of the constant part (187 chars),
+         * now up to 15 extensions with 29 chars each might follow.
          */
 
-        foreach ($this->exchanges as $exchange) {
-            $sum_account_numbers += $exchange['receiver_account_number'];
-            $sum_bank_codes      += (int) $exchange['receiver_bank_code'];
-            $sum_amounts         += (int) $exchange['amount'];
-
-            $additional_purposes = $exchange['purposes'];
-            $first_purpose       = array_shift($additional_purposes);
-
-            $additional_parts = array();
-
-            if (strlen($exchange['receiver_additional_name']) > 0) {
-                $additional_parts[] = array("type" => "01",
-                    "content" => $exchange['receiver_additional_name']
-                    );
+        if (count($additional_parts) == 0) {
+            // no extension, pad to fill the part to 2*128 chars
+            $content .= str_repeat(" ", 256-187);
+        } else {
+            // The first two extensions fit into the current part:
+            for ($index = 1;$index <= 2;$index++) {
+                if (count($additional_parts) > 0) {
+                    $additional_part = array_shift($additional_parts);
+                } else {
+                    $additional_part = array("type" => "  ",
+                        "content" => ""
+                        );
+                }
+                // C19/21 type of addional part
+                $content .= $additional_part['type'];
+                // C20/22 additional part content
+                $content .= str_pad(
+                    $additional_part['content'], 27, " ", STR_PAD_RIGHT
+                );
             }
+            // delimitation
+            $content .= str_repeat(" ", 11);
+        }
 
-            foreach ($additional_purposes as $additional_purpose) {
-                $additional_parts[] = array("type" => "02",
-                    "content" => $additional_purpose
-                    );
-            }
-
-            if (strlen($exchange['sender_additional_name']) > 0) {
-                $additional_parts[] = array("type" => "03",
-                    "content" => $exchange['sender_additional_name']
-                    );
-            }
-
-            $additional_parts_number = count($additional_parts);
-            assert($additional_parts_number <= 15);
-
-            // C1 record length (187 Bytes + 29 Bytes for each additional part)
-            $content .= str_pad(
-                187 + $additional_parts_number * 29, 4, "0", STR_PAD_LEFT
-            );
-            // C2 record type
-            $content .= "C";
-            // C3 first involved bank
-            $content .= str_pad(
-                $exchange['sender_bank_code'], 8, "0", STR_PAD_LEFT
-            );
-            // C4 receiver's bank code
-            $content .= str_pad(
-                $exchange['receiver_bank_code'], 8, "0", STR_PAD_LEFT
-            );
-            // C5 receiver's account number
-            $content .= str_pad(
-                $exchange['receiver_account_number'], 10, "0", STR_PAD_LEFT
-            );
-            // C6 internal customer number (11 chars) or NULL
-            $content .= "0" . str_repeat("0", 11) . "0";
-            // C7a payment mode (text key)
-            $content .= ($this->type == DTA_CREDIT) ? "51" : "05";
-            // C7b additional text key
-            $content .= "000";
-            // C8 bank internal
-            $content .= " ";
-            // C9 free (reserve)
-            $content .= str_repeat("0", 11);
-            // C10 sender's bank code
-            $content .= str_pad(
-                $exchange['sender_bank_code'], 8, "0", STR_PAD_LEFT
-            );
-            // C11 sender's account number
-            $content .= str_pad(
-                $exchange['sender_account_number'], 10, "0", STR_PAD_LEFT
-            );
-            // C12 amount
-            $content .= str_pad(
-                $exchange['amount'], 11, "0", STR_PAD_LEFT
-            );
-            // C13 free (reserve)
-            $content .= str_repeat(" ", 3);
-            // C14a receiver's name
-            $content .= str_pad(
-                $exchange['receiver_name'], 27, " ", STR_PAD_RIGHT
-            );
-            // C14b delimitation
-            $content .= str_repeat(" ", 8);
-            /* first part/128 chars full */
-            // C15 sender's name
-            $content .= str_pad(
-                $exchange['sender_name'], 27, " ", STR_PAD_RIGHT
-            );
-            // C16 first line of purposes
-            $content .= str_pad($first_purpose, 27, " ", STR_PAD_RIGHT);
-            // C17a currency (1 = Euro)
-            $content .= "1";
-            // C17b free (reserve)
-            $content .= str_repeat(" ", 2);
-            // C18 number of additional parts (00-15)
-            $content .= str_pad($additional_parts_number, 2, "0", STR_PAD_LEFT);
-
-            /*
-             * End of the constant part (187 chars),
-             * now up to 15 extensions with 29 chars each might follow.
-             */
-
-            if (count($additional_parts) == 0) {
-                // no extension, pad to fill the part to 2*128 chars
-                $content .= str_repeat(" ", 256-187);
-            } else {
-                // The first two extensions fit into the current part:
-                for ($index = 1;$index <= 2;$index++) {
+        // For more extensions add up to 4 more parts:
+        for ($part = 3;$part <= 5;$part++) {
+            if (count($additional_parts) > 0) {
+                for ($index = 1;$index <= 4;$index++) {
                     if (count($additional_parts) > 0) {
                         $additional_part = array_shift($additional_parts);
                     } else {
@@ -511,63 +545,45 @@ class DTA extends DTABase
                             "content" => ""
                             );
                     }
-                    // C19/21 type of addional part
+                    // C24/26/28/30 type of addional part
                     $content .= $additional_part['type'];
-                    // C20/22 additional part content
+                    // C25/27/29/31 additional part content
                     $content .= str_pad(
                         $additional_part['content'], 27, " ", STR_PAD_RIGHT
                     );
                 }
-                // delimitation
-                $content .= str_repeat(" ", 11);
+                // C32 delimitation
+                $content .= str_repeat(" ", 12);
             }
-
-            // For more extensions add up to 4 more parts:
-            for ($part = 3;$part <= 5;$part++) {
-                if (count($additional_parts) > 0) {
-                    for ($index = 1;$index <= 4;$index++) {
-                        if (count($additional_parts) > 0) {
-                            $additional_part = array_shift($additional_parts);
-                        } else {
-                            $additional_part = array("type" => "  ",
-                                "content" => ""
-                                );
-                        }
-                        // C24/26/28/30 type of addional part
-                        $content .= $additional_part['type'];
-                        // C25/27/29/31 additional part content
-                        $content .= str_pad(
-                            $additional_part['content'], 27, " ", STR_PAD_RIGHT
-                        );
-                    }
-                    // C32 delimitation
-                    $content .= str_repeat(" ", 12);
-                }
-            }
-            // with 15 extensions there may be a 6th part
-            if (count($additional_parts) > 0) {
-                $additional_part = array_shift($additional_parts);
-                // C24 type of addional part
-                $content .= $additional_part['type'];
-                // C25 additional part content
-                $content .= str_pad(
-                    $additional_part['content'], 27, " ", STR_PAD_RIGHT
-                );
-                // padding to fill the part
-                $content .= str_repeat(" ", 128-27-2);
-            }
-            assert(count($additional_parts) == 0);
-            assert(strlen($content) % 128 == 0);
         }
+        // with 15 extensions there may be a 6th part
+        if (count($additional_parts) > 0) {
+            $additional_part = array_shift($additional_parts);
+            // C24 type of addional part
+            $content .= $additional_part['type'];
+            // C25 additional part content
+            $content .= str_pad(
+                $additional_part['content'], 27, " ", STR_PAD_RIGHT
+            );
+            // padding to fill the part
+            $content .= str_repeat(" ", 128-27-2);
+        }
+        assert(count($additional_parts) == 0);
+        assert(strlen($content) % 128 == 0);
+        return $content;
+    }
 
-        /**
-         * data record E
-         */
+    /**
+    * Auxillary method to write the E record.
+    *
+    * @access private
+    * @return string
+    */
+    private function _generateErecord()
+    {
+        $content = "";
 
-        assert($this->sum_amounts   === $sum_amounts);
-        assert($this->sum_bankcodes === $sum_bank_codes);
-        assert($this->sum_accounts  === $sum_account_numbers);
-
+        // (field numbers according to ebics-zka.de specification)
         // E1 record length (128 bytes)
         $content .= str_pad("128", 4, "0", STR_PAD_LEFT);
         // E2 record type
@@ -581,20 +597,63 @@ class DTA extends DTABase
         // use number_format() to ensure proper integer formatting
         // E6 sum of account numbers
         $content .= str_pad(
-            number_format($sum_account_numbers, 0, "", ""), 17, "0", STR_PAD_LEFT
+            number_format($this->sum_accounts, 0, "", ""), 17, "0", STR_PAD_LEFT
         );
         // E7 sum of bank codes
         $content .= str_pad(
-            number_format($sum_bank_codes, 0, "", ""), 17, "0", STR_PAD_LEFT
+            number_format($this->sum_bankcodes, 0, "", ""), 17, "0", STR_PAD_LEFT
         );
         // E8 sum of amounts
         $content .= str_pad(
-            number_format($sum_amounts, 0, "", ""), 13, "0", STR_PAD_LEFT
+            number_format($this->sum_amounts, 0, "", ""), 13, "0", STR_PAD_LEFT
         );
         // E9 delimitation
         $content .= str_repeat(" ", 51);
 
         assert(strlen($content) % 128 == 0);
+        return $content;
+    }
+
+    /**
+    * Returns the full content of the generated DTA file.
+    * All added exchanges are processed.
+    *
+    * @access public
+    * @return string
+    */
+    function getFileContent()
+    {
+        $content = "";
+
+        /**
+         * data record A
+         */
+        $content .= $this->_generateArecord();
+
+        /**
+         * data record(s) C
+         */
+        $sum_account_numbers = 0;
+        $sum_bank_codes      = 0;
+        $sum_amounts         = 0;
+
+        foreach ($this->exchanges as $exchange) {
+            $sum_account_numbers += $exchange['receiver_account_number'];
+            $sum_bank_codes      += (int) $exchange['receiver_bank_code'];
+            $sum_amounts         += (int) $exchange['amount'];
+
+            $content .= $this->_generateCrecord($exchange);
+            assert(strlen($content) % 128 == 0);
+        }
+
+        assert($this->sum_amounts   === $sum_amounts);
+        assert($this->sum_bankcodes === $sum_bank_codes);
+        assert($this->sum_accounts  === $sum_account_numbers);
+
+        /**
+         * data record E
+         */
+        $content .= $this->_generateErecord();
 
         return $content;
     }
@@ -699,6 +758,164 @@ class DTA extends DTABase
     }
 
     /**
+    * Auxillary method to parse C record extensions.
+    *
+    * Reads the variable number of extensions at the end of a C record.
+    *
+    * @param string  $input      content of DTA file
+    * @param integer &$offset    read offset into $input
+    * @param integer $extensions expected number of extensions
+    * @param integer $c_start    C record offset (for exceptions)
+    *
+    * @throws Payment_DTA_ParseException on invalid extensions
+    * @access private
+    * @return array of $Cpurpose, 2nd sender line, 2nd receiver line
+    */
+    private function _parseCextension($input, &$offset, $extensions, $c_start)
+    {
+        $extensions_read = array();
+
+        // first handle the up to 2 extensions inside the 2nd part
+        if ($extensions == 0) { // only padding
+            $this->checkStr($input, $offset, str_repeat(" ", 69));
+        } elseif ($extensions == 1) {
+            /* field 19 */
+            $ext_type = $this->getNum($input, $offset, 2);
+            /* field 20 */
+            $ext_content = $this->getStr($input, $offset, 27, true);
+            array_push($extensions_read, array($ext_type, $ext_content));
+            /* fields 21,22,23 */
+            $this->checkStr($input, $offset, str_repeat(" ", 2+27+11));
+        } else {
+            /* field 19 */
+            $ext_type = $this->getNum($input, $offset, 2);
+            /* field 20 */
+            $ext_content = $this->getStr($input, $offset, 27, true);
+            array_push($extensions_read, array($ext_type, $ext_content));
+            /* field 21 */
+            $ext_type = $this->getNum($input, $offset, 2);
+            /* field 22 */
+            $ext_content = $this->getStr($input, $offset, 27, true);
+            array_push($extensions_read, array($ext_type, $ext_content));
+            /* fields 23 */
+            $this->checkStr($input, $offset, str_repeat(" ", 11));
+        }
+        // end 2nd part of C record
+        assert($offset % 128 === 0);
+
+        // up to 4 more parts, each with 128 bytes & up to 4 extensions
+        while (count($extensions_read) < $extensions) {
+            $ext_in_part = $extensions - count($extensions_read);
+            // one switch to read the content
+            switch($ext_in_part) {
+            default: // =4
+            case 4: /* fallthrough */
+                $ext_type = $this->getNum($input, $offset, 2);
+                $ext_content = $this->getStr($input, $offset, 27, true);
+                array_push($extensions_read, array($ext_type, $ext_content));
+            case 3: /* fallthrough */
+                $ext_type = $this->getNum($input, $offset, 2);
+                $ext_content = $this->getStr($input, $offset, 27, true);
+                array_push($extensions_read, array($ext_type, $ext_content));
+            case 2: /* fallthrough */
+                $ext_type = $this->getNum($input, $offset, 2);
+                $ext_content = $this->getStr($input, $offset, 27, true);
+                array_push($extensions_read, array($ext_type, $ext_content));
+            case 1: /* fallthrough */
+                $ext_type = $this->getNum($input, $offset, 2);
+                $ext_content = $this->getStr($input, $offset, 27, true);
+                array_push($extensions_read, array($ext_type, $ext_content));
+                break;
+            case 0:
+                // should never happen
+                throw new Payment_DTA_ParseException('confused about '.
+                    'number of extensions in transaction number '.
+                    strval($this->count()+1) .' @ offset '. strval($c_start) .
+                    ', please file a bug report');
+            }
+
+            // and one switch for the padding
+            switch($ext_in_part) {
+            case 1:
+                $this->checkStr($input, $offset, str_repeat(" ", 29));
+            case 2: /* fallthrough */
+                $this->checkStr($input, $offset, str_repeat(" ", 29));
+            case 3: /* fallthrough */
+                $this->checkStr($input, $offset, str_repeat(" ", 29));
+            case 4: /* fallthrough */
+            default: /* fallthrough */
+                $this->checkStr($input, $offset, str_repeat(" ", 12));
+                break;
+            }
+            // end n-th part of C record
+            assert($offset % 128 === 0);
+        }
+        return $extensions_read;
+    }
+
+    /**
+    * Auxillary method to combine C record extensions.
+    *
+    * Takes the parsed extensions to check the allowed number of them per type
+    * and to collect all purpose lines into one array.
+    *
+    * @param array   $extensions_read read extensions as arrays
+    * @param array   $Cpurpose        existing array of purpose lines
+    * @param integer $c_start         C record offset (for exceptions)
+    *
+    * @throws Payment_DTA_ParseException on invalid extensions
+    * @access private
+    * @return array of $Cpurpose, 2nd sender line, 2nd receiver line
+    */
+    private function _processCextension($extensions_read, $Cpurpose, $c_start)
+    {
+        $Csender_name2 = "";
+        $Creceiver_name2 = "";
+
+        foreach ($extensions_read as $ext) {
+            $ext_type = $ext[0];
+            $ext_content = $ext[1];
+
+            switch($ext_type) {
+            case 1:
+                if (!empty($Creceiver_name2)) {
+                    throw new Payment_DTA_ParseException('multiple '.
+                        'receiver name extensions in transaction number '.
+                        strval($this->count()+1) .' @ offset '. strval($c_start));
+                } else {
+                    $Creceiver_name2 = $ext_content;
+                }
+                break;
+            case 2:
+                if (count($Cpurpose) >= 14) {
+                    // allowed: 1 line in fixed part + 13 in extensions
+                    throw new Payment_DTA_ParseException('too many '.
+                        'purpose extensions in transaction number '.
+                        strval($this->count()+1) .' @ offset '. strval($c_start));
+                } else {
+                    array_push($Cpurpose, $ext_content);
+                }
+                break;
+            case 3:
+                if (!empty($Csender_name2)) {
+                    throw new Payment_DTA_ParseException('multiple '.
+                        'receiver name extensions in transaction number '.
+                        strval($this->count()+1) .' @ offset '. strval($c_start));
+                } else {
+                    $Csender_name2 = $ext_content;
+                }
+                break;
+            default:
+                throw new Payment_DTA_ParseException('invalid '.
+                    'extension type in transaction number '.
+                    strval($this->count()+1) .' @ offset '. strval($c_start));
+            }
+        }
+
+        return array($Cpurpose, $Csender_name2, $Creceiver_name2);
+    }
+
+    /**
     * Auxillary parser to consume C records.
     *
     * @param string  $input   content of DTA file
@@ -784,131 +1001,12 @@ class DTA extends DTABase
         }
 
         // extensions to C record, read into array & processed later
-        $extensions_read = array();
-
-        // first handle the up to 2 extensions inside the 2nd part
-        if ($extensions == 0) { // only padding
-            $this->checkStr($input, $offset, str_repeat(" ", 69));
-        } elseif ($extensions == 1) {
-            /* field 19 */
-            $ext_type = $this->getNum($input, $offset, 2);
-            /* field 20 */
-            $ext_content = $this->getStr($input, $offset, 27, true);
-            array_push($extensions_read, array($ext_type, $ext_content));
-            /* fields 21,22,23 */
-            $this->checkStr($input, $offset, str_repeat(" ", 2+27+11));
-        } else {
-            /* field 19 */
-            $ext_type = $this->getNum($input, $offset, 2);
-            /* field 20 */
-            $ext_content = $this->getStr($input, $offset, 27, true);
-            array_push($extensions_read, array($ext_type, $ext_content));
-            /* field 21 */
-            $ext_type = $this->getNum($input, $offset, 2);
-            /* field 22 */
-            $ext_content = $this->getStr($input, $offset, 27, true);
-            array_push($extensions_read, array($ext_type, $ext_content));
-            /* fields 23 */
-            $this->checkStr($input, $offset, str_repeat(" ", 11));
-        }
-        // end 2nd part of C record
-        assert($offset % 128 === 0);
-
-        // up to 4 more parts, each with 128 bytes & up to 4 extensions
-        while (count($extensions_read) < $extensions) {
-            $ext_in_part = $extensions - count($extensions_read);
-            // one switch to read the content
-            switch($ext_in_part) {
-            default: // =4
-            case 4: /* fallthrough */
-                $ext_type = $this->getNum($input, $offset, 2);
-                $ext_content = $this->getStr($input, $offset, 27, true);
-                array_push($extensions_read, array($ext_type, $ext_content));
-            case 3: /* fallthrough */
-                $ext_type = $this->getNum($input, $offset, 2);
-                $ext_content = $this->getStr($input, $offset, 27, true);
-                array_push($extensions_read, array($ext_type, $ext_content));
-            case 2: /* fallthrough */
-                $ext_type = $this->getNum($input, $offset, 2);
-                $ext_content = $this->getStr($input, $offset, 27, true);
-                array_push($extensions_read, array($ext_type, $ext_content));
-            case 1: /* fallthrough */
-                $ext_type = $this->getNum($input, $offset, 2);
-                $ext_content = $this->getStr($input, $offset, 27, true);
-                array_push($extensions_read, array($ext_type, $ext_content));
-                break;
-            case 0:
-                // should never happen
-                throw new Payment_DTA_ParseException('confused about '.
-                    'number of extensions in transaction number '.
-                    strval($this->count()+1) .' @ offset '. strval($c_start) .
-                    ', please file a bug report');
-            }
-
-            // and one switch for the padding
-            switch($ext_in_part) {
-            case 1:
-                $this->checkStr($input, $offset, str_repeat(" ", 29));
-            case 2: /* fallthrough */
-                $this->checkStr($input, $offset, str_repeat(" ", 29));
-            case 3: /* fallthrough */
-                $this->checkStr($input, $offset, str_repeat(" ", 29));
-            case 4: /* fallthrough */
-            default: /* fallthrough */
-                $this->checkStr($input, $offset, str_repeat(" ", 12));
-                break;
-            }
-            // end n-th part of C record
-            assert($offset % 128 === 0);
-        }
+        $extensions_read
+            = $this->_parseCextension($input, $offset, $extensions, $c_start);
 
         // process read extension content
-        foreach ($extensions_read as $ext) {
-            $ext_type = $ext[0];
-            $ext_content = $ext[1];
-
-            switch($ext_type) {
-            case 1:
-                if (!empty($Creceiver_name2)) {
-                    throw new Payment_DTA_ParseException('multiple '.
-                        'receiver name extensions in transaction number '.
-                        strval($this->count()+1) .' @ offset '. strval($c_start));
-                } else {
-                    $Creceiver_name2 = $ext_content;
-                }
-                break;
-            case 2:
-                if (count($Cpurpose) >= 14) {
-                    // allowed: 1 line in fixed part + 13 in extensions
-                    throw new Payment_DTA_ParseException('too many '.
-                        'purpose extensions in transaction number '.
-                        strval($this->count()+1) .' @ offset '. strval($c_start));
-                } else {
-                    array_push($Cpurpose, $ext_content);
-                }
-                break;
-            case 3:
-                if (!empty($Csender_name2)) {
-                    throw new Payment_DTA_ParseException('multiple '.
-                        'receiver name extensions in transaction number '.
-                        strval($this->count()+1) .' @ offset '. strval($c_start));
-                } else {
-                    $Csender_name2 = $ext_content;
-                }
-                break;
-            default:
-                throw new Payment_DTA_ParseException('invalid '.
-                    'extension type in transaction number '.
-                    strval($this->count()+1) .' @ offset '. strval($c_start));
-            }
-        }
-
-        if (!isset($Csender_name2)) {
-            $Csender_name2 = "";
-        }
-        if (!isset($Creceiver_name2)) {
-            $Creceiver_name2 = "";
-        }
+        list($Cpurpose, $Csender_name2, $Creceiver_name2)
+            = $this->_processCextension($extensions_read, $Cpurpose, $c_start);
 
         /* we read the fields, now add an exchange */
         $rc = $this->addExchange(
@@ -931,7 +1029,7 @@ class DTA extends DTABase
             // should never happen
             throw new Payment_DTA_ParseException('Cannot addExchange() '.
                 'for transaction number '.strval($this->count()+1) .
-                ' @ offset '. strval($c_start). ', please file a bug report', $e);
+                ' @ offset '. strval($c_start). ', please file a bug report');
         }
         $checks['account'] += $Creceiver_account;
         $checks['blz']     += $Creceiver_blz;
