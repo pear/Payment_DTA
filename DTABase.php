@@ -673,17 +673,6 @@ abstract class DTABase implements Countable, Iterator
     */
     abstract function getFileContent();
 
-    /**
-    * Returns the exchanges in JSON format.
-    *
-    * @access public
-    * @return string JSON representation of all exchanges
-    */
-    function asJSON()
-    {
-        return json_encode($this->exchanges);
-    }
-
     /* variable and methods to implement Iterator interface */
     protected $iterator_position = 0;
     function current()
