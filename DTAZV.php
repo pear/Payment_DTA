@@ -83,7 +83,7 @@ require_once 'DTABase.php';
  * @author    Hermann Stainer <hs@web-gear.com>
  * @copyright 2008 Martin Schütte
  * @license   http://www.debian.org/misc/bsd.license  BSD License (3 Clause)
- * @version   SVN: $Id$
+ * @version   Release: @package_version@
  * @link      http://pear.php.net/package/Payment_DTA
  */
 class DTAZV extends DTABase
@@ -169,10 +169,10 @@ class DTAZV extends DTABase
             }
 
             $this->account_file_sender = array(
-                "name"            => substr($this->makeValidString($account['name']), 0, 35),
-                "additional_name" => substr($this->makeValidString($account['additional_name']), 0, 35),
-                "street"          => substr($this->makeValidString($account['street']), 0, 35),
-                "city"            => substr($this->makeValidString($account['city']), 0, 35),
+                "name"            => $this->filter($account['name'], 35),
+                "additional_name" => $this->filter($account['additional_name'], 35),
+                "street"          => $this->filter($account['street'], 35),
+                "city"            => $this->filter($account['city'], 35),
                 "bank_code"       => $account['bank_code'],
                 "account_number"  => $account['account_number']
             );
@@ -339,9 +339,7 @@ class DTAZV extends DTABase
                 $filtered_purposes = array();
                 array_slice($purposes, 0, 4);
                 foreach ($purposes as $purposeline) {
-                    $filtered_purposes[] = substr(
-                        $this->makeValidString($purposeline), 0, 35
-                    );
+                    $filtered_purposes[] = $this->filter($purposeline, 35);
                 }
             }
             // ensure four lines
@@ -350,16 +348,16 @@ class DTAZV extends DTABase
             );
 
             $this->exchanges[] = array(
-                "sender_name"              => substr($this->makeValidString($account_sender['name']), 0, 35),
-                "sender_additional_name"   => substr($this->makeValidString($account_sender['additional_name']), 0, 35),
-                "sender_street"            => substr($this->makeValidString($account_sender['street']), 0, 35),
-                "sender_city"              => substr($this->makeValidString($account_sender['city']), 0, 35),
+                "sender_name"              => $this->filter($account_sender['name'], 35),
+                "sender_additional_name"   => $this->filter($account_sender['additional_name'], 35),
+                "sender_street"            => $this->filter($account_sender['street'], 35),
+                "sender_city"              => $this->filter($account_sender['city'], 35),
                 "sender_bank_code"         => $account_sender['bank_code'],
                 "sender_account_number"    => $account_sender['account_number'],
-                "receiver_name"            => substr($this->makeValidString($account_receiver['name']), 0, 35),
-                "receiver_additional_name" => substr($this->makeValidString($account_receiver['additional_name']), 0, 35),
-                "receiver_street"          => substr($this->makeValidString($account_receiver['street']), 0, 35),
-                "receiver_city"            => substr($this->makeValidString($account_receiver['city']), 0, 35),
+                "receiver_name"            => $this->filter($account_receiver['name'], 35),
+                "receiver_additional_name" => $this->filter($account_receiver['additional_name'], 35),
+                "receiver_street"          => $this->filter($account_receiver['street'], 35),
+                "receiver_city"            => $this->filter($account_receiver['city'], 35),
                 "receiver_bank_code"       => $account_receiver['bank_code'],
                 "receiver_account_number"  => $account_receiver['account_number'],
                 "amount"                   => $cents,

@@ -91,7 +91,7 @@ define("DTA_DEBIT", 1);
 * @package  Payment_DTA
 * @author   Hermann Stainer <hs@web-gear.com>
 * @license  http://www.debian.org/misc/bsd.license  BSD License (3 Clause)
-* @version  SVN: $Id$
+* @version  Release: @package_version@
 * @link     http://pear.php.net/package/Payment_DTA
 */
 class DTA extends DTABase
@@ -197,12 +197,10 @@ class DTA extends DTABase
             }
 
             $this->account_file_sender = array(
-                "name"            => substr($this->makeValidString($account['name']), 0, 27),
+                "name"            => $this->filter($account['name'], 27),
                 "bank_code"       => $account['bank_code'],
                 "account_number"  => $account['account_number'],
-                "additional_name" => substr(
-                    $this->makeValidString($account['additional_name']), 0, 27
-                )
+                "additional_name" => $this->filter($account['additional_name'], 27)
             );
 
             $result = true;
@@ -216,8 +214,8 @@ class DTA extends DTABase
     /**
     * Auxillary method to fill and normalize the receiver and sender arrays.
     *
-    * @param array $account_sender   Sender's account data.
     * @param array $account_receiver Receiver's account data.
+    * @param array $account_sender   Sender's account data.
     *
     * @access private
     * @return array
@@ -279,8 +277,12 @@ class DTA extends DTABase
     * @access public
     * @return boolean
     */
-    function addExchange($account_receiver, $amount, $purposes, $account_sender = array())
-    {
+    function addExchange(
+        $account_receiver,
+        $amount,
+        $purposes,
+        $account_sender = array()
+    ) {
         list($account_receiver, $account_sender)
             = $this->_exchangeFillArrays($account_receiver, $account_sender);
 
@@ -319,28 +321,26 @@ class DTA extends DTABase
             } else {
                 $filtered_purposes = array();
                 foreach ($purposes as $purposeline) {
-                    $filtered_purposes[] = substr(
-                        $this->makeValidString($purposeline), 0, 27
-                    );
+                    $filtered_purposes[] = $this->filter($purposeline, 27);
                 }
             }
 
             $this->exchanges[] = array(
-                "sender_name"              => substr(
-                    $this->makeValidString($account_sender['name']), 0, 27
+                "sender_name"              => $this->filter(
+                    $account_sender['name'], 27
                 ),
                 "sender_bank_code"         => $account_sender['bank_code'],
                 "sender_account_number"    => $account_sender['account_number'],
-                "sender_additional_name"   => substr(
-                    $this->makeValidString($account_sender['additional_name']), 0, 27
+                "sender_additional_name"   => $this->filter(
+                    $account_sender['additional_name'], 27
                 ),
-                "receiver_name"            => substr(
-                    $this->makeValidString($account_receiver['name']), 0, 27
+                "receiver_name"            => $this->filter(
+                    $account_receiver['name'], 27
                 ),
                 "receiver_bank_code"       => $account_receiver['bank_code'],
                 "receiver_account_number"  => $account_receiver['account_number'],
-                "receiver_additional_name" => substr(
-                    $this->makeValidString($account_receiver['additional_name']), 0, 27
+                "receiver_additional_name" => $this->filter(
+                    $account_receiver['additional_name'], 27
                 ),
                 "amount"                   => $cents,
                 "purposes"                 => $filtered_purposes

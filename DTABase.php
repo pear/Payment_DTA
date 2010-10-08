@@ -66,7 +66,7 @@ require_once 'PEAR/Exception.php';
 * @package  Payment_DTA
 * @author   Martin Schütte <info@mschuette.name>
 * @license  http://www.debian.org/misc/bsd.license  BSD License (3 Clause)
-* @version  SVN: $Id$
+* @version  Release: @package_version@
 * @link     http://pear.php.net/package/Payment_DTA
 */
 class Payment_DTA_Exception extends PEAR_Exception
@@ -80,7 +80,7 @@ class Payment_DTA_Exception extends PEAR_Exception
 * @package  Payment_DTA
 * @author   Martin Schütte <info@mschuette.name>
 * @license  http://www.debian.org/misc/bsd.license  BSD License (3 Clause)
-* @version  SVN: $Id$
+* @version  Release: @package_version@
 * @link     http://pear.php.net/package/Payment_DTA
 */
 class Payment_DTA_ParseException extends Payment_DTA_Exception
@@ -95,7 +95,7 @@ class Payment_DTA_ParseException extends Payment_DTA_Exception
 * @package  Payment_DTA
 * @author   Martin Schütte <info@mschuette.name>
 * @license  http://www.debian.org/misc/bsd.license  BSD License (3 Clause)
-* @version  SVN: $Id$
+* @version  Release: @package_version@
 * @link     http://pear.php.net/package/Payment_DTA
 */
 class Payment_DTA_FatalParseException extends Payment_DTA_ParseException
@@ -109,7 +109,7 @@ class Payment_DTA_FatalParseException extends Payment_DTA_ParseException
 * @package  Payment_DTA
 * @author   Martin Schütte <info@mschuette.name>
 * @license  http://www.debian.org/misc/bsd.license  BSD License (3 Clause)
-* @version  SVN: $Id$
+* @version  Release: @package_version@
 * @link     http://pear.php.net/package/Payment_DTA
 */
 class Payment_DTA_ChecksumException extends Payment_DTA_Exception
@@ -123,7 +123,7 @@ class Payment_DTA_ChecksumException extends Payment_DTA_Exception
 * @package  Payment_DTA
 * @author   Hermann Stainer <hs@web-gear.com>
 * @license  http://www.debian.org/misc/bsd.license  BSD License (3 Clause)
-* @version  SVN: $Id$
+* @version  Release: @package_version@
 * @link     http://pear.php.net/package/Payment_DTA
 */
 abstract class DTABase implements Countable, Iterator
@@ -562,6 +562,20 @@ abstract class DTABase implements Countable, Iterator
     }
 
     /**
+     * Auxillary method to filter output strings.
+     *
+     * @param string $str Text to filter
+     * @param int    $len Length of text field
+     *
+     * @access private
+     * @return string
+     */
+    protected function filter($str, $len)
+    {
+        return substr($this->makeValidString($str), 0, $len);
+    }
+
+    /**
     * Writes the DTA file.
     *
     * @param string $filename Filename.
@@ -643,7 +657,12 @@ abstract class DTABase implements Countable, Iterator
     * @access public
     * @return boolean
     */
-    abstract function addExchange($account_receiver, $amount, $purposes, $account_sender = array());
+    abstract function addExchange(
+        $account_receiver,
+        $amount,
+        $purposes,
+        $account_sender = array()
+    );
 
     /**
     * Returns the full content of the generated file.
