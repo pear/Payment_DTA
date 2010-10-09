@@ -1,0 +1,60 @@
+<refentry id="package.payment.payment-dta.dtabase.getparsingerrors">
+ <refnamediv>
+  <refname>
+   <function>DTABase::getParsingErrors</function>
+  </refname>
+  <refpurpose>Get parsing errors.</refpurpose>
+ </refnamediv>
+ <refsynopsisdiv>
+  <funcsynopsis>
+   <funcsynopsisinfo>require_once &apos;/DTABase.php&apos;;</funcsynopsisinfo>
+   <funcprototype>
+    <funcdef>
+     array
+     <function>DTABase::getParsingErrors</function>
+    </funcdef>
+    <paramdef />
+   </funcprototype>
+  </funcsynopsis>
+ </refsynopsisdiv>
+ <refsect1 id="package.payment.payment-dta.dtabase.getparsingerrors.desc">
+  &title.desc;
+  <para>
+   Returns an array with all exceptions thrown when parsing DTA data;  possible elements are:
+   <itemizedlist>
+    <listitem>
+     <para>None: if no errors occured this array is empty,</para>
+    </listitem>
+    <listitem>
+     <para>
+      Payment_DTA_ChecksumException indicates that the complete DTA file
+      was read into the object but the file&apos;s internal checksums were incorrect,
+</para>
+    </listitem>
+    <listitem>
+     <para>
+      Payment_DTA_ParseException indicates an error in the input, but all
+      transactions up to the unexpected field were read into the new object,
+</para>
+    </listitem>
+    <listitem>
+     <para>
+      Payment_DTA_FatalParseException indicates a fatal error, thus the
+      constructed object is empty.
+</para>
+    </listitem>
+   </itemizedlist>
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.getparsingerrors.throws">
+  &title.throws;
+  <para>
+   <emphasis>throws</emphasis>
+   no exceptions thrown
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.getparsingerrors.note">
+  &title.note;
+  &note.notstatic;
+</refsect1>
+</refentry>

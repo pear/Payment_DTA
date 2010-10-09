@@ -1,0 +1,82 @@
+<refentry id="package.payment.payment-dta.dta.parse">
+ <refnamediv>
+  <refname>
+   <function>DTA::parse</function>
+  </refname>
+  <refpurpose>Parser. Read data from an existing DTA file content.</refpurpose>
+ </refnamediv>
+ <refsynopsisdiv>
+  <funcsynopsis>
+   <funcsynopsisinfo>require_once &apos;/DTA.php&apos;;</funcsynopsisinfo>
+   <funcprototype>
+    <funcdef>
+     void
+     <function>DTA::parse</function>
+    </funcdef>
+    <paramdef>
+     string
+     <parameter>$input</parameter>
+    </paramdef>
+   </funcprototype>
+  </funcsynopsis>
+ </refsynopsisdiv>
+ <refsect1 id="package.payment.payment-dta.dta.parse.desc">
+  &title.desc;
+  <para>
+   Parsing can leave us with four situations:
+   <itemizedlist>
+    <listitem>
+     <para>the input is parsed correctly =&gt; valid DTA object.</para>
+    </listitem>
+    <listitem>
+     <para>
+      the input is parsed but a checksum does not match the data read
+      =&gt; valid DTA object.
+      throws a Payment_DTA_ChecksumException.
+</para>
+    </listitem>
+    <listitem>
+     <para>
+      the n-th transaction cannot be parsed =&gt; parsing stops there, yielding
+      a valid DTA object, but with only the first n-1 transactions
+      and without checksum verification.
+      throws a Payment_DTA_ParseException.
+</para>
+    </listitem>
+    <listitem>
+     <para>
+      a parsing error occurs in the A record =&gt; the DTA object is invalid
+      throws a Payment_DTA_FatalParseException.
+</para>
+    </listitem>
+   </itemizedlist>
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dta.parse.param">
+  &title.param;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term>
+      &type.string;
+      <parameter>$input</parameter>
+     </term>
+     <listitem>
+      <para>content of DTA file</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dta.parse.throws">
+  &title.throws;
+  <para>
+   <emphasis>throws</emphasis>
+   Payment_DTA_Exception on unrecognized input
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dta.parse.note">
+  &title.note;
+  &note.notstatic;
+</refsect1>
+</refentry>
