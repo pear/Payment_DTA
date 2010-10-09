@@ -16,21 +16,19 @@
   <email>hs@web-gear.com</email>
   <active>no</active>
  </lead>
- <date>2010-09-06</date>
- <time>18:30:03</time>
+ <date>2010-10-09</date>
+ <time>14:33:07</time>
  <version>
-  <release>1.4.0a4</release>
-  <api>1.4.0a4</api>
+  <release>1.4.0RC1</release>
+  <api>1.4.0RC1</api>
  </version>
  <stability>
-  <release>alpha</release>
-  <api>alpha</api>
+  <release>beta</release>
+  <api>beta</api>
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
  <notes>
-[*] add type field to meta data
-[*] parse file creation date as timestamp
-[-] DTA parsing: simple check of transaction types in field C7
+[*] split methods, reduce code complexity
 ( [+] Added   [-] Fixed   [*] Improved   [!] Note )
  </notes>
  <contents>
@@ -42,7 +40,7 @@
    <file baseinstalldir="Payment" md5sum="a009d15bd59356a9e524dea04ab76d38" name="docs/examples/example_download.php" role="doc" />
    <file baseinstalldir="Payment" md5sum="7c2960a4c5df099c574a1af9e3bffdc0" name="docs/examples/example_dtazv.php" role="doc" />
    <file baseinstalldir="Payment" md5sum="8a8629a5730d7be85257a4f4a7dc866b" name="docs/examples/show_dta.php" role="doc" />
-   <file baseinstalldir="Payment" md5sum="c5090249013c4ef2fa1f3318e4763d0c" name="docs/payment/payment-dta.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="954d9ac0ccd776185f45d7611d4e26d6" name="docs/payment/payment-dta.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="f30b96494cdbd1386858a4adc96703a9" name="docs/payment/payment-dta/constants.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="88a1a071a6bca6167455fbe0ee627cc7" name="docs/payment/payment-dta/dta/--construct.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="76bc0c444f8d7d0a3361591a1727c19d" name="docs/payment/payment-dta/dta/addexchange.xml" role="doc" />
@@ -57,7 +55,6 @@
    <file baseinstalldir="Payment" md5sum="dd389478d8ac702520654f5ebb718e4d" name="docs/payment/payment-dta/dta/validstring.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="69e852f74d23a5cf12ac896561d06782" name="docs/payment/payment-dta/dtabase/--construct.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="58c0cd5ca863cb67d56bccda14292460" name="docs/payment/payment-dta/dtabase/addexchange.xml" role="doc" />
-   <file baseinstalldir="Payment" md5sum="49d398c1088764f4d9410bda1d5562f5" name="docs/payment/payment-dta/dtabase/asjson.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="d4a8681c6b371710ea3fa594c2e05a6d" name="docs/payment/payment-dta/dtabase/checkstr.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="08695ba7dfb88115b1f82e2076bce05b" name="docs/payment/payment-dta/dtabase/count.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="3498d2fefaa11a24306971b771f6d36e" name="docs/payment/payment-dta/dtabase/current.xml" role="doc" />
@@ -79,16 +76,23 @@
    <file baseinstalldir="Payment" md5sum="011e48ea380d3350235ac6ac5e6779b5" name="docs/payment/payment-dta/dtazv/addexchange.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="9d4af761b8cdaad88ac0782b16280f7d" name="docs/payment/payment-dta/dtazv/dtazv.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="6c2b1f46875a2e12588285f745df37c8" name="docs/payment/payment-dta/dtazv/getfilecontent.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="ba218a8d0c188ddf10d4c217c93cfe59" name="docs/payment/payment-dta/dtazv/getmetadata.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="4e41e0f493cd150e41366f8bfbf7978a" name="docs/payment/payment-dta/dtazv/parse.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="06903a6471a7127e64f72dd04f25b441" name="docs/payment/payment-dta/dtazv/setaccountfilesender.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="6a5853199343247b6578d863f18b8f17" name="docs/payment/payment-dta/dtazv/setmaxamount.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="d398a65a789851b1bacff2d2d94fdf42" name="tests/AllTests.php" role="test" />
    <file baseinstalldir="Payment" md5sum="8181fc7a6404c7db18a6f0b3c5ac0e8a" name="tests/DTABaseTest.php" role="test" />
-   <file baseinstalldir="Payment" md5sum="ca3fdae8b20afb31ba7c27db9641db63" name="tests/DTATest.php" role="test" />
+   <file baseinstalldir="Payment" md5sum="2e551722d33665824a92777a5faee6ab" name="tests/DTATest.php" role="test" />
    <file baseinstalldir="Payment" md5sum="207e724ddd88b35f51b8889655c181d0" name="tests/DTAZVTest.php" role="test" />
-   <file baseinstalldir="Payment" md5sum="52c8cb6347fb3a75c6f695c04919bfef" name="DTA.php" role="php" />
-   <file baseinstalldir="Payment" md5sum="c88979ab8b567858ee8883daf2074c0f" name="DTABase.php" role="php" />
-   <file baseinstalldir="Payment" md5sum="ec085ac1e44fcd8b88bc8506c3f5ad18" name="DTAZV.php" role="php" />
+   <file baseinstalldir="Payment" md5sum="126cee343e9da72590eb0822f47e5361" name="DTA.php" role="php">
+    <tasks:replace from="@package_version@" to="version" type="package-info" />
+   </file>
+   <file baseinstalldir="Payment" md5sum="1c5ac347399c118ec8722342fb078e5e" name="DTABase.php" role="php">
+    <tasks:replace from="@package_version@" to="version" type="package-info" />
+   </file>
+   <file baseinstalldir="Payment" md5sum="403103b83224a0d90ad35d0b5dd18dee" name="DTAZV.php" role="php">
+    <tasks:replace from="@package_version@" to="version" type="package-info" />
+   </file>
   </dir>
  </contents>
  <dependencies>
@@ -433,8 +437,24 @@ First release.
    <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
    <notes>
 [*] add type field to meta data
-[*] parse file creation date as timestamp
-[-] DTA parsing: simple check of transaction types in field C7
+[*] parse file creation date as timestamp. Thanks to Stephan Uhlmann.
+[-] DTA parsing: simple check of transaction types in field C7. Thanks to Stephan Uhlmann.
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.4.0RC1</release>
+    <api>1.4.0RC1</api>
+   </version>
+   <stability>
+    <release>beta</release>
+    <api>beta</api>
+   </stability>
+   <date>2010-10-09</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
+   <notes>
+[*] split methods, reduce code complexity
 ( [+] Added   [-] Fixed   [*] Improved   [!] Note )
    </notes>
   </release>

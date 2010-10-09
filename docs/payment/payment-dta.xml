@@ -96,14 +96,6 @@
        </row>
        <row>
         <entry>
-         <link linkend="package.payment.payment-dta.dtabase.asjson">
-          <function>DTABase::asJSON</function>
-         </link>
-        </entry>
-        <entry>Returns the exchanges in JSON format.</entry>
-       </row>
-       <row>
-        <entry>
          <link linkend="package.payment.payment-dta.dtabase.checkstr">
           <function>DTABase::checkStr</function>
          </link>
@@ -125,6 +117,14 @@
          </link>
         </entry>
         <entry>&notdocumented;</entry>
+       </row>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.dtabase.filter">
+          <function>DTABase::filter</function>
+         </link>
+        </entry>
+        <entry>Auxillary method to filter output strings.</entry>
        </row>
        <row>
         <entry>
@@ -300,10 +300,10 @@
  </refentry>
  &package.payment.payment-dta.dtabase.--construct;
 &package.payment.payment-dta.dtabase.addexchange;
-&package.payment.payment-dta.dtabase.asjson;
 &package.payment.payment-dta.dtabase.checkstr;
 &package.payment.payment-dta.dtabase.count;
 &package.payment.payment-dta.dtabase.current;
+&package.payment.payment-dta.dtabase.filter;
 &package.payment.payment-dta.dtabase.getfilecontent;
 &package.payment.payment-dta.dtabase.getmetadata;
 &package.payment.payment-dta.dtabase.getnum;
@@ -397,14 +397,6 @@
        </row>
        <row>
         <entry>
-         <link linkend="package.payment.payment-dta.dtabase.asjson">
-          <function>DTABase::asJSON</function>
-         </link>
-        </entry>
-        <entry>Returns the exchanges in JSON format.</entry>
-       </row>
-       <row>
-        <entry>
          <link linkend="package.payment.payment-dta.dtabase.checkstr">
           <function>DTABase::checkStr</function>
          </link>
@@ -426,6 +418,14 @@
          </link>
         </entry>
         <entry>&notdocumented;</entry>
+       </row>
+       <row>
+        <entry>
+         <link linkend="package.payment.payment-dta.dtabase.filter">
+          <function>DTABase::filter</function>
+         </link>
+        </entry>
+        <entry>Auxillary method to filter output strings.</entry>
        </row>
        <row>
         <entry>
