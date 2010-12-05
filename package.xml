@@ -16,19 +16,19 @@
   <email>hs@web-gear.com</email>
   <active>no</active>
  </lead>
- <date>2010-10-09</date>
- <time>14:33:07</time>
+ <date>2010-12-05</date>
+ <time>18:02:11</time>
  <version>
-  <release>1.4.0RC1</release>
-  <api>1.4.0RC1</api>
+  <release>1.4.0</release>
+  <api>1.4.0</api>
  </version>
  <stability>
-  <release>beta</release>
-  <api>beta</api>
+  <release>stable</release>
+  <api>stable</api>
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
  <notes>
-[*] split methods, reduce code complexity
+[!] advance to stable release, no code change
 ( [+] Added   [-] Fixed   [*] Improved   [!] Note )
  </notes>
  <contents>
@@ -59,6 +59,7 @@
    <file baseinstalldir="Payment" md5sum="08695ba7dfb88115b1f82e2076bce05b" name="docs/payment/payment-dta/dtabase/count.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="3498d2fefaa11a24306971b771f6d36e" name="docs/payment/payment-dta/dtabase/current.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="b725b82cbdf85da485357c2a0fb7f3a1" name="docs/payment/payment-dta/dtabase/dtabase.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="1a7a58f4b3920483533183ce3fb5dfda" name="docs/payment/payment-dta/dtabase/filter.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="2c2b28598152d4ac4e1a2c5a0bd59292" name="docs/payment/payment-dta/dtabase/getfilecontent.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="c3458034dacc6c5aff40a3645a90b7fc" name="docs/payment/payment-dta/dtabase/getmetadata.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="10812684d481eb6db5da93a46b864787" name="docs/payment/payment-dta/dtabase/getnum.xml" role="doc" />
@@ -455,6 +456,22 @@ First release.
    <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
    <notes>
 [*] split methods, reduce code complexity
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.4.0</release>
+    <api>1.4.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2010-12-05</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
+   <notes>
+[!] advance to stable release, no code change
 ( [+] Added   [-] Fixed   [*] Improved   [!] Note )
    </notes>
   </release>
