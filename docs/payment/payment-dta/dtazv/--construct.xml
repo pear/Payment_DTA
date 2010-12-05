@@ -1,0 +1,57 @@
+<refentry id="package.payment.payment-dta.dtazv.--construct">
+ <refnamediv>
+  <refname>
+   constructor
+   <function>DTAZV::__construct</function>
+  </refname>
+  <refpurpose>Constructor.</refpurpose>
+ </refnamediv>
+ <refsynopsisdiv>
+  <funcsynopsis>
+   <funcsynopsisinfo>require_once &apos;/DTAZV.php&apos;;</funcsynopsisinfo>
+   <funcprototype>
+    <funcdef>
+     void      constructor
+     <function>DTAZV::__construct</function>
+    </funcdef>
+    <paramdef>
+     string
+     <parameter>
+      <optional>$input = &null;</optional>
+     </parameter>
+    </paramdef>
+   </funcprototype>
+  </funcsynopsis>
+ </refsynopsisdiv>
+ <refsect1 id="package.payment.payment-dta.dtazv.--construct.desc">
+  &title.desc;
+  &notdocumented;
+</refsect1>
+ <refsect1 id="package.payment.payment-dta.dtazv.--construct.param">
+  &title.param;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term>
+      &type.string;
+      <parameter>$input</parameter>
+     </term>
+     <listitem>
+      <para>Optional, a string with DTAZV data to import.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtazv.--construct.throws">
+  &title.throws;
+  <para>
+   <emphasis>throws</emphasis>
+   no exceptions thrown
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtazv.--construct.note">
+  &title.note;
+  &note.notstatic;
+</refsect1>
+</refentry>

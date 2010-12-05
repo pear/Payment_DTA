@@ -1,0 +1,5 @@
+<chapter id="package.Payment">
+ <title>Payment</title>
+ &package.Payment.default;
+&package.Payment.payment-dta;
+</chapter>

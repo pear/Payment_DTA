@@ -1,0 +1,59 @@
+<refentry id="package.payment.payment-dta.dta.--construct">
+ <refnamediv>
+  <refname>
+   constructor
+   <function>DTA::__construct</function>
+  </refname>
+  <refpurpose>Constructor. Creates an empty DTA object or imports one.</refpurpose>
+ </refnamediv>
+ <refsynopsisdiv>
+  <funcsynopsis>
+   <funcsynopsisinfo>require_once &apos;/DTA.php&apos;;</funcsynopsisinfo>
+   <funcprototype>
+    <funcdef>
+     void      constructor
+     <function>DTA::__construct</function>
+    </funcdef>
+    <paramdef>
+     integer|string
+     <parameter>$type</parameter>
+    </paramdef>
+   </funcprototype>
+  </funcsynopsis>
+ </refsynopsisdiv>
+ <refsect1 id="package.payment.payment-dta.dta.--construct.desc">
+  &title.desc;
+  <para>If the parameter is a string, then it is expected to be in DTA format  an its content (sender and transactions) is imported. If the string cannot  be parsed at all then an empty DTA object with type DTA_CREDIT is returned.  If only parts of the string can be parsed, then all transactions before the  error are included into the object.  The user should use getParsingError() to check whether a parsing error occured.</para>
+  <para>Otherwise the parameter has to be the type of the new DTA object,  either DTA_CREDIT or DTA_DEBIT. In this case exceptions are never  thrown to ensure compatibility.</para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dta.--construct.param">
+  &title.param;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term>
+      <type>integer|string</type>
+      <parameter>$type</parameter>
+     </term>
+     <listitem>
+      <para>
+       Either a string with DTA data or the type of the                        new
+       DTA file (DTA_CREDIT or DTA_DEBIT). Must be set.
+</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dta.--construct.throws">
+  &title.throws;
+  <para>
+   <emphasis>throws</emphasis>
+   no exceptions thrown
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dta.--construct.note">
+  &title.note;
+  &note.notstatic;
+</refsect1>
+</refentry>

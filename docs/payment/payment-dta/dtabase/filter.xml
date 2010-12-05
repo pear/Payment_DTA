@@ -1,0 +1,69 @@
+<refentry id="package.payment.payment-dta.dtabase.filter">
+ <refnamediv>
+  <refname>
+   <function>DTABase::filter</function>
+  </refname>
+  <refpurpose>Auxillary method to filter output strings.</refpurpose>
+ </refnamediv>
+ <refsynopsisdiv>
+  <funcsynopsis>
+   <funcsynopsisinfo>require_once &apos;/DTABase.php&apos;;</funcsynopsisinfo>
+   <funcprototype>
+    <funcdef>
+     string
+     <function>DTABase::filter</function>
+    </funcdef>
+    <paramdef>
+     string
+     <parameter>$str</parameter>
+    </paramdef>
+    <paramdef>
+     int
+     <parameter>$len</parameter>
+    </paramdef>
+   </funcprototype>
+  </funcsynopsis>
+ </refsynopsisdiv>
+ <refsect1 id="package.payment.payment-dta.dtabase.filter.desc">
+  &title.desc;
+  &notdocumented;
+</refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.filter.param">
+  &title.param;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term>
+      &type.string;
+      <parameter>$str</parameter>
+     </term>
+     <listitem>
+      <para>Text to filter</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <variablelist>
+    <varlistentry>
+     <term>
+      &type.int;
+      <parameter>$len</parameter>
+     </term>
+     <listitem>
+      <para>Length of text field</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.filter.throws">
+  &title.throws;
+  <para>
+   <emphasis>throws</emphasis>
+   no exceptions thrown
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.filter.note">
+  &title.note;
+  &note.notstatic;
+</refsect1>
+</refentry>

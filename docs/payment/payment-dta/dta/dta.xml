@@ -1,0 +1,61 @@
+<refentry id="package.payment.payment-dta.dta.dta">
+ <refnamediv>
+  <refname>
+   constructor
+   <function>DTA::DTA</function>
+  </refname>
+  <refpurpose>
+   Constructor. The type of the DTA file must be set. One file can  only
+   contain credits (DTA_CREDIT) OR debits (DTA_DEBIT).
+</refpurpose>
+ </refnamediv>
+ <refsynopsisdiv>
+  <funcsynopsis>
+   <funcsynopsisinfo>require_once &apos;/DTA.php&apos;;</funcsynopsisinfo>
+   <funcprototype>
+    <funcdef>
+     void      constructor
+     <function>DTA::DTA</function>
+    </funcdef>
+    <paramdef>
+     integer
+     <parameter>$type</parameter>
+    </paramdef>
+   </funcprototype>
+  </funcsynopsis>
+ </refsynopsisdiv>
+ <refsect1 id="package.payment.payment-dta.dta.dta.desc">
+  &title.desc;
+  <para>This is a definement of the DTA format.</para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dta.dta.param">
+  &title.param;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term>
+      &type.int;
+      <parameter>$type</parameter>
+     </term>
+     <listitem>
+      <para>
+       Determines the type of the DTA file.                        Either
+       DTA_CREDIT or DTA_DEBIT. Must be set.
+</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dta.dta.throws">
+  &title.throws;
+  <para>
+   <emphasis>throws</emphasis>
+   no exceptions thrown
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dta.dta.note">
+  &title.note;
+  &note.notstatic;
+</refsect1>
+</refentry>
