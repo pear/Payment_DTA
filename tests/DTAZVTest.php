@@ -565,7 +565,7 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
 	    (float) 234.56,
 	    "Test2"
         ));
-        $dates = strftime("%d%m%y00%d%m%y", time());
+        $dates = strftime("%y%m%d00%y%m%d", time());
 
         $expected = // 64 chars per line:
             '0256Q160500003503007767SENDERS NAME                             '.
@@ -719,7 +719,7 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
 
     public function testParserBasic()
     {
-        $dates = strftime("%d%m%y00%d%m%y", time());
+        $dates = strftime("%y%m%d00%y%m%d", time());
         $teststring = // same as in testContent()
             '0256Q160500003503007767SENDERS NAME                             '.
             '                                                                '.
@@ -1030,8 +1030,8 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
 
     public function testParserTimestamp()
     {
-        $date_creation  = '300810'; // 2010-08-30
-        $date_execution = '310810'; // 2010-08-31
+        $date_creation  = '100830'; // 2010-08-30
+        $date_execution = '100831'; // 2010-08-31
         $dates = $date_creation.'00'.$date_execution;
         $teststring = // same as in testContent()
             '0256Q160500003503007767SENDERS NAME                             '.
@@ -1070,6 +1070,6 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
         $meta = $dtazv->getMetaData();
         $this->assertEquals("2", $meta["count"]);
         $this->assertEquals("CREDIT", $meta["type"]);
-        $this->assertEquals($date_creation, strftime("%d%m%y", $meta["date"]));
+        $this->assertEquals($date_creation, strftime("%y%m%d", $meta["date"]));
     }
 }

@@ -419,12 +419,12 @@ class DTAZV extends DTABase
             $this->account_file_sender['city'], 35, " ", STR_PAD_RIGHT
         );
         // Q06 date of file creation
-        $content .= strftime("%d%m%y", $this->timestamp);
+        $content .= strftime("%y%m%d", $this->timestamp);
         // Q07 daily counter
         // UNSURE if necessary
         $content .= "00";
         // Q08 execution date
-        $content .= strftime("%d%m%y", $this->timestamp);
+        $content .= strftime("%y%m%d", $this->timestamp);
         // Q09 notification to federal bank
         // according to specification (see above)
         // transfers <= 12500 Euro do not have to be reported
@@ -625,9 +625,9 @@ class DTAZV extends DTABase
         $Q['street']          = rtrim($this->getStr($input, $offset, 35, true));
         $Q['city']            = rtrim($this->getStr($input, $offset, 35, true));
         /* field Q06 date of file creation -- use to set timestamp */
-        $Qdate_day   = $this->getNum($input, $offset, 2);
-        $Qdate_month = $this->getNum($input, $offset, 2);
         $Qdate_year  = $this->getNum($input, $offset, 2);
+        $Qdate_month = $this->getNum($input, $offset, 2);
+        $Qdate_day   = $this->getNum($input, $offset, 2);
         $this->timestamp = mktime(
             0, 0, 0,
             intval($Qdate_month), intval($Qdate_day), intval($Qdate_year)
