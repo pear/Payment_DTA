@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<package packagerversion="1.9.1" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
+<package packagerversion="1.9.2" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
  <name>Payment_DTA</name>
  <channel>pear.php.net</channel>
  <summary>Creates and reads DTA and DTAZV files containing money transaction data (Germany).</summary>
@@ -16,11 +16,11 @@
   <email>hs@web-gear.com</email>
   <active>no</active>
  </lead>
- <date>2010-12-05</date>
- <time>18:02:11</time>
+ <date>2011-04-18</date>
+ <time>23:31:31</time>
  <version>
-  <release>1.4.0</release>
-  <api>1.4.0</api>
+  <release>1.4.1</release>
+  <api>1.4.1</api>
  </version>
  <stability>
   <release>stable</release>
@@ -28,7 +28,7 @@
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
  <notes>
-[!] advance to stable release, no code change
+[-] wrong format in DTAZV date fields (thanks to Maek Gill, #18452)
 ( [+] Added   [-] Fixed   [*] Improved   [!] Note )
  </notes>
  <contents>
@@ -84,14 +84,14 @@
    <file baseinstalldir="Payment" md5sum="d398a65a789851b1bacff2d2d94fdf42" name="tests/AllTests.php" role="test" />
    <file baseinstalldir="Payment" md5sum="8181fc7a6404c7db18a6f0b3c5ac0e8a" name="tests/DTABaseTest.php" role="test" />
    <file baseinstalldir="Payment" md5sum="2e551722d33665824a92777a5faee6ab" name="tests/DTATest.php" role="test" />
-   <file baseinstalldir="Payment" md5sum="207e724ddd88b35f51b8889655c181d0" name="tests/DTAZVTest.php" role="test" />
+   <file baseinstalldir="Payment" md5sum="d7dfa58def53b11c8028d01592cebffb" name="tests/DTAZVTest.php" role="test" />
    <file baseinstalldir="Payment" md5sum="126cee343e9da72590eb0822f47e5361" name="DTA.php" role="php">
     <tasks:replace from="@package_version@" to="version" type="package-info" />
    </file>
    <file baseinstalldir="Payment" md5sum="1c5ac347399c118ec8722342fb078e5e" name="DTABase.php" role="php">
     <tasks:replace from="@package_version@" to="version" type="package-info" />
    </file>
-   <file baseinstalldir="Payment" md5sum="403103b83224a0d90ad35d0b5dd18dee" name="DTAZV.php" role="php">
+   <file baseinstalldir="Payment" md5sum="bd8cbd5577f7b9907a33ce4988a3995e" name="DTAZV.php" role="php">
     <tasks:replace from="@package_version@" to="version" type="package-info" />
    </file>
   </dir>
@@ -472,6 +472,22 @@ First release.
    <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
    <notes>
 [!] advance to stable release, no code change
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.4.1</release>
+    <api>1.4.1</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2011-04-18</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
+   <notes>
+[-] wrong format in DTAZV date fields (thanks to Maek Gill, #18452)
 ( [+] Added   [-] Fixed   [*] Improved   [!] Note )
    </notes>
   </release>
