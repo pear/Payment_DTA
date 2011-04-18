@@ -13,10 +13,10 @@
  * then you might have to implement additional record types (V or W)
  * and fill additional data fields for notification requirements.
  *
- * Specification used:
- * http://www.bundesbank.de/download/meldewesen/aussenwirtschaft/vordrucke/pdf/dtazv_2007_kunde_bank.pdf
- * english version:
- * http://www.bundesbank.de/download/meldewesen/aussenwirtschaft/vordrucke/pdf/dtazv_2007_financial_inst_bbk.pdf
+ * Implemented using the specification from 2007.
+ * Current specification from 2009 (german/english):
+ * http://www.bundesbank.de/download/meldewesen/aussenwirtschaft/vordrucke/pdf/dtazv_kunde_bank_neu.pdf
+ * http://www.bundesbank.de/download/meldewesen/aussenwirtschaft/vordrucke/pdf/dtazv_financial_inst_bbk.pdf
  *
  * PHP version 5
  *
