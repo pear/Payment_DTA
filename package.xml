@@ -1,0 +1,495 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package packagerversion="1.9.2" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
+ <name>Payment_DTA</name>
+ <channel>pear.php.net</channel>
+ <summary>Creates and reads DTA and DTAZV files containing money transaction data (Germany).</summary>
+ <description>Payment_DTA provides functions to create and read DTA and DTAZV files used in Germany to exchange informations about money transactions with banks or online banking programs.</description>
+ <lead>
+  <name>Martin Schütte</name>
+  <user>mschuett</user>
+  <email>info@mschuette.name</email>
+  <active>yes</active>
+ </lead>
+ <lead>
+  <name>Hermann Stainer</name>
+  <user>hstainer</user>
+  <email>hs@web-gear.com</email>
+  <active>no</active>
+ </lead>
+ <date>2011-04-18</date>
+ <time>23:31:31</time>
+ <version>
+  <release>1.4.1</release>
+  <api>1.4.1</api>
+ </version>
+ <stability>
+  <release>stable</release>
+  <api>stable</api>
+ </stability>
+ <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
+ <notes>
+[-] wrong format in DTAZV date fields (thanks to Maek Gill, #18452)
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )
+ </notes>
+ <contents>
+  <dir baseinstalldir="Payment" name="/">
+   <file baseinstalldir="Payment" md5sum="953f27d82cb27ddd1d89d8db37b28ac6" name="docs/payment.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="59d5c86207ee6b80ad9292fec4e56477" name="docs/examples/example_begleitzettel.php" role="doc" />
+   <file baseinstalldir="Payment" md5sum="efc3455156c3ee7318d079c75a0f2c77" name="docs/examples/example_credit.php" role="doc" />
+   <file baseinstalldir="Payment" md5sum="d81d64ce27bb1dace65112099fffc39c" name="docs/examples/example_debit.php" role="doc" />
+   <file baseinstalldir="Payment" md5sum="a009d15bd59356a9e524dea04ab76d38" name="docs/examples/example_download.php" role="doc" />
+   <file baseinstalldir="Payment" md5sum="7c2960a4c5df099c574a1af9e3bffdc0" name="docs/examples/example_dtazv.php" role="doc" />
+   <file baseinstalldir="Payment" md5sum="8a8629a5730d7be85257a4f4a7dc866b" name="docs/examples/show_dta.php" role="doc" />
+   <file baseinstalldir="Payment" md5sum="954d9ac0ccd776185f45d7611d4e26d6" name="docs/payment/payment-dta.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="f30b96494cdbd1386858a4adc96703a9" name="docs/payment/payment-dta/constants.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="88a1a071a6bca6167455fbe0ee627cc7" name="docs/payment/payment-dta/dta/--construct.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="76bc0c444f8d7d0a3361591a1727c19d" name="docs/payment/payment-dta/dta/addexchange.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="77d5a778f9800d941c15b0ac5a61c70e" name="docs/payment/payment-dta/dta/count.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="21ab7b8238670fa8812b17dc93c002ff" name="docs/payment/payment-dta/dta/dta.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="35ad7fc1abebb499e0dbc4bab0f803d1" name="docs/payment/payment-dta/dta/getfilecontent.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="c0df828571378cb6fbbaf991f04be22d" name="docs/payment/payment-dta/dta/getmetadata.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="995b8368cc409ac748eae6ecdfee752d" name="docs/payment/payment-dta/dta/makevalidstring.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="52ce479b451c8d1bd3c0c2cb6ba8a1c1" name="docs/payment/payment-dta/dta/parse.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="c9fa535ae2f377369c99023737b139ae" name="docs/payment/payment-dta/dta/savefile.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="91eb549ed4a29ad11f5c616e69817192" name="docs/payment/payment-dta/dta/setaccountfilesender.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="dd389478d8ac702520654f5ebb718e4d" name="docs/payment/payment-dta/dta/validstring.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="69e852f74d23a5cf12ac896561d06782" name="docs/payment/payment-dta/dtabase/--construct.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="58c0cd5ca863cb67d56bccda14292460" name="docs/payment/payment-dta/dtabase/addexchange.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="d4a8681c6b371710ea3fa594c2e05a6d" name="docs/payment/payment-dta/dtabase/checkstr.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="08695ba7dfb88115b1f82e2076bce05b" name="docs/payment/payment-dta/dtabase/count.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="3498d2fefaa11a24306971b771f6d36e" name="docs/payment/payment-dta/dtabase/current.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="b725b82cbdf85da485357c2a0fb7f3a1" name="docs/payment/payment-dta/dtabase/dtabase.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="1a7a58f4b3920483533183ce3fb5dfda" name="docs/payment/payment-dta/dtabase/filter.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="2c2b28598152d4ac4e1a2c5a0bd59292" name="docs/payment/payment-dta/dtabase/getfilecontent.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="c3458034dacc6c5aff40a3645a90b7fc" name="docs/payment/payment-dta/dtabase/getmetadata.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="10812684d481eb6db5da93a46b864787" name="docs/payment/payment-dta/dtabase/getnum.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="13197ccbe66e6bc377615ff204dd8b27" name="docs/payment/payment-dta/dtabase/getparsingerrors.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="ddebe3914855d1d0afde2315610fc718" name="docs/payment/payment-dta/dtabase/getstr.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="598a0149da2422b131e0981180423c12" name="docs/payment/payment-dta/dtabase/key.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="fe860e379a3491cd74e88fb016dbd904" name="docs/payment/payment-dta/dtabase/makevalidstring.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="f98fa38a12aaa3f4f9abe1b9716e21dc" name="docs/payment/payment-dta/dtabase/next.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="e56e7a5fa818d339197f042c17951954" name="docs/payment/payment-dta/dtabase/rewind.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="a6276ca6d2e917abef84fc7c2421d2c4" name="docs/payment/payment-dta/dtabase/savefile.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="7ef05976d1c4ed5938952b38e2a5667d" name="docs/payment/payment-dta/dtabase/setaccountfilesender.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="30f4f5a80fe460041d267ceb09cca9d9" name="docs/payment/payment-dta/dtabase/valid.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="755cef1cbc0d67d29ed08d6bc0f845c1" name="docs/payment/payment-dta/dtabase/validstring.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="e6b085f636a7f92eb7f05e805046d5db" name="docs/payment/payment-dta/dtazv/--construct.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="011e48ea380d3350235ac6ac5e6779b5" name="docs/payment/payment-dta/dtazv/addexchange.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="9d4af761b8cdaad88ac0782b16280f7d" name="docs/payment/payment-dta/dtazv/dtazv.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="6c2b1f46875a2e12588285f745df37c8" name="docs/payment/payment-dta/dtazv/getfilecontent.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="ba218a8d0c188ddf10d4c217c93cfe59" name="docs/payment/payment-dta/dtazv/getmetadata.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="4e41e0f493cd150e41366f8bfbf7978a" name="docs/payment/payment-dta/dtazv/parse.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="06903a6471a7127e64f72dd04f25b441" name="docs/payment/payment-dta/dtazv/setaccountfilesender.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="6a5853199343247b6578d863f18b8f17" name="docs/payment/payment-dta/dtazv/setmaxamount.xml" role="doc" />
+   <file baseinstalldir="Payment" md5sum="d398a65a789851b1bacff2d2d94fdf42" name="tests/AllTests.php" role="test" />
+   <file baseinstalldir="Payment" md5sum="8181fc7a6404c7db18a6f0b3c5ac0e8a" name="tests/DTABaseTest.php" role="test" />
+   <file baseinstalldir="Payment" md5sum="2e551722d33665824a92777a5faee6ab" name="tests/DTATest.php" role="test" />
+   <file baseinstalldir="Payment" md5sum="d7dfa58def53b11c8028d01592cebffb" name="tests/DTAZVTest.php" role="test" />
+   <file baseinstalldir="Payment" md5sum="126cee343e9da72590eb0822f47e5361" name="DTA.php" role="php">
+    <tasks:replace from="@package_version@" to="version" type="package-info" />
+   </file>
+   <file baseinstalldir="Payment" md5sum="1c5ac347399c118ec8722342fb078e5e" name="DTABase.php" role="php">
+    <tasks:replace from="@package_version@" to="version" type="package-info" />
+   </file>
+   <file baseinstalldir="Payment" md5sum="bd8cbd5577f7b9907a33ce4988a3995e" name="DTAZV.php" role="php">
+    <tasks:replace from="@package_version@" to="version" type="package-info" />
+   </file>
+  </dir>
+ </contents>
+ <dependencies>
+  <required>
+   <php>
+    <min>5.0.0</min>
+   </php>
+   <pearinstaller>
+    <min>1.4.0b1</min>
+   </pearinstaller>
+  </required>
+ </dependencies>
+ <phprelease />
+ <changelog>
+  <release>
+   <version>
+    <release>0.71</release>
+    <api>0.71</api>
+   </version>
+   <stability>
+    <release>beta</release>
+    <api>beta</api>
+   </stability>
+   <date>2003-08-23</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
+   <notes>
+First release.
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>0.80</release>
+    <api>0.80</api>
+   </version>
+   <stability>
+    <release>beta</release>
+    <api>beta</api>
+   </stability>
+   <date>2003-10-05</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
+   <notes>
+[+] German umlauts are now converted, e.g. ä to ae. Although umlauts should be working in DTA files by official specification, in fact they doesnt worked.
+[-] Fixed a bug that caused false amounts of money if exactly one number after the point was given in the amount (e.g. 12.3). Thanks to Matthias Jaekle for the reference.
+[!] Payment_DTA is NOT designed for account data validation. It needs valid data to work, and this also means NO SPACES in bank codes or account numbers.
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>0.81</release>
+    <api>0.81</api>
+   </version>
+   <stability>
+    <release>beta</release>
+    <api>beta</api>
+   </stability>
+   <date>2003-10-19</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
+   <notes>
+[-] Fixed bug that caused corrupted files if umlauts were converted
+[+] German ß is converted to ss now
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.00</release>
+    <api>1.00</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2004-05-24</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
+   <notes>
+[-] Fixed bug #1387 Notice on line 195 (with error_reporting set to E_ALL, the class output a notice). Thanks to Markus Wolff!
+[!] Class functions were tested extended in credit mode.
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.1.0</release>
+    <api>1.1.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2005-01-16</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
+   <notes>
+[-] Fixed bug #3165 (leading zero after comma in amount is ignored if more than two digits after comma). Thanks to Matthias C. Spieß!
+[-] Fixed bug with corrupted DTA files if using only one line for transaction purposes. Thanks to Michael Hosse!
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.2.0</release>
+    <api>1.2.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2005-01-25</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
+   <notes>
+[-] Fixed problems handling exchanges with seperator in money amounts other than . (e.g. , in German locale settings). Thanks to Mario Mueller!
+[*] The code part splitting up Euro and Cent was rewritten.. Thanks to Michael Hosse for inspiring this improvement!
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.2.1</release>
+    <api>1.2.1</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2008-11-29</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
+   <notes>
+[-] input validation for overlong account/bank numbers
+[-] use intval() and number_format() to ensure correct number output. Fixes Bugs #13067 and #13911. Thanks to Stefan Großmann and Björn Dietz!
+[*] more characters handled in makeValidString()
+[+] new method: count()
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.3.0a1</release>
+    <api>1.3.0a1</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2008-12-16</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
+   <notes>
+[+] Add class DTAZV for european transfers (and DTABase as superclass).
+[-] Check number of purpose lines in DTA.
+[-] Improved handling of extention fields in DTA (should fix bug #4637).
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.3.0a2</release>
+    <api>1.3.0a2</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2009-01-22</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
+   <notes>
+[-] converted files to UTF-8
+[-] made makeValidString() MB aware
+[-] fixed error in test testValidStringTrue()
+[-] changed DTAZV_MAXAMOUNT to 12500
+[+] added more character conversions (thanks to Clemens Weiß, #15651)
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.3.0a3</release>
+    <api>1.3.0a3</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2009-01-23</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
+   <notes>
+[-] Fixed C-Record extensions (#4637)
+[*] keep all amounts of money as integer values
+[*] check for overflow in sums
+[*] variables containing amounts of money are always in cents
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.3.0a4</release>
+    <api>1.3.0a4</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2009-02-20</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
+   <notes>
+[-] fix makeValidString(), was completely broken in 1.3.0a2 (#15791)
+[-] fixed error in test testValidStringTrue()
+[!] remove ÄÖÜß from $validString_chars
+[!] mb functions need PHP version = 4.0.6
+[+] DTA: add attributes $sum_bankcodes and $sum_accounts
+[+] add method getMetaData() (on request from Georg Horn)
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.3.0RC1</release>
+    <api>1.3.0RC1</api>
+   </version>
+   <stability>
+    <release>beta</release>
+    <api>beta</api>
+   </stability>
+   <date>2009-03-19</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
+   <notes>
+[*] simplify validString() and makeValidString() (suggested by Clemens Weiß, #15791)
+[*] advance status from alpha to beta
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.3.0</release>
+    <api>1.3.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2009-04-23</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
+   <notes>
+[!] advance status from beta to stable
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.3.1</release>
+    <api>1.3.1</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2009-05-13</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
+   <notes>
+[-] fixed DTAZV amount formatting in T14a (thanks to Daniel Wilhelm)
+[-] fixed DTAZV checksums in Z03 (thanks to Daniel Wilhelm)
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.3.2</release>
+    <api>1.3.2</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2009-06-10</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
+   <notes>
+[-] fixed numeric input for account numbers (#16285, thanks to Christian Stoller)
+[-] added input validation for $account_sender in DTAZV-&gt;addExchange()
+[*] add DTAZV-&gt;setMaxAmount() (#16164, thanks to Daniel Wilhelm)
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.4.0a1</release>
+    <api>1.4.0a1</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2010-06-22</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
+   <notes>
+[!] PHP5 only
+[+] add parser to read DTA files (with unstable API, feedback is welcome)
+[+] add Iterator interface
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.4.0a2</release>
+    <api>1.4.0a2</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2010-07-01</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
+   <notes>
+[*] now able to parse DTA files with incorrect characters (latin1 and lowercase)
+[*] change parsing error reporting
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.4.0a3</release>
+    <api>1.4.0a3</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2010-07-07</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
+   <notes>
+[+] parse DTAZV files
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.4.0a4</release>
+    <api>1.4.0a4</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2010-09-06</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
+   <notes>
+[*] add type field to meta data
+[*] parse file creation date as timestamp. Thanks to Stephan Uhlmann.
+[-] DTA parsing: simple check of transaction types in field C7. Thanks to Stephan Uhlmann.
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.4.0RC1</release>
+    <api>1.4.0RC1</api>
+   </version>
+   <stability>
+    <release>beta</release>
+    <api>beta</api>
+   </stability>
+   <date>2010-10-09</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
+   <notes>
+[*] split methods, reduce code complexity
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.4.0</release>
+    <api>1.4.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2010-12-05</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
+   <notes>
+[!] advance to stable release, no code change
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.4.1</release>
+    <api>1.4.1</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2011-04-18</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
+   <notes>
+[-] wrong format in DTAZV date fields (thanks to Maek Gill, #18452)
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )
+   </notes>
+  </release>
+ </changelog>
+</package>

@@ -1,0 +1,91 @@
+<refentry id="package.payment.payment-dta.dtabase.getnum">
+ <refnamediv>
+  <refname>
+   <function>DTABase::getNum</function>
+  </refname>
+  <refpurpose>Read integer number of given length from input at offset.</refpurpose>
+ </refnamediv>
+ <refsynopsisdiv>
+  <funcsynopsis>
+   <funcsynopsisinfo>require_once &apos;/DTABase.php&apos;;</funcsynopsisinfo>
+   <funcprototype>
+    <funcdef>
+     int
+     <function>DTABase::getNum</function>
+    </funcdef>
+    <paramdef>
+     string
+     <parameter>$input</parameter>
+    </paramdef>
+    <paramdef>
+     integer
+     <parameter>&amp;$offset</parameter>
+    </paramdef>
+    <paramdef>
+     integer
+     <parameter>$length</parameter>
+    </paramdef>
+   </funcprototype>
+  </funcsynopsis>
+ </refsynopsisdiv>
+ <refsect1 id="package.payment.payment-dta.dtabase.getnum.desc">
+  &title.desc;
+  <para>Afterwards the offset is increased.</para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.getnum.param">
+  &title.param;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term>
+      &type.string;
+      <parameter>$input</parameter>
+     </term>
+     <listitem>
+      <para>string to check</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <variablelist>
+    <varlistentry>
+     <term>
+      &type.int;
+      <parameter>&amp;$offset</parameter>
+     </term>
+     <listitem>
+      <para>current offset into input</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <variablelist>
+    <varlistentry>
+     <term>
+      &type.int;
+      <parameter>$length</parameter>
+     </term>
+     <listitem>
+      <para>chars to read</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.getnum.returns">
+  &title.returns;
+  <para>
+   <emphasis>returns</emphasis>
+   the read number
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.getnum.throws">
+  &title.throws;
+  <para>
+   <emphasis>throws</emphasis>
+   Payment_DTA_Exception if input is too short or contains invalid chars
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.getnum.note">
+  &title.note;
+  &note.notstatic;
+</refsect1>
+</refentry>

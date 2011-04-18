@@ -1,0 +1,57 @@
+<refentry id="package.payment.payment-dta.dta.validstring">
+ <refnamediv>
+  <refname>
+   <function>DTA::validString</function>
+  </refname>
+  <refpurpose>
+   Checks if the given string contains only chars valid for fields  in DTA
+   files.
+</refpurpose>
+ </refnamediv>
+ <refsynopsisdiv>
+  <funcsynopsis>
+   <funcsynopsisinfo>require_once &apos;/DTA.php&apos;;</funcsynopsisinfo>
+   <funcprototype>
+    <funcdef>
+     boolean
+     <function>DTA::validString</function>
+    </funcdef>
+    <paramdef>
+     string
+     <parameter>$string</parameter>
+    </paramdef>
+   </funcprototype>
+  </funcsynopsis>
+ </refsynopsisdiv>
+ <refsect1 id="package.payment.payment-dta.dta.validstring.desc">
+  &title.desc;
+  &notdocumented;
+</refsect1>
+ <refsect1 id="package.payment.payment-dta.dta.validstring.param">
+  &title.param;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term>
+      &type.string;
+      <parameter>$string</parameter>
+     </term>
+     <listitem>
+      <para>String that is checked.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dta.validstring.throws">
+  &title.throws;
+  <para>
+   <emphasis>throws</emphasis>
+   no exceptions thrown
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dta.validstring.note">
+  &title.note;
+  &note.notstatic;
+</refsect1>
+</refentry>
