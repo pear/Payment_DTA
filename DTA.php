@@ -170,6 +170,7 @@ class DTA extends DTABase
     *  account_number  Sender's account number.
     *  additional_name If necessary, additional line for sender's name
     *                  (maximally 27 chars).
+    *  exec_date       Optional execution date for the DTA file in format DDMMYYYY.
     *
     * @param array $account Account data for file sender.
     *
@@ -196,11 +197,17 @@ class DTA extends DTABase
                 $account['additional_name'] = "";
             }
 
+            if (empty($account['exec_date'])
+                || !ctype_digit($account['exec_date'])) {
+            	$account['exec_date'] = str_repeat(" ", 8);
+            }
+
             $this->account_file_sender = array(
                 "name"            => $this->filter($account['name'], 27),
                 "bank_code"       => $account['bank_code'],
                 "account_number"  => $account['account_number'],
-                "additional_name" => $this->filter($account['additional_name'], 27)
+                "additional_name" => $this->filter($account['additional_name'], 27),
+                "exec_date"       => $account['exec_date']
             );
 
             $result = true;
@@ -396,7 +403,7 @@ class DTA extends DTABase
         // A11a free (reserve)
         $content .= str_repeat(" ", 15);
         // A11b execution date ("DDMMYYYY", optional)
-        $content .= str_repeat(" ", 8);
+        $content .= $this->account_file_sender['exec_date'];
         // A11c free (reserve)
         $content .= str_repeat(" ", 24);
         // A12 currency (1 = Euro)
@@ -716,11 +723,8 @@ class DTA extends DTABase
         $this->checkStr($input, $offset, "0000000000");
         /* field 11a */
         $this->checkStr($input, $offset, str_repeat(" ", 15));
-        /* field 11b
-         * this may hold an optional execution date.
-         * DTA does not fill the field and parse() ignores its content.
-        */
-        $this->getStr($input, $offset, 8);
+        /* field 11b */
+        $Aexec_date = $this->getStr($input, $offset, 8);
         /* field 11c */
         $this->checkStr($input, $offset, str_repeat(" ", 24));
         /* field 12 */
@@ -740,12 +744,18 @@ class DTA extends DTABase
                 "either 'GK'/'GB' or 'LK'/'LB' (@offset 6).");
         }
 
+        /*
+         * additional_name is problematic and cannot be parsed & reproduced.
+         * it is set as part of the AccountFileSender, but appears as part
+         * of every transaction.
+         */
         $rc = $this->setAccountFileSender(
             array(
             "name"            => $Asender_name,
             "bank_code"       => $Asender_blz,
             "account_number"  => $Asender_account,
             "additional_name" => '',
+            "exec_date"       => $Aexec_date
             )
         );
         if (!$rc) {
