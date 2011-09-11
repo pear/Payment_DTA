@@ -59,7 +59,7 @@ $meta = $dtaus->getMetaData();
 
 <tr>
 <td>Ausführungsdatum:</td>
-<td><?php print strftime("%d.%m.%y", $meta["date"]); ?></td>
+<td><?php print strftime("%d.%m.%y", $meta["exec_date"]); ?></td>
 </tr>
 
 <tr> <td colspan="2">&nbsp;</td> </tr>

@@ -672,7 +672,7 @@ class DTA extends DTABase
     * @access public
     * @return array Returns an array with keys: "sender_name",
     *   "sender_bank_code", "sender_account", "sum_amounts",
-    *   "type", "sum_bankcodes", "sum_accounts", "count", "date"
+    *   "type", "sum_bankcodes", "sum_accounts", "count", "date", "exec_date"
     */
     function getMetaData()
     {
@@ -682,6 +682,18 @@ class DTA extends DTABase
         $meta["sum_accounts"]  = floatval($this->sum_accounts);
         $meta["type"] = strval(($this->type == DTA_CREDIT) ? "CREDIT" : "DEBIT");
 
+        $meta["exec_date"] = $meta["date"];
+        // use timestamp to be consistent with $meta["date"]
+        if ($this->account_file_sender["exec_date"] !== "") {
+            $ftime = strptime($this->account_file_sender["exec_date"], '%d%m%Y');
+            if ($ftime) {
+                $meta["exec_date"] = mktime(0, 0, 0,
+                            $ftime['tm_mon'] + 1,
+                            $ftime['tm_mday'],
+                            $ftime['tm_year'] + 1900
+                         );
+            }
+        }
         return $meta;
     }
 

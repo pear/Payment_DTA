@@ -2151,13 +2151,61 @@ class DTATest extends PHPUnit_Framework_TestCase
             '0000000123456                                                   ';
      */
 
-    public function testExec_Date()
+    public function testSetExec_date() {
+        /* derived from testContent */
+        $exec_date = '31082010';
+        $dta = new DTA(DTA_CREDIT);
+        $DTA_test_account = array(
+            'name'           => "Senders Name",
+            'bank_code'      => "16050000",
+            'account_number' => "3503007767",
+            'exec_date'      => $exec_date
+        );
+        $this->assertTrue($dta->setAccountFileSender($DTA_test_account));
+
+        $dta->addExchange(array(
+                "name"           => "Franz Mueller",
+                "bank_code"      => 33334444,
+                "account_number" => 13579000,
+            ),
+            (float) 1234.56,
+            "Test-Verwendungszweck"
+        );
+        $dta->addExchange(array(
+                "name"           => "Franz Mueller",
+                "bank_code"      => 33334444,
+                "account_number" => 13579000
+            ),
+            (float) 321.9,
+            "Test-Verwendungszweck"
+        );
+
+        $date = strftime("%d%m%y", time());
+
+        $expected = // 64 chars per line:
+            '0128AGK1605000000000000SENDERS NAME               '.$date.'    3503'.
+            '0077670000000000               '.$exec_date.'                        1'.
+            '0187C16050000333344440013579000000000000000051000 00000000000160'.
+            '50000350300776700000123456   FRANZ MUELLER                      '.
+            'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
+            '                                                                '.
+            '0187C16050000333344440013579000000000000000051000 00000000000160'.
+            '50000350300776700000032190   FRANZ MUELLER                      '.
+            'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
+            '                                                                '.
+            '0128E     000000200000000000000000000002715800000000000066668888'.
+            '0000000155646                                                   ';
+        $this->assertSame($expected, $dta->getFileContent());
+
+    }
+    public function testParseExec_Date()
     {
         /* extended from testParserTimestamp, but also re-create DTA */
-        $date = "300810";  // 2010-08-30
+        $date      = "300810";  // 2010-08-30 --> A7
+        $exec_date = "31082010";  // 2010-08-31 --> A11b
         $teststring = // same as in testContent(), but fixed timestamp
             '0128AGK1605000000000000SENDERS NAME               '.$date.'    3503'.
-            '0077670000000000                                               1'.
+            '0077670000000000               '.$exec_date.'                        1'.
             '0187C16050000333344440013579000000000000000051000 00000000000160'.
             '50000350300776700000123456   FRANZ MUELLER                      '.
             'SENDERS NAME               TEST-VERWENDUNGSZWECK      1  00     '.
@@ -2171,6 +2219,7 @@ class DTATest extends PHPUnit_Framework_TestCase
         $dta = new DTA($teststring);
         $meta = $dta->getMetaData();
         $this->assertEquals($date, strftime("%d%m%y", $meta["date"]));
+        $this->assertSame($exec_date, strftime("%d%m%Y", $meta["exec_date"]));
 
         $dtastring = $dta->getFileContent();
         $this->assertEquals($teststring, $dtastring);
