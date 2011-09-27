@@ -1,0 +1,42 @@
+<refentry id="package.payment.payment-dta.dta.getmetadata">
+ <refnamediv>
+  <refname>
+   <function>DTA::getMetaData</function>
+  </refname>
+  <refpurpose>Returns an array with information about the transactions.</refpurpose>
+ </refnamediv>
+ <refsynopsisdiv>
+  <funcsynopsis>
+   <funcsynopsisinfo>require_once &apos;/DTA.php&apos;;</funcsynopsisinfo>
+   <funcprototype>
+    <funcdef>
+     array
+     <function>DTA::getMetaData</function>
+    </funcdef>
+    <paramdef />
+   </funcprototype>
+  </funcsynopsis>
+ </refsynopsisdiv>
+ <refsect1 id="package.payment.payment-dta.dta.getmetadata.desc">
+  &title.desc;
+  <para>Can be used to print an accompanying document (Begleitzettel) for disks.</para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dta.getmetadata.returns">
+  &title.returns;
+  <para>
+   <emphasis>returns</emphasis>
+   Returns an array with keys: &quot;sender_name&quot;,    &quot;sender_bank_code&quot;, &quot;sender_account&quot;, &quot;sum_amounts&quot;,    &quot;type&quot;, &quot;sum_bankcodes&quot;, &quot;sum_accounts&quot;, &quot;count&quot;, &quot;date&quot;, &quot;exec_date&quot;
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dta.getmetadata.throws">
+  &title.throws;
+  <para>
+   <emphasis>throws</emphasis>
+   no exceptions thrown
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dta.getmetadata.note">
+  &title.note;
+  &note.notstatic;
+</refsect1>
+</refentry>

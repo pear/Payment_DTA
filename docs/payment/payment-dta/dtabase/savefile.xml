@@ -1,0 +1,54 @@
+<refentry id="package.payment.payment-dta.dtabase.savefile">
+ <refnamediv>
+  <refname>
+   <function>DTABase::saveFile</function>
+  </refname>
+  <refpurpose>Writes the DTA file.</refpurpose>
+ </refnamediv>
+ <refsynopsisdiv>
+  <funcsynopsis>
+   <funcsynopsisinfo>require_once &apos;/DTABase.php&apos;;</funcsynopsisinfo>
+   <funcprototype>
+    <funcdef>
+     boolean
+     <function>DTABase::saveFile</function>
+    </funcdef>
+    <paramdef>
+     string
+     <parameter>$filename</parameter>
+    </paramdef>
+   </funcprototype>
+  </funcsynopsis>
+ </refsynopsisdiv>
+ <refsect1 id="package.payment.payment-dta.dtabase.savefile.desc">
+  &title.desc;
+  &notdocumented;
+</refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.savefile.param">
+  &title.param;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term>
+      &type.string;
+      <parameter>$filename</parameter>
+     </term>
+     <listitem>
+      <para>Filename.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.savefile.throws">
+  &title.throws;
+  <para>
+   <emphasis>throws</emphasis>
+   no exceptions thrown
+  </para>
+ </refsect1>
+ <refsect1 id="package.payment.payment-dta.dtabase.savefile.note">
+  &title.note;
+  &note.notstatic;
+</refsect1>
+</refentry>
