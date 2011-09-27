@@ -22,7 +22,7 @@
  </refsynopsisdiv>
  <refsect1 id="package.payment.payment-dta.dta.setaccountfilesender.desc">
   &title.desc;
-  <para>The given account data is also used as default sender&apos;s account.  Account data contains   name            Sender&apos;s name. Maximally 27 chars are allowed.   bank_code       Sender&apos;s bank code.   account_number  Sender&apos;s account number.   additional_name If necessary, additional line for sender&apos;s name                   (maximally 27 chars).</para>
+  <para>The given account data is also used as default sender&apos;s account.  Account data contains   name            Sender&apos;s name. Maximally 27 chars are allowed.   bank_code       Sender&apos;s bank code.   account_number  Sender&apos;s account number.   additional_name If necessary, additional line for sender&apos;s name                   (maximally 27 chars).   exec_date       Optional execution date for the DTA file in format DDMMYYYY.</para>
  </refsect1>
  <refsect1 id="package.payment.payment-dta.dta.setaccountfilesender.param">
   &title.param;

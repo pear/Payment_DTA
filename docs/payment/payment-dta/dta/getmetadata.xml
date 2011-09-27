@@ -25,7 +25,7 @@
   &title.returns;
   <para>
    <emphasis>returns</emphasis>
-   Returns an array with keys: &quot;sender_name&quot;,    &quot;sender_bank_code&quot;, &quot;sender_account&quot;, &quot;sum_amounts&quot;,    &quot;type&quot;, &quot;sum_bankcodes&quot;, &quot;sum_accounts&quot;, &quot;count&quot;, &quot;date&quot;
+   Returns an array with keys: &quot;sender_name&quot;,    &quot;sender_bank_code&quot;, &quot;sender_account&quot;, &quot;sum_amounts&quot;,    &quot;type&quot;, &quot;sum_bankcodes&quot;, &quot;sum_accounts&quot;, &quot;count&quot;, &quot;date&quot;, &quot;exec_date&quot;
   </para>
  </refsect1>
  <refsect1 id="package.payment.payment-dta.dta.getmetadata.throws">
