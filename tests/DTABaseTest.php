@@ -1,9 +1,6 @@
 <?php
 
-require_once 'PHPUnit/Framework.php';
-
-//make cvs testing work
-chdir(dirname(__FILE__) . '/../');
+require_once dirname(__FILE__) . '/helper.inc';
 require_once 'DTABase.php';
 
 /*

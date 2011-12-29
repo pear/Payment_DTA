@@ -1,8 +1,6 @@
 <?php
-require_once 'PHPUnit/Framework.php';
 
-//make cvs testing work
-chdir(dirname(__FILE__) . '/../');
+require_once dirname(__FILE__) . '/helper.inc';
 require_once 'DTAZV.php';
 
 class DTAZVTest extends PHPUnit_Framework_TestCase
@@ -699,8 +697,7 @@ class DTAZVTest extends PHPUnit_Framework_TestCase
             $this->assertSame(strtoupper("A Receivers Name"), $value['receiver_name']);
             $this->assertSame("RZTIAT22263", $value['receiver_bank_code']);
             $this->assertSame("DE21700519950000007229", $value['receiver_account_number']);
-            $this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY,
-                $value['purposes']);
+            $this->assertInternalType('array', $value['purposes']);
 
             // different values in addExchange() above
             if ($key === 0) {

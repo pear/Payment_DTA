@@ -85,6 +85,9 @@
    <file baseinstalldir="Payment" md5sum="8181fc7a6404c7db18a6f0b3c5ac0e8a" name="tests/DTABaseTest.php" role="test" />
    <file baseinstalldir="Payment" md5sum="d868fd034d18f5675cccd8341a80ba0e" name="tests/DTATest.php" role="test" />
    <file baseinstalldir="Payment" md5sum="d7dfa58def53b11c8028d01592cebffb" name="tests/DTAZVTest.php" role="test" />
+   <file baseinstalldir="Payment" name="tests/helper.inc" role="test">
+    <tasks:replace from="@php_dir@" to="php_dir" type="pear-config" />
+   </file>
    <file baseinstalldir="Payment" md5sum="50505cb3e53732d2edaf91b80c195b20" name="DTA.php" role="php">
     <tasks:replace from="@package_version@" to="version" type="package-info" />
    </file>
