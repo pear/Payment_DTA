@@ -684,7 +684,7 @@ class DTA extends DTABase
 
         $meta["exec_date"] = $meta["date"];
         // use timestamp to be consistent with $meta["date"]
-        if ($this->account_file_sender["exec_date"] !== "") {
+        if (trim($this->account_file_sender["exec_date"]) !== "") {
             $ftime = strptime($this->account_file_sender["exec_date"], '%d%m%Y');
             if ($ftime) {
                 $meta["exec_date"] = mktime(0, 0, 0,
