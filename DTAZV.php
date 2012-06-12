@@ -658,7 +658,8 @@ class DTAZV extends DTABase
         if (!$rc) {
             // should never happen
             throw new Payment_DTA_FatalParseException(
-                "Cannot setAccountFileSender(), please file a bug report");
+                "Cannot setAccountFileSender(), please file a bug report"
+            );
         }
     }
 
@@ -748,9 +749,10 @@ class DTAZV extends DTABase
         );
         if (!$rc) {
             // should never happen
-            throw new Payment_DTA_ParseException("Cannot addExchange() ".
-                "for transaction number ".strval($this->count()+1).
-                ", please file a bug report");
+            throw new Payment_DTA_ParseException(
+                "Cannot addExchange() for transaction number ".
+                strval($this->count()+1).", please file a bug report"
+            );
         }
         $checks['amount'] += $amount_int;
     }
@@ -780,12 +782,14 @@ class DTAZV extends DTABase
         if ($Z_check_count != $this->count()) {
                     throw new Payment_DTA_ChecksumException(
                         "Z record checksum mismatch for transaction count: ".
-                        "reads $Z_check_count, expected ".$this->count());
+                        "reads $Z_check_count, expected ".$this->count()
+                    );
         }
         if ($Z_check_amount != $checks['amount']) {
                     throw new Payment_DTA_ChecksumException(
                         "Z record checksum mismatch for transfer amount: ".
-                        "reads $Z_check_amount, expected ".$checks['amount']);
+                        "reads $Z_check_amount, expected ".$checks['amount']
+                    );
         }
     }
 
@@ -824,7 +828,8 @@ class DTAZV extends DTABase
                 // preserve error
                 $this->allerrors[] = new Payment_DTA_ParseException(
                     "Error in T record, in transaction number ".
-                    strval($this->count()+1), $e);
+                    strval($this->count()+1), $e
+                );
                 // skip to next record
                 $offset = $t_start + 768;
             }

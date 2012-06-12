@@ -230,8 +230,10 @@ abstract class DTABase implements Countable, Iterator
         $found = substr($input, $offset, $len);
 
         if ($found !== $expected) {
-            throw new Payment_DTA_Exception("input string at position $offset ".
-                "('$found') does not match expected value '$expected'");
+            throw new Payment_DTA_Exception(
+                "input string at position $offset ".
+                "('$found') does not match expected value '$expected'"
+            );
         } else {
             $offset += $len;
             return true;
@@ -259,15 +261,18 @@ abstract class DTABase implements Countable, Iterator
     {
         $rc = substr($input, $offset, $length);
         if (!$rc) {
-            throw new Payment_DTA_Exception("input string not long enough to ".
-                "read $length bytes at position $offset");
+            throw new Payment_DTA_Exception(
+                "input string not long enough to ".
+                "read $length bytes at position $offset"
+            );
         }
         if ($liberal) {
             $rc = $this->makeValidString($rc);
         }
         if (!$this->validString($rc)) {
-            throw new Payment_DTA_Exception("invalid String '$rc' ".
-                "at position $offset");
+            throw new Payment_DTA_Exception(
+                "invalid String '$rc' at position $offset"
+            );
         } else {
             $offset += $length;
             return $rc;
@@ -290,11 +295,14 @@ abstract class DTABase implements Countable, Iterator
     {
         $rc = substr($input, $offset, $length);
         if (!$rc) {
-            throw new Payment_DTA_Exception("input string not long enough to ".
-                "read $length bytes at position $offset");
+            throw new Payment_DTA_Exception(
+                "input string not long enough to ".
+                "read $length bytes at position $offset"
+            );
         } elseif (!ctype_digit($rc)) {
-            throw new Payment_DTA_Exception("invalid Number '$rc' ".
-                "at position $offset");
+            throw new Payment_DTA_Exception(
+                "invalid Number '$rc' at position $offset"
+            );
         } else {
             $offset += $length;
             return $rc;
