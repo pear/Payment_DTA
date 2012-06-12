@@ -16,11 +16,11 @@
   <email>hs@web-gear.com</email>
   <active>no</active>
  </lead>
- <date>2011-09-27</date>
- <time>22:35:53</time>
+ <date>2012-06-12</date>
+ <time>17:04:58</time>
  <version>
-  <release>1.4.2</release>
-  <api>1.4.2</api>
+  <release>1.4.3</release>
+  <api>1.4.3</api>
  </version>
  <stability>
   <release>stable</release>
@@ -28,15 +28,16 @@
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
  <notes>
-[+] add parameter exec_date to setAccountFileSender (#18389, #18773)
+[+] PHPUnit fixes (thanks to Daniel Convissor, #19159)
+[-] string comparison in DTA::getMetaData() (thanks to Christian Stoller, #19305)
 ( [+] Added   [-] Fixed   [*] Improved   [!] Note )
  </notes>
  <contents>
   <dir baseinstalldir="Payment" name="/">
    <file baseinstalldir="Payment" md5sum="953f27d82cb27ddd1d89d8db37b28ac6" name="docs/payment.xml" role="doc" />
-   <file baseinstalldir="Payment" md5sum="1207ce892647d198ac8988b2352c13ec" name="docs/examples/example_begleitzettel.php" role="doc" />
-   <file baseinstalldir="Payment" md5sum="efc3455156c3ee7318d079c75a0f2c77" name="docs/examples/example_credit.php" role="doc" />
-   <file baseinstalldir="Payment" md5sum="d81d64ce27bb1dace65112099fffc39c" name="docs/examples/example_debit.php" role="doc" />
+   <file baseinstalldir="Payment" md5sum="d14c18558286995130d71a91ad54f64c" name="docs/examples/example_begleitzettel.php" role="doc" />
+   <file baseinstalldir="Payment" md5sum="e7844c1ad6bfb7ef606ce045af97a72a" name="docs/examples/example_credit.php" role="doc" />
+   <file baseinstalldir="Payment" md5sum="349d6f7b03c2cf28b75c3f3fba773f43" name="docs/examples/example_debit.php" role="doc" />
    <file baseinstalldir="Payment" md5sum="a009d15bd59356a9e524dea04ab76d38" name="docs/examples/example_download.php" role="doc" />
    <file baseinstalldir="Payment" md5sum="7c2960a4c5df099c574a1af9e3bffdc0" name="docs/examples/example_dtazv.php" role="doc" />
    <file baseinstalldir="Payment" md5sum="8a8629a5730d7be85257a4f4a7dc866b" name="docs/examples/show_dta.php" role="doc" />
@@ -81,20 +82,22 @@
    <file baseinstalldir="Payment" md5sum="4e41e0f493cd150e41366f8bfbf7978a" name="docs/payment/payment-dta/dtazv/parse.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="06903a6471a7127e64f72dd04f25b441" name="docs/payment/payment-dta/dtazv/setaccountfilesender.xml" role="doc" />
    <file baseinstalldir="Payment" md5sum="6a5853199343247b6578d863f18b8f17" name="docs/payment/payment-dta/dtazv/setmaxamount.xml" role="doc" />
-   <file baseinstalldir="Payment" md5sum="d398a65a789851b1bacff2d2d94fdf42" name="tests/AllTests.php" role="test" />
-   <file baseinstalldir="Payment" md5sum="8181fc7a6404c7db18a6f0b3c5ac0e8a" name="tests/DTABaseTest.php" role="test" />
-   <file baseinstalldir="Payment" md5sum="d868fd034d18f5675cccd8341a80ba0e" name="tests/DTATest.php" role="test" />
-   <file baseinstalldir="Payment" md5sum="d7dfa58def53b11c8028d01592cebffb" name="tests/DTAZVTest.php" role="test" />
-   <file baseinstalldir="Payment" name="tests/helper.inc" role="test">
-    <tasks:replace from="@php_dir@" to="php_dir" type="pear-config" />
-   </file>
-   <file baseinstalldir="Payment" md5sum="50505cb3e53732d2edaf91b80c195b20" name="DTA.php" role="php">
+   <file baseinstalldir="Payment" md5sum="de0de4b8c33ae5ba95ac3b377597c4f4" name="nbproject/project.properties" role="data" />
+   <file baseinstalldir="Payment" md5sum="a1742df65894116b0db2edf0042088f8" name="nbproject/project.xml" role="data" />
+   <file baseinstalldir="Payment" md5sum="d41d8cd98f00b204e9800998ecf8427e" name="nbproject/private/config.properties" role="data" />
+   <file baseinstalldir="Payment" md5sum="b96566f902dd40f8ffc693061b49a6ce" name="nbproject/private/private.properties" role="data" />
+   <file baseinstalldir="Payment" md5sum="806043770339e8e49c6e102892d501b1" name="tests/AllTests.php" role="test" />
+   <file baseinstalldir="Payment" md5sum="d48087910665185497d274f3f0da4bde" name="tests/DTABaseTest.php" role="test" />
+   <file baseinstalldir="Payment" md5sum="a865b8229222545ad720fcf2d2c3d102" name="tests/DTATest.php" role="test" />
+   <file baseinstalldir="Payment" md5sum="d90ce84bee56844a757f8b9c14b82543" name="tests/DTAZVTest.php" role="test" />
+   <file baseinstalldir="Payment" md5sum="ada8628d1310a1aaceffdff89c37a82c" name="tests/helper.inc" role="test" />
+   <file baseinstalldir="Payment" md5sum="1cd7854e189135f9e92d3cc097e69afb" name="DTA.php" role="php">
     <tasks:replace from="@package_version@" to="version" type="package-info" />
    </file>
-   <file baseinstalldir="Payment" md5sum="1c5ac347399c118ec8722342fb078e5e" name="DTABase.php" role="php">
+   <file baseinstalldir="Payment" md5sum="7a41cd3ea0fd7fac0036613a4848020b" name="DTABase.php" role="php">
     <tasks:replace from="@package_version@" to="version" type="package-info" />
    </file>
-   <file baseinstalldir="Payment" md5sum="bd8cbd5577f7b9907a33ce4988a3995e" name="DTAZV.php" role="php">
+   <file baseinstalldir="Payment" md5sum="6b511ebc5aa3c1c5e343793cc2ded673" name="DTAZV.php" role="php">
     <tasks:replace from="@package_version@" to="version" type="package-info" />
    </file>
   </dir>
@@ -507,6 +510,23 @@ First release.
    <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
    <notes>
 [+] add parameter exec_date to setAccountFileSender (#18389, #18773)
+( [+] Added   [-] Fixed   [*] Improved   [!] Note )
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.4.3</release>
+    <api>1.4.3</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2012-06-12</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD style</license>
+   <notes>
+[+] PHPUnit fixes (thanks to Daniel Convissor, #19159)
+[-] string comparison in DTA::getMetaData() (thanks to Christian Stoller, #19305)
 ( [+] Added   [-] Fixed   [*] Improved   [!] Note )
    </notes>
   </release>
