@@ -1,0 +1,33 @@
+{
+    "authors": [
+        {
+            "email": "info@mschuette.name",
+            "name": "Martin Sch\u00fctte",
+            "role": "Lead"
+        },
+        {
+            "email": "hs@web-gear.com",
+            "name": "Hermann Stainer",
+            "role": "Lead"
+        }
+    ],
+    "autoload": {
+        "classmap": [
+            "./"
+        ]
+    },
+    "description": "More info available on: http://pear.php.net/package/Payment_DTA",
+    "license": "BSD style",
+    "name": "pear/payment_dta",
+    "support": {
+        "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=Payment_DTA",
+        "source": "https://github.com/pear/Payment_DTA"
+    },
+    "type": "library",
+    "require": {
+        "pear/pear_exception": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    }
+}
